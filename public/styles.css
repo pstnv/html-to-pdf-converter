@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    background-color: rgba(212, 212, 212, 0.247);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+input#formFile,
+.btn {
+    max-width: 75%;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+@media all and (max-width: 768px) {
+    input#formFile,
+    .btn {
+        max-width: initial;
+        filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+    }
+}
