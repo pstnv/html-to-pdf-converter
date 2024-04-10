@@ -20,7 +20,7 @@ const unzipController = (req, res, next) => {
         path: outputFolderPath,
         name: outputFolderName,
     };
-    res.send("unzipped");
+    next();
 };
 
 export default unzipController;
