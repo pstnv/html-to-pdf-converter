@@ -20,8 +20,7 @@ const uploadController = (req, res, next) => {
     file.base = fileName;
     file.name = path.parse(fileName).name;
     req.file = file;
-
-    res.send("uploaded");
+    next();
 };
 
 export default uploadController;
