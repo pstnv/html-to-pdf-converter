@@ -16,8 +16,9 @@ const uploadController = (req, res, next) => {
     if (file.size >= maxSize) {
         return res.send("Слишком большой размер");
     }
+    // добавляем поля name и basename
     const fileName = file.name;
-    file.base = fileName;
+    file.basename = fileName;
     file.name = path.parse(fileName).name;
     req.file = file;
     next();

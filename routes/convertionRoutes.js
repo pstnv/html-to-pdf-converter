@@ -1,9 +1,9 @@
 import uploadController from "../controllers/uploadController.js";
-import unpackController from "../controllers/unpackController.js";
+import unzipController from "../controllers/unzipController.js";
 
 import express from "express";
 const router = express.Router();
 
-router.route("/uploads").post(uploadController, unpackController);
+router.route("/uploads").post(uploadController, unzipController);
 
 export { router };
