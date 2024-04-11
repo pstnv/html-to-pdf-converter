@@ -1,28 +1,29 @@
 import path from "path";
+import { BadRequestError } from "../errors/index.js";
 
 const uploadController = (req, res, next) => {
     // проверки:
     // запрос, не содержащий файлы
     if (!req.files) {
-        return res.status(404).send("Загрузите архив");
+        throw new BadRequestError("Файл не был загружен");
     }
     const file = req.files.file;
-    // формат zip 
+    // формат zip
     // или !file.mimetype.includes("zip")
     if (!file.name.endsWith(".zip")) {
-        return res.status(401).send("Не подходит формат");
+        throw new BadRequestError("Загрузите zip-архив");
     }
     // размер меньше 2Гб
     const maxSize = 2 * 1024 * 1024 * 1024; // 2Гб
     if (file.size >= maxSize) {
-        return res.status(403).send("Слишком большой размер");
+        throw BadRequestError("Размер файла не должен превышать 2Гб");
     }
     // добавляем поля name и basename
     const fileName = file.name;
     file.basename = fileName;
     file.name = path.parse(fileName).name;
     req.file = file;
-    
+
     next();
 };
 

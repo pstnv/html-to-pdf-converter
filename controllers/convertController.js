@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer";
 import url from "url";
+import { CustomError } from "../errors/index.js";
 
 const convertController = async (req, res, next) => {
     const {
@@ -41,6 +42,7 @@ const convertController = async (req, res, next) => {
         res.status(201).send(pdfBuffer);
     } catch (error) {
         console.log(error);
+        throw new CustomError("Что-то пошло не так на этапе конвертации");
     }
 };
 

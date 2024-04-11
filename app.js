@@ -14,12 +14,15 @@ app.use(fileUpload({ useTempFiles: true }));
 // routers
 import { router as convertionRouter } from "./routes/convertionRoutes.js";
 // error handler
-import { notFound as notFoundMiddleware } from "./middleware/not-found.js";
+import notFoundMiddleware from "./middleware/not-found.js";
+import errorHandlerMiddleware from "./middleware/error-handler.js";
 // routes
 app.use("/api/v1/convertion", convertionRouter);
 
 // вернуть 404
 app.use(notFoundMiddleware);
+// обработка ошибок
+app.use(errorHandlerMiddleware);
 
 
 
