@@ -8,6 +8,6 @@ const router = express.Router();
 
 router
     .route("/uploads")
-    .post(uploadController, unzipController, htmlController);
+    .post(uploadController, unzipController, htmlController, convertController);
 
 export { router };
