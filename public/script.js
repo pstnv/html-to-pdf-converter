@@ -4,22 +4,37 @@ const fileInputDOM = formDOM.querySelector("#formFile");
 
 formDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("hey");
     const file = fileInputDOM.files[0];
-    console.log(file);
+    if (!file) {
+        console.log("Загрузите архив!")
+    }
     const formData = new FormData();
     formData.append("file", file);
     try {
         const params = {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
+            method: "POST",
             body: formData,
         };
-        const response = await fetch(`${url}/uploads`, params);
-        console.log(response);
-        const data = await response.json();
-        console.log(data);
+        const response = await fetch(`${url}`, params);
+        const blob = await response.blob();
+
+        // имя из заголовка ответа
+        const contentDisposition = response.headers.get("content-disposition");
+        const filenameResponse = contentDisposition.split("filename=").pop();
+        // резервное имя из отправляемого файла
+        const filenameRequest = file.name.split(".zip").shift() + ".pdf";
+        const filename =
+            filenameRequest ||
+            filenameResponse;
+
+        let dataURL = URL.createObjectURL(blob);
+        let anchor = document.createElement("a");
+        anchor.href = dataURL;
+        anchor.download = filename;
+        document.body.append(anchor);
+        anchor.style = "display:none";
+        anchor.click();
+        anchor.remove();
     } catch (error) {
         console.log(error);
     }

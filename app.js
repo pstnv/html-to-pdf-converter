@@ -8,6 +8,7 @@ import fileUpload from "express-fileupload";
 
 import { router as convertionRouter } from "./routes/convertionRoutes.js";
 
+app.use(express.static("./public"));
 app.use(express.json());
 app.use(fileUpload({ useTempFiles: true }));
 app.use("/api/v1/convertion", convertionRouter);
