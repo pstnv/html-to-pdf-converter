@@ -13,6 +13,10 @@ input#formFile,
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
 }
 
+.alert {
+    display: none;
+}
+
 @media all and (max-width: 768px) {
     input#formFile,
     .btn {

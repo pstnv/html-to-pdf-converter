@@ -21,25 +21,33 @@
                     Конвертируйте zip-архив сайта в формат PDF
                 </h2>
             </header>
-            <form class="form row g-4">
-                <div class="col col-12 d-flex flex-row justify-content-center">
-                    <input
-                        class="form-control"
-                        type="file"
-                        id="formFile"
-                        aria-label="выберите zip-архив"
-                        accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"
-                    />
-                </div>
-                <div class="col col-12 d-flex flex-column align-items-stretch">
-                    <button
-                        class="btn btn-danger mx-auto w-100 px-5 py-3 fs-4"
-                        type="submit"
-                    >
-                        Конвертировать
-                    </button>
-                </div>
+            <form class="form row">
+                <fieldset class="col col-12 d-grid gap-3">
+                    <div class="d-flex flex-row justify-content-center">
+                        <input
+                            class="form-control"
+                            type="file"
+                            id="formFile"
+                            aria-label="выберите zip-архив"
+                            accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"
+                            required
+                        />
+                    </div>
+                    <div class="d-flex flex-column align-items-stretch">
+                        <button
+                            class="btn btn-danger mx-auto w-100 px-5 py-3 fs-4"
+                            type="submit"
+                        >
+                            Конвертировать
+                        </button>
+                    </div>
+                </fieldset>
             </form>
+            <div class="form row mt-3">
+                <div class="col col-12 d-flex flex-column align-items-stretch">
+                    <div class="alert alert-light" role="alert"></div>
+                </div>
+            </div>
         </div>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

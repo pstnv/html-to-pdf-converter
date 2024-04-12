@@ -9,7 +9,7 @@ const htmlController = (req, res, next) => {
     const indexPage = "index.html";
     let [indexPageRelPath] = globSync(`${unzippedFolder.path}/**/${indexPage}`);
     if (!indexPageRelPath) {
-        throw NotFoundError(`Файл ${indexPage} не найден`);
+        throw new NotFoundError(`Файл ${indexPage} не найден`);
     }
 
     // абсолютный путь к index.html, используется puppeteer в convertController

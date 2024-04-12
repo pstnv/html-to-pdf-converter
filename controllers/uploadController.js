@@ -16,7 +16,7 @@ const uploadController = (req, res, next) => {
     // размер меньше 2Гб
     const maxSize = 2 * 1024 * 1024 * 1024; // 2Гб
     if (file.size >= maxSize) {
-        throw BadRequestError("Размер файла не должен превышать 2Гб");
+        throw new BadRequestError("Размер файла не должен превышать 2Гб");
     }
     // добавляем поля name и basename
     const fileName = file.name;
