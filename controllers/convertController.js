@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer";
 import url from "url";
 import { CustomError } from "../errors/index.js";
+import StatusCodes from "http-status-codes";
 
 const convertController = async (req, res, next) => {
     const {
@@ -39,7 +40,7 @@ const convertController = async (req, res, next) => {
             "Content-Length": pdfBuffer.length,
             "Content-Disposition": `attachment; filename=${zipName}.pdf`,
         });
-        res.status(201).send(pdfBuffer);
+        res.status(StatusCodes.OK).send(pdfBuffer);
     } catch (error) {
         console.log(error);
         throw new CustomError("Что-то пошло не так на этапе конвертации");
