@@ -1,3 +1,4 @@
+import fs from "fs";
 import puppeteer from "puppeteer";
 import url from "url";
 import { CustomError } from "../errors/index.js";
@@ -5,7 +6,8 @@ import StatusCodes from "http-status-codes";
 
 const convertController = async (req, res, next) => {
     const {
-        unzippedFolder: { htmlPage, name: zipName },
+        tempFilePath,
+        unzippedFolder: { htmlPage, name: zipName, path: unzippedFolder },
     } = req.file;
 
     try {
@@ -33,6 +35,14 @@ const convertController = async (req, res, next) => {
         // закрываем браузер
         await browser.close();
         // процесс конвертации - окончание
+
+        // удаляем zip-архив и папку с распакованным архивом
+        fs.unlinkSync(tempFilePath);
+        fs.rmSync(unzippedFolder, {
+            recursive: true,
+            force: true,
+            maxRetries: 2,
+        });
 
         // устанавливаем заголовки ответа
         res.set({

@@ -22,7 +22,7 @@ formDOM.addEventListener("submit", async (e) => {
 
         const file = fileInputDOM.files[0];
         if (!file) {
-            throw new Error("Загрузите zip-архив");
+            throw new Error("Загрузите архив");
         }
 
         const formData = new FormData();
