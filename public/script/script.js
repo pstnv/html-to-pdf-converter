@@ -15,12 +15,13 @@ fileInputDOM.addEventListener("change", (e) => {
 formDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
+        // блокируем форму и отображаем спиннер
+        toggleSpinner();
+        
         const file = fileInputDOM.files[0];
         if (!file) {
             throw new Error("Загрузите архив");
         }
-        // блокируем форму и отображаем спиннер
-        toggleSpinner();
 
         const formData = new FormData();
         formData.append("file", file);
