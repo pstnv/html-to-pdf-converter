@@ -6,8 +6,7 @@ import StatusCodes from "http-status-codes";
 
 const convertController = async (req, res, next) => {
     const {
-        tempFilePath,
-        unzippedFolder: { htmlPage, name: zipName, path: unzippedFolder },
+        unzippedFolder: { htmlPage },
     } = req.file;
 
     try {
@@ -36,21 +35,10 @@ const convertController = async (req, res, next) => {
         await browser.close();
         // процесс конвертации - окончание
 
-        // удаляем zip-архив и папку с распакованным архивом
-        fs.unlinkSync(tempFilePath);
-        fs.rmSync(unzippedFolder, {
-            recursive: true,
-            force: true,
-            maxRetries: 2,
-        });
+        //  добавляем результат в поле pdfBuffer в req.file
+        req.file.pdfBuffer = pdfBuffer;
 
-        // устанавливаем заголовки ответа
-        res.set({
-            "Content-Type": "application/pdf",
-            "Content-Length": pdfBuffer.length,
-            "Content-Disposition": `attachment; filename=${zipName}.pdf`,
-        });
-        res.status(StatusCodes.OK).send(pdfBuffer);
+        next();
     } catch (error) {
         console.log(error);
         throw new CustomError("Что-то пошло не так на этапе конвертации");
