@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background-color: rgba(212, 212, 212, 0.247);
+    background-color: rgb(244, 244, 244);
 }
 
 * {
@@ -13,8 +13,25 @@ input#formFile,
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
 }
 
-.alert {
-    display: none;
+.spinner-container {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: rgb(244, 244, 244);
+}
+
+.hide {
+    display: none !important;
+}
+
+.spinner-border {
+    --bs-spinner-width: 4rem;
+    --bs-spinner-height: 4rem;
+    --bs-spinner-border-width: 0.4em;
+    --bs-spinner-animation-speed: 0.8s;
 }
 
 @media all and (max-width: 768px) {

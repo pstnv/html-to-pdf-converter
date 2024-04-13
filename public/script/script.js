@@ -1,12 +1,16 @@
 const url = "/api/v1/convertion/uploads";
-const formDOM = document.forms[0];
-const fileInputDOM = formDOM.querySelector("#formFile");
-const fieldsetDOM = formDOM.querySelector("fieldset");
-const alert = document.querySelector(".alert");
+
+import toggleSpinner from "./utils/toggleSpinner.js";
+import getElement from "./utils/getElement.js";
+
+
+const formDOM = getElement(".form");
+const fileInputDOM = getElement("#formFile");
+const alertDOM = getElement(".alert");
 
 fileInputDOM.addEventListener("change", (e) => {
     // скрываем alert, если он отображался ранее
-    alert.style.display = "none";
+    alertDOM.classList.add("hide");
 });
 
 formDOM.addEventListener("submit", async (e) => {
@@ -16,8 +20,8 @@ formDOM.addEventListener("submit", async (e) => {
         if (!file) {
             throw new Error("Загрузите архив");
         }
-        // блокируем форму
-        fieldsetDOM.disabled = true;
+        // блокируем форму и отображаем спиннер
+        toggleSpinner();
 
         const formData = new FormData();
         formData.append("file", file);
@@ -49,15 +53,16 @@ formDOM.addEventListener("submit", async (e) => {
         anchor.click();
         anchor.remove();
 
-        // разблокируем форму
-        fieldsetDOM.disabled = false;
+        // разблокируем форму и скрываем спиннер
+        toggleSpinner();
     } catch (error) {
         console.log(error.message);
-        // отображаем alert с сообщением
-        alert.textContent = error.message;
-        alert.style.display = "block";
         
-        // разблокируем форму
-        fieldsetDOM.disabled = false;
+        // отображаем alert с сообщением
+        alertDOM.textContent = error.message;
+        alertDOM.classList.remove("hide");
+
+        // разблокируем форму и скрываем спиннер
+        toggleSpinner();
     }
 });
