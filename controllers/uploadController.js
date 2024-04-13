@@ -7,16 +7,18 @@ const uploadController = (req, res, next) => {
     if (!req.files) {
         throw new BadRequestError("Файл не был загружен");
     }
+
     const file = req.files.file;
-    // формат zip
+    // размер превышает maxSize
+    if (file.maxSizeExceeded) {
+        throw new BadRequestError(
+            `Размер файла не должен превышать ${file.maxSizeGB}Гб`
+        );
+    }
+    // формат не соответствует zip
     // или !file.mimetype.includes("zip")
     if (!file.name.endsWith(".zip")) {
         throw new BadRequestError("Загрузите zip-архив");
-    }
-    // размер меньше 2Гб
-    const maxSize = 2 * 1024 * 1024 * 1024; // 2Гб
-    if (file.size >= maxSize) {
-        throw new BadRequestError("Размер файла не должен превышать 2Гб");
     }
     // добавляем поля name и basename
     const fileName = file.name;
