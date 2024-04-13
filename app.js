@@ -19,7 +19,7 @@ import errorHandlerMiddleware from "./middleware/error-handler.js";
 // routes
 app.use("/api/v1/convertion", convertionRouter);
 
-// вернуть 404
+// 404 page not found
 app.use(notFoundMiddleware);
 // обработка ошибок
 app.use(errorHandlerMiddleware);

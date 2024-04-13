@@ -1,16 +1,15 @@
 const url = "/api/v1/convertion/uploads";
 
-import toggleSpinner from "./utils/toggleSpinner.js";
 import getElement from "./utils/getElement.js";
-
+import toggleSpinner from "./utils/toggleSpinner.js";
+import toggleAlert from "./utils/toggleAlert.js";
 
 const formDOM = getElement(".form");
 const fileInputDOM = getElement("#formFile");
-const alertDOM = getElement(".alert");
 
 fileInputDOM.addEventListener("change", (e) => {
     // скрываем alert, если он отображался ранее
-    alertDOM.classList.add("hide");
+    toggleAlert(null);
 });
 
 formDOM.addEventListener("submit", async (e) => {
@@ -57,10 +56,9 @@ formDOM.addEventListener("submit", async (e) => {
         toggleSpinner();
     } catch (error) {
         console.log(error.message);
-        
+
         // отображаем alert с сообщением
-        alertDOM.textContent = error.message;
-        alertDOM.classList.remove("hide");
+        toggleAlert(error);
 
         // разблокируем форму и скрываем спиннер
         toggleSpinner();
