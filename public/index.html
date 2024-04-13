@@ -22,8 +22,8 @@
                 </h2>
             </header>
             <form class="form row">
-                <fieldset class="col col-12 d-grid gap-3">
-                    <div class="d-flex flex-row justify-content-center">
+                <fieldset class="col col-12 gap-3 d-flex flex-column align-items-center">
+                    <div class="container-fluid">
                         <input
                             class="form-control"
                             type="file"
@@ -33,9 +33,9 @@
                             required
                         />
                     </div>
-                    <div class="d-flex flex-column align-items-stretch">
+                    <div class="container-fluid">
                         <button
-                            class="btn btn-danger mx-auto w-100 px-5 py-3 fs-4"
+                            class="btn btn-danger w-100 px-5 py-3 fs-4"
                             type="submit"
                         >
                             Конвертировать
@@ -43,9 +43,9 @@
                     </div>
                 </fieldset>
             </form>
-            <div class="form row mt-3">
-                <div class="col col-12 d-flex flex-column align-items-stretch">
-                    <div class="alert alert-light hide" role="alert"></div>
+            <div class="row mt-3">
+                <div class="col col-12 d-flex flex-column align-items-center">
+                    <div class="container-fluid text-center alert hide" role="alert"></div>
                 </div>
             </div>
         </div>

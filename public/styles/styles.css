@@ -8,9 +8,13 @@ body {
 }
 
 input#formFile,
-.btn {
-    max-width: 75%;
+.btn,
+.alert {
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+.col div {
+    max-width: 75%;
 }
 
 .spinner-container {
@@ -37,7 +41,10 @@ input#formFile,
 @media all and (max-width: 768px) {
     input#formFile,
     .btn {
-        max-width: initial;
         filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+    }
+
+    .col div {
+        max-width: initial;
     }
 }

@@ -14,13 +14,15 @@ fileInputDOM.addEventListener("change", (e) => {
 
 formDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const startConversionTime = Date.now();
+
     try {
         // блокируем форму и отображаем спиннер
         toggleSpinner();
-        
+
         const file = fileInputDOM.files[0];
         if (!file) {
-            throw new Error("Загрузите архив");
+            throw new Error("Загрузите zip-архив");
         }
 
         const formData = new FormData();
@@ -52,16 +54,13 @@ formDOM.addEventListener("submit", async (e) => {
         anchor.style = "display:none";
         anchor.click();
         anchor.remove();
-
-        // разблокируем форму и скрываем спиннер
-        toggleSpinner();
     } catch (error) {
         console.log(error.message);
 
         // отображаем alert с сообщением
         toggleAlert(error);
-
+    } finally {
         // разблокируем форму и скрываем спиннер
-        toggleSpinner();
+        toggleSpinner(startConversionTime);
     }
 });
