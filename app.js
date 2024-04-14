@@ -5,9 +5,9 @@ import express from "express";
 const app = express();
 
 import fileUpload from "express-fileupload";
+import { BadRequestError } from "./errors/index.js";
 const maxSizeGB = process.env.MAX_SIZE;
 const maxSizeBytes = process.env.MAX_SIZE * 1024 * 1024 * 1024;
-import { BadRequestError } from "./errors/index.js";
 
 app.use(express.static("./public"));
 app.use(express.json());

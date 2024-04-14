@@ -5,7 +5,6 @@ import { CustomError } from "../errors/index.js";
 
 const errorTempFilesHandler = (err, req, res, next) => {
     const file = req.file;
-
     // если файл был загружен, удаляем папку tmp
     if (file && file.tempFilePath) {
         // путь до папки tmp
@@ -24,7 +23,7 @@ const errorTempFilesHandler = (err, req, res, next) => {
 const errorResponder = (err, req, res, next) => {
     let customError = {
         statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
-        // если ошибка является кастомной (экземпляром класса CustomError) 
+        // если ошибка является кастомной (экземпляром класса CustomError)
         // и имеет сообщение - используем его,
         // если нет - меняем на сообщение "Что-то пошло не так"
         msg:

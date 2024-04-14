@@ -1,16 +1,18 @@
-import fs from "fs";
+import { unlink, rm } from "fs/promises";
 import StatusCodes from "http-status-codes";
+import asyncWrapper from "../middleware/async.js";
 
-const responseController = async (req, res, next) => {
+const responseController = asyncWrapper(async (req, res, next) => {
     const {
         pdfBuffer,
         tempFilePath,
         unzippedFolder: { name: zipName, path: unzippedFolder },
     } = req.file;
 
-    // удаляем zip-архив и папку с распакованным архивом
-    fs.unlinkSync(tempFilePath);
-    fs.rmSync(unzippedFolder, {
+    // удаляем zip-архив
+    await unlink(tempFilePath);
+    // удаляем папку с распакованным архивом
+    await rm(unzippedFolder, {
         recursive: true,
         force: true,
         maxRetries: 2,
@@ -23,6 +25,6 @@ const responseController = async (req, res, next) => {
         "Content-Disposition": `attachment; filename=${zipName}.pdf`,
     });
     res.status(StatusCodes.OK).send(pdfBuffer);
-};
+});
 
 export default responseController;

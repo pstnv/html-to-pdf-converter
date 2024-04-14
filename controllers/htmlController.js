@@ -1,13 +1,16 @@
-import { globSync } from "glob";
+import { glob } from "glob";
 import path from "path";
 import { NotFoundError } from "../errors/index.js";
+import asyncWrapper from "../middleware/async.js";
 
-const htmlController = (req, res, next) => {
+const htmlController = asyncWrapper(async (req, res, next) => {
     const { unzippedFolder } = req.file;
 
     // поиск index.html в папке
     const indexPage = "index.html";
-    let [indexPageRelPath] = globSync(`${unzippedFolder.path}/**/${indexPage}`);
+    let [indexPageRelPath] = await glob(
+        `${unzippedFolder.path}/**/${indexPage}`
+    );
     if (!indexPageRelPath) {
         throw new NotFoundError(`Файл ${indexPage} не найден`);
     }
@@ -22,5 +25,5 @@ const htmlController = (req, res, next) => {
     };
 
     next();
-};
+});
 export default htmlController;
