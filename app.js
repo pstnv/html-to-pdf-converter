@@ -32,14 +32,18 @@ app.use(
 import { router as convertionRouter } from "./routes/convertionRoutes.js";
 // error handler
 import notFoundMiddleware from "./middleware/not-found.js";
-import errorHandlerMiddleware from "./middleware/error-handler.js";
+import {
+    errorTempFilesHandler,
+    errorResponder,
+} from "./middleware/error-handler.js";
 // routes
 app.use("/api/v1/convertion", convertionRouter);
 
 // 404 page not found
 app.use(notFoundMiddleware);
 // обработка ошибок
-app.use(errorHandlerMiddleware);
+app.use(errorTempFilesHandler);
+app.use(errorResponder);
 
 const port = process.env.PORT;
 const start = () => {
