@@ -9,12 +9,6 @@ const uploadController = (req, res, next) => {
     }
 
     const file = req.files.file;
-    // размер превышает maxSize
-    if (file.maxSizeExceeded) {
-        throw new BadRequestError(
-            `Размер файла не должен превышать ${file.maxSizeGB}Гб`
-        );
-    }
     // формат не соответствует zip
     // или !file.mimetype.includes("zip")
     if (!file.name.endsWith(".zip")) {

@@ -7,6 +7,7 @@ const app = express();
 import fileUpload from "express-fileupload";
 const maxSizeGB = process.env.MAX_SIZE;
 const maxSizeBytes = process.env.MAX_SIZE * 1024 * 1024 * 1024;
+import { BadRequestError } from "./errors/index.js";
 
 app.use(express.static("./public"));
 app.use(express.json());
@@ -14,12 +15,15 @@ app.use(
     fileUpload({
         useTempFiles: true,
         limits: { fileSize: maxSizeBytes },
+        abortOnLimit: true, // при превышении размера обрывает соединение
         // функция-обработчик при превышении размера maxSize
-        // добавляет поля maxSizeGB и отправляет в uploadController для обработки ошибок
-        // иначе будет срабатывать внутренний обработчик Express
+        // next(uploadError) передает rangeError в errorHandlerMiddleware
+        // загруженный файл удаляется автоматически
         limitHandler: function (req, res, next) {
-            req.files = { file: { maxSizeGB, maxSizeExceeded: true } };
-            next();
+            const rangeError = new BadRequestError(
+                `Размер файла не должен превышать ${maxSizeGB}Гб`
+            );
+            next(rangeError);
         },
     })
 );
