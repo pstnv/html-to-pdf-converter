@@ -5,23 +5,24 @@ const ConversionSchema = new mongoose.Schema(
         name: {
             // имя архива
             type: String,
-            required: [true, "Введите имя архива"],
+            required: [true, "имя архива"],
             // maxlength: 70,
         },
         status: {
             // статус
             type: String,
+            required: [true, "статус"],
             enum: ["Конвертация не завершена", "Конвертация выполнена успешно"],
         },
         createdBy: {
             // пользователь
             type: mongoose.Types.ObjectId,
             ref: "User",
-            required: [true, "Укажите пользователя"],
+            required: [true, "пользователь"],
         },
         file: {
             type: String,
-            required: [true, "Добавьте ссылку на .pdf файл"],
+            required: [true, "ссылка на .pdf файл"],
         },
     },
     { timestamps: true } // добавить время createdAt и updatedAt

@@ -2,17 +2,17 @@ import mongoose from "mongoose";
 import bcript from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// схема юзера
+// схема пользователя
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Введите имя пользователя"],
+        required: [true, "имя пользователя"],
         minlength: 3,
         maxlength: 25,
     },
     email: {
         type: String,
-        required: [true, "Введите email"],
+        required: [true, "email"],
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             "Введите корректный email",
@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, "Введите имя пользователя"],
+        required: [true, "пароль"],
         minlength: 6,
     },
 });

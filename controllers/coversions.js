@@ -20,7 +20,9 @@ const getConversion = async (req, res) => {
         _id: conversionId,
     });
     if (!conversion) {
-        throw new NotFoundError("Конвертация не найдена");
+        throw new NotFoundError(
+            `Данные о конвертации с id: ${conversionId} не найдены`
+        );
     }
     res.status(StatusCodes.OK).json({ conversion });
 };
@@ -46,7 +48,7 @@ const deleteConversion = async (req, res) => {
         createdBy: userId,
         _id: conversionId,
     });
-    res.status(StatusCodes.OK).send()
+    res.status(StatusCodes.OK).send();
 };
 
 export { getAllConversions, getConversion, createConversion, deleteConversion };

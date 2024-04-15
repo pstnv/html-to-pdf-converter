@@ -1,7 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
 import User from "../models/User.js";
-import asyncWrapper from "../middleware/async.js";
 import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
 
 const register = async (req, res) => {
@@ -15,10 +14,10 @@ const register = async (req, res) => {
     res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
 };
 
-const login = asyncWrapper(async (req, res) => {
+const login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        throw new BadRequestError("Введите email и пароль");
+        throw new BadRequestError("Поля email и пароль обязательны для заполнения");
     }
     // ищем пользователя в базе
     const user = await User.findOne({ email });
@@ -34,6 +33,6 @@ const login = asyncWrapper(async (req, res) => {
     }
     const token = user.createJWT();
     res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
-});
+};
 
 export { register, login };

@@ -12,6 +12,7 @@
 11. добавить фронту лоска?
 12. добавить asyncWrapper в auth.js controller и обработчик ошибок
 13. добавить asyncWrapper в authentication.js controller и обработчик ошибок
+14. исключить asyncWrapper в связи с использованием express-async-errors, переписать ошибки
 
 Использую
 
