@@ -28,15 +28,22 @@ app.use(
     })
 );
 
+// connectDB
+import connectDB from "./db/connectDB.js";
 // routers
 import { router as convertionRouter } from "./routes/convertionRoutes.js";
+import { router as authRouter } from "./routes/auth.js";
+import { router as conversionRouter } from "./routes/conversion.js";
 // error handler
 import notFoundMiddleware from "./middleware/not-found.js";
 import {
     errorTempFilesHandler,
     errorResponder,
 } from "./middleware/error-handler.js";
+
 // routes
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/conversions", conversionRouter);
 app.use("/api/v1/convertion", convertionRouter);
 
 // 404 page not found
@@ -46,8 +53,10 @@ app.use(errorTempFilesHandler);
 app.use(errorResponder);
 
 const port = process.env.PORT;
-const start = () => {
+const mongoURI = process.env.MONGO_URI;
+const start = async () => {
     try {
+        await connectDB(mongoURI);
         app.listen(port, () => {
             console.log(`Server is listening on port ${port}`);
         });
