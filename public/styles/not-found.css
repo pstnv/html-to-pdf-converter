@@ -7,6 +7,10 @@ body {
     box-sizing: border-box;
 }
 
+*::selection {
+	background-color: #828c7f;
+}
+
 .img-container {
     margin: auto;
     width: 100%;
