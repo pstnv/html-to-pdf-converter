@@ -30,10 +30,11 @@ app.use(
 
 // connectDB
 import connectDB from "./db/connectDB.js";
+import { auth as authenticateUser } from "./middleware/authentication.js";
 // routers
 import { router as convertionRouter } from "./routes/convertionRoutes.js";
 import { router as authRouter } from "./routes/auth.js";
-import { router as conversionRouter } from "./routes/conversion.js";
+import { router as conversionsRouter } from "./routes/conversions.js";
 // error handler
 import notFoundMiddleware from "./middleware/not-found.js";
 import {
@@ -43,7 +44,7 @@ import {
 
 // routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/conversions", conversionRouter);
+app.use("/api/v1/conversions", authenticateUser, conversionsRouter);
 app.use("/api/v1/convertion", convertionRouter);
 
 // 404 page not found
