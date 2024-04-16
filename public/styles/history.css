@@ -26,6 +26,9 @@ body {
 .table-wrapper {
     padding: 20px;
     background-color: white;
+    /* position relative for correct drop-shadow - иначе перекрывается контент dropdown-menu */
+    position: relative;
+    z-index: -1;
     filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
 }
 
