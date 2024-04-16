@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcript from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+
 // схема пользователя
 const UserSchema = new mongoose.Schema({
     name: {

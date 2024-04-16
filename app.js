@@ -2,6 +2,12 @@ import "express-async-errors";
 import dotenv from "dotenv";
 dotenv.config();
 
+// пакеты безопасности
+import { rateLimit } from "express-rate-limit";
+import helmet from "helmet";
+import cors from "cors";
+import xss from "express-mongo-sanitize";
+
 import express from "express";
 const app = express();
 
@@ -11,7 +17,27 @@ const maxSizeGB = process.env.MAX_SIZE;
 const maxSizeBytes = process.env.MAX_SIZE * 1024 * 1024 * 1024;
 
 app.use(express.static("./public"));
+
+// express-rate-limit - ограничение частоты запросов к API
+app.set("trust proxy", 1);
+app.use(
+    rateLimit({
+        windowMs: 15 * 60 * 1000, // временной интервал => 15 минут
+        limit: 1000, // лимит запросов => 1000 запросов в 15 минут с каждого IP
+        standardHeaders: "draft-7",
+        legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+        // store: ... , // Redis, Memcached, etc. See below.
+        // message: "Вы превысили max количество запросов. Перерыв на 15 минут",
+        // statusCode: 429 // статус-код после того, как лимит будет достигнут
+        // handler, // коллбэк после того, как лимит будет достигнут (overrides message and statusCode settings, if set)
+    })
+);
 app.use(express.json());
+// helmet - защита приложения путем установки http-заголовков
+app.use(helmet());
+app.use(cors());
+// xss - фильтрация пользовательского ввода от атак межсайтового скриптинга (req.body, req.query, req.params)
+app.use(xss());
 app.use(
     fileUpload({
         useTempFiles: true,
