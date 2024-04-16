@@ -62,7 +62,7 @@ body {
     width: 100%;
 }
 
-@media all and (max-width: 800px) {
+@media all and (max-width: 768px) {
     .table-wrapper {
         padding: 10px;
     }

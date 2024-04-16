@@ -59,7 +59,7 @@ body {
     color: black;
 }
 
-@media all and (max-width: 800px) {
+@media all and (max-width: 768px) {
     .container-text {
         margin-top: 30px;
     }

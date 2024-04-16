@@ -3,14 +3,14 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Конвертировать html to pdf</title>
+        <title>Мой аккаунт</title>
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
             rel="stylesheet"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
             crossorigin="anonymous"
         />
-        <link rel="stylesheet" href="./styles/index.css" />
+        <link rel="stylesheet" href="./styles/user.css" />
         <link rel="icon" href="./assets/icons/ico-convert.ico" />
     </head>
     <body>
@@ -21,7 +21,7 @@
                 <div>
                     <a
                         class="d-flex align-items-center link-body-emphasis text-decoration-none"
-                        href="#"
+                        href="index.html"
                     >
                         <img
                             alt="конвертёр"
@@ -64,7 +64,9 @@
                                 >
                             </li>
                             <li>
-                                <a class="dropdown-item" href="user.html">Профиль</a>
+                                <a class="dropdown-item" href="user.html"
+                                    >Профиль</a
+                                >
                             </li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>
@@ -76,57 +78,70 @@
             </div>
         </header>
         <div class="container">
-            <div class="container-header row my-4">
-                <h1 class="text-center fs-1 fw-bold">HTML в PDF</h1>
-                <h2 class="text-center fs-5 fw-light">
-                    Конвертируйте zip-архив сайта в формат PDF
-                </h2>
-            </div>
-            <form class="form row">
-                <fieldset
-                    class="col col-12 gap-3 d-flex flex-column align-items-center"
-                >
-                    <div class="container-fluid">
-                        <input
-                            class="form-control"
-                            type="file"
-                            id="formFile"
-                            aria-label="выберите zip-архив"
-                            accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"
-                            required
-                        />
+            <div class="col-md-7 col-lg-8">
+                <h4 class="mt-5">Моя учетная запись</h4>
+                <form>
+                    <div class="row gx-0 gy-3 my-5">
+                        <!-- Имя -->
+                        <div class="field col-12">
+                            <label for="firstName" class="form-label"
+                                >Имя</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="firstName"
+                                required
+                                value="Иван"
+                            />
+                            <div class="invalid-feedback">Введите имя</div>
+                        </div>
+
+                        <!-- Фамилия -->
+                        <div class="field col-12">
+                            <label for="lastName" class="form-label"
+                                >Фамилия</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="lastName"
+                                value="Иванов"
+                            />
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-12">
+                            <div class="field">
+                                <label for="email" class="form-label"
+                                    >Email</label
+                                >
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    required
+                                    disabled
+                                    placeholder="you@example.com"
+                                    value="ivanov@example.com"
+                                />
+                            </div>
+                            <small class="text-body-secondary"
+                                >Изменение почты невозможно</small
+                            >
+                            <div class="invalid-feedback">Введите email</div>
+                        </div>
                     </div>
-                    <div class="container-fluid">
-                        <button
-                            class="btn btn-danger w-100 px-5 py-3 fs-4"
-                            type="submit"
-                        >
-                            Конвертировать
-                        </button>
-                    </div>
-                </fieldset>
-            </form>
-            <div class="row mt-3">
-                <div class="col col-12 d-flex flex-column align-items-center">
-                    <div
-                        class="container-fluid text-center alert hide"
-                        role="alert"
-                    ></div>
-                </div>
-            </div>
-        </div>
-        <div
-            class="spinner-container d-flex flex-column align-items-center p-4 hide"
-        >
-            <h2 class="text-center mt-5">Идёт загрузка</h2>
-            <div class="spinner-border text-danger mt-3" role="status">
-                <span class="visually-hidden">Loading...</span>
+
+                    <button class="btn btn-danger w-100 p-2 fs-5" type="submit">
+                        Изменить
+                    </button>
+                </form>
             </div>
         </div>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             crossorigin="anonymous"
         ></script>
-        <script type="module" src="./script/script.js"></script>
     </body>
 </html>

@@ -1,0 +1,56 @@
+body {
+    margin: 0;
+    background-color: rgb(244, 244, 244);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+*::selection {
+    background-color: #828c7f;
+}
+
+.header {
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+.logo-text {
+    font-size: 22px;
+}
+
+.dropdown-menu {
+    --bs-dropdown-link-active-bg: rgb(108, 117, 125, 0.5);
+}
+
+div.field {
+    display: flex;
+    align-items: center;
+}
+
+.form-label {
+    margin: 0;
+    font-weight: 600;
+}
+
+input.form-control {
+    margin-left: auto;
+    max-width: 80%;
+    border-color: transparent;
+    background-color: transparent !important;
+}
+
+.text-body-secondary {
+    display: block;
+    text-align: end;
+}
+
+.btn {
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+@media all and (max-width: 400px) {
+    .form-label {
+        font-size: 14px;
+    }
+}
