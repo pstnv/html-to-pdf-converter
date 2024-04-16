@@ -48,7 +48,7 @@ input#formFile {
 }
 
 .hide {
-    display: none !important;
+    visibility: hidden;
 }
 
 .spinner-border {
