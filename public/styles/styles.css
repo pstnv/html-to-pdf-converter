@@ -8,7 +8,19 @@ body {
 }
 
 *::selection {
-	background-color: #828c7f;
+    background-color: #828c7f;
+}
+
+.header {
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+.logo-text {
+    font-size: 22px;
+}
+
+.dropdown-menu {
+    --bs-dropdown-link-active-bg: rgb(108, 117, 125, 0.5);
 }
 
 input#formFile,
@@ -50,5 +62,11 @@ input#formFile,
 
     .col div {
         max-width: initial;
+    }
+}
+
+@media all and (max-width: 400px) {
+    .logo-text {
+        font-size: 18px;
     }
 }

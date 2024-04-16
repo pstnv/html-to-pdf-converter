@@ -14,6 +14,64 @@
         <link rel="icon" href="./assets/icons/icon-convert-1.ico" />
     </head>
     <body>
+        <header class="header py-3 mb-3 border-bottom">
+            <div
+                class="container-fluid d-flex justify-content-between align-items-center px-3 px-sm-5"
+            >
+                <div class="d-flex align-items-center">
+                    <img
+                        alt="конвертёр"
+                        height="32"
+                        src="./assets/icons/icon-main.png"
+                    />
+                    <span class="logo-text ms-1 fw-bold">PDFConverter</span>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a
+                            href="#"
+                            class="d-block"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="true"
+                        >
+                            <img
+                                src="./assets/icons/icon-user-1.png"
+                                alt="профиль пользователя"
+                                width="32"
+                                height="32"
+                                class="rounded-circle"
+                            />
+                        </a>
+                        <ul
+                            class="dropdown-menu text-small shadow"
+                            data-popper-placement="bottom-end"
+                            style="
+                                position: absolute;
+                                inset: 0px 0px auto auto;
+                                margin: 0px;
+                                transform: translate(0px, 34px);
+                                z-index: 100;
+                            "
+                        >
+                            <li>
+                                <a class="dropdown-item" href="#"
+                                    >Мои задачи</a
+                                >
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Профиль</a>
+                            </li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <a class="dropdown-item" href="#">Выйти</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </header>
+
         <div class="container">
             <header class="row my-4">
                 <h1 class="text-center fs-1 fw-bold">HTML в PDF</h1>

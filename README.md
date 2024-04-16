@@ -15,6 +15,7 @@
 13. переписать converController на проект final
 14. использовать npm validator https://github.com/validatorjs/validator.js для эл. почты вместо regex? Пишут, что регэкс загружает память
 15. В конце исправить лимит запросов, дописать функцию ответа при превышении
+16. перетащить архив в input
 
 Использую
 
@@ -30,3 +31,10 @@
 10. express-fileupload
 11. mongoDB
 12. mongoose
+13. helmet
+14. cors
+15. express-mongo-sanitize
+16. express-rate-limit
+17. express-async-errors
+18. bcryptjs
+19. jsonwebtoken
