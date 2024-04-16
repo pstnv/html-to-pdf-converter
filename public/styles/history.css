@@ -26,10 +26,7 @@ body {
 .table-wrapper {
     padding: 20px;
     background-color: white;
-    /* position relative for correct drop-shadow - иначе перекрывается контент dropdown-menu */
-    position: relative;
-    z-index: -1;
-    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
 }
 
 .table {
@@ -56,6 +53,8 @@ body {
     padding: 5px;
     width: 30px;
     display: inline-block;
+    border: none;
+    background-color: transparent;
     cursor: pointer;
 }
 
