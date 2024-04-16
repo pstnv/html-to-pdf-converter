@@ -1,0 +1,47 @@
+body {
+    margin: 0;
+    background-color: rgb(244, 244, 244);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+*::selection {
+    background-color: #828c7f;
+}
+
+.container-fluid {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-header img {
+    height: 40px;
+}
+
+.input-wrapper {
+    padding: 0;
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+
+.input-wrapper input {
+    padding: 10px 0 10px 30px;
+    width: 100%;
+    font-size: 16px;
+}
