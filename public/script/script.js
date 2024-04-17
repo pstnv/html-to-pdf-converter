@@ -32,7 +32,7 @@ formDOM.addEventListener("submit", async (e) => {
             method: "POST",
             body: formData,
         };
-        const response = await fetch(`${url}`, params);
+        const response = await fetch(url, params);
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
             throw new Error(msg);

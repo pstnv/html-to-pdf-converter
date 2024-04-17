@@ -32,6 +32,8 @@ app.use(
         // handler, // коллбэк после того, как лимит будет достигнут (overrides message and statusCode settings, if set)
     })
 );
+// parse form data
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 // helmet - защита приложения путем установки http-заголовков
 app.use(helmet());

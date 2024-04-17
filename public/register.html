@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="./styles/register.css" />
     </head>
     <body>
-        <div class="container-fluid">
+        <div class="container-fluid page-container">
             <div class="form-container p-4 d-grid">
                 <div class="row form-header mb-2">
                     <a
@@ -34,10 +34,9 @@
                         />
                         <h1 class="ms-1 my-4 fs-3 fw-bold">PDFConverter</h1>
                     </a>
-                    <h2 class="fs-4 mt-4">Создать учетную запись</h2>
                 </div>
-
-                <form class="row g-3 d-grid">
+                <form class="row g-3 d-grid mt-4">
+                    <h2 class="fs-4">Создать учетную запись</h2>
                     <div class="input-wrapper col-12">
                         <i class="input-icon fa-solid fa-user"></i>
                         <input
@@ -48,6 +47,7 @@
                             class="input form-control"
                             id="inputName"
                             placeholder="Имя"
+                            autocomplete="on"
                             required
                         />
                     </div>
@@ -59,6 +59,7 @@
                             class="input form-control"
                             id="inputEmail"
                             placeholder="Эл. почта"
+                            autocomplete="on"
                             required
                         />
                     </div>
@@ -81,7 +82,9 @@
                             <i
                                 class="fa-solid fa-triangle-exclamation me-2"
                             ></i>
-                            <span class="alert-msg p-0"> Все поля обязательны для заполнения </span>
+                            <span class="alert-msg p-0">
+                                Все поля обязательны для заполнения
+                            </span>
                         </div>
                     </div>
                     <div class="input-wrapper col-12">
