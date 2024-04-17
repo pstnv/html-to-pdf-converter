@@ -49,12 +49,13 @@ formDOM.addEventListener("submit", async (e) => {
         localStorage.setItem("user", JSON.stringify(user));
 
         // отобразить приветственное окно
-        formDOM.innerHTML = displaySuccessAnswer(user.name);
+        const timeDelaySec = 3;
+        formDOM.innerHTML = displaySuccessAnswer(user.name, timeDelaySec);
         // перенаправить на главную страницу
         setTimeout(() => {
-            const startPage = "index.html"
+            const startPage = "index.html";
             window.location.replace(startPage);
-        }, 1000)
+        }, timeDelaySec * 1000);
     } catch (error) {
         console.log(error.message);
 

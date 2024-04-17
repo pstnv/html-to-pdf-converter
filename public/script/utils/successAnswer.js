@@ -1,4 +1,5 @@
-const displaySuccessAnswer = (name) => {
+const displaySuccessAnswer = (name, timeDelay = 0) => {
+    const seconds = timeDelay === 1 ? "секунды" : "секунд";
     return `
             <div class="text-center my-1">
                 <i class="fa-solid fa-check fa-4x"></i>
@@ -7,7 +8,7 @@ const displaySuccessAnswer = (name) => {
             <p class="greet-msg">
                 Добро пожаловать в PDFConverter, ${name}
             </p>
-            <p> Сейчас Вы будете перенаправлены на главную страницу.
+            <p> В течение ${timeDelay} ${seconds} Вы будете перенаправлены на главную страницу.
                 Если это не произошло, нажмите на кнопку ниже
             </p>
             <a
