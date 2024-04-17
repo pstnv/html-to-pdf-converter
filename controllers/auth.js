@@ -36,7 +36,9 @@ const login = async (req, res) => {
         throw new UnauthenticatedError(`Неправильный пароль`);
     }
     const token = user.createJWT();
-    res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+    res.status(StatusCodes.OK).json({
+        user: { name: user.name, email: user.email, token },
+    });
 };
 
 export { register, login };
