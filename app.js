@@ -12,6 +12,13 @@ import express from "express";
 const app = express();
 
 import fileUpload from "express-fileupload";
+import { v2 as cloudinary } from "cloudinary";
+// import cloudinary from "cloudinary";
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET,
+});
 import { BadRequestError } from "./errors/index.js";
 const maxSizeGB = process.env.MAX_SIZE;
 const maxSizeBytes = process.env.MAX_SIZE * 1024 * 1024 * 1024;
@@ -59,7 +66,10 @@ app.use(
 
 // connectDB
 import connectDB from "./db/connectDB.js";
-import { auth as authenticateUser } from "./middleware/authentication.js";
+import {
+    auth as authenticateUser,
+    checkAuth as checkAuthentication,
+} from "./middleware/authentication.js";
 // routers
 import { router as convertionRouter } from "./routes/convertionRoutes.js";
 import { router as authRouter } from "./routes/auth.js";
@@ -74,7 +84,7 @@ import {
 // routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/conversions", authenticateUser, conversionsRouter);
-app.use("/api/v1/convertion", convertionRouter);
+app.use("/api/v1/convertion", checkAuthentication, convertionRouter);
 
 // 404 page not found
 app.use(notFoundMiddleware);

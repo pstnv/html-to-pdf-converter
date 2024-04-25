@@ -10,9 +10,8 @@ const ConversionSchema = new mongoose.Schema(
         },
         status: {
             // статус
-            type: String,
-            required: [true, "статус"],
-            enum: ["Конвертация не завершена", "Конвертация выполнена успешно"],
+            type: Boolean,
+            required: [true, "статус"]
         },
         createdBy: {
             // пользователь

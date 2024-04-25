@@ -2,6 +2,11 @@ const url = "/api/v1/auth/login";
 
 import getElement from "./utils/getElement.js";
 import toggleAlert from "./utils/toggleAlert.js";
+import displaySuccessAnswer from "./utils/successAnswer.js";
+import {
+    addUserToLocalStorage,
+    getUserFromLocalStorage,
+} from "./utils/localStorage.js";
 
 import CustomError from "./errors/custom.js";
 
@@ -46,14 +51,19 @@ formDOM.addEventListener("submit", async (e) => {
         }
         const { user } = await response.json();
         // записываем пользователя в localStorage
-        localStorage.setItem("user", JSON.stringify(user));
+        addUserToLocalStorage(user);
 
+        // отобразить приветственное окно
+        const timeDelaySec = 3;
+        formDOM.innerHTML = displaySuccessAnswer(user.name, timeDelaySec);
         // перенаправить на главную страницу
-        window.location.assign("/");
+        setTimeout(() => {
+            window.location.assign("/");
+        }, timeDelaySec * 1000);
     } catch (error) {
         console.log(error.message);
         // если ошибка кастомная, отображаем ее сообщение
-        // если нет - "Что-то пошло не так...""
+        // если нет - "Что-то пошло не так..."
         const customErr = {
             message:
                 error instanceof CustomError
@@ -64,4 +74,18 @@ formDOM.addEventListener("submit", async (e) => {
         // отображаем alert с сообщением
         toggleAlert(customErr);
     }
+});
+
+document.addEventListener("DOMContentLoaded", (e) => {
+    const user = getUserFromLocalStorage();
+    if (!user) {
+        return;
+    }
+    // отобразить приветственное окно
+    const timeDelaySec = 3;
+    formDOM.innerHTML = displaySuccessAnswer(user.name, timeDelaySec);
+    // перенаправить на главную страницу
+    setTimeout(() => {
+        window.location.assign("/");
+    }, timeDelaySec * 1000);
 });

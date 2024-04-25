@@ -12,7 +12,7 @@
 10. добавить asyncWrapper в authentication.js controller и обработчик ошибок
 11. исключить asyncWrapper в связи с использованием express-async-errors, переписать ошибки в ConvertController
 12. фронт на личный кабинет
-13. переписать converController на проект final
+13. переписать convertController на проект final
 14. использовать npm validator https://github.com/validatorjs/validator.js для эл. почты вместо regex? Пишут, что регэкс загружает память
 15. В конце исправить лимит запросов, дописать функцию ответа при превышении
 16. перетащить архив в input
@@ -28,7 +28,8 @@
 26. Переписать на React
 27. На фронте - валидация пароля и email? Пароль должен удовлетворять требованиям (минимум 6 символов, заглвные и прописные, символы, без пробелов)
 28. На фронте вынести в отдельную функцию fetchData
-29. В register.js дописать обработчик ошибок - Custom Error (как в login.js)
+29. переписать register.js и login.js в одну функцию?
+30. переписать эндпойнты в один объект?
 
 Использую
 
@@ -51,6 +52,8 @@
 17. express-async-errors
 18. bcryptjs
 19. jsonwebtoken
+20. streamifier
+21. cloudinary
 
 Добавила:
 

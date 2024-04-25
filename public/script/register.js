@@ -3,6 +3,9 @@ const url = "/api/v1/auth/register";
 import getElement from "./utils/getElement.js";
 import toggleAlert from "./utils/toggleAlert.js";
 import displaySuccessAnswer from "./utils/successAnswer.js";
+import { addUserToLocalStorage } from "./utils/localStorage.js";
+
+import CustomError from "./errors/custom.js";
 
 const formDOM = getElement("form");
 formDOM.addEventListener("input", (e) => {
@@ -22,7 +25,7 @@ formDOM.addEventListener("submit", async (e) => {
         // проверяем, что все поля формы заполнены
         const isValid = formFields.every((field) => !!formData.get(field));
         if (!isValid) {
-            throw new Error("Все поля формы должны быть заполнены");
+            throw new CustomError("Все поля формы должны быть заполнены");
         }
 
         // формируем тело запроса
@@ -42,24 +45,32 @@ formDOM.addEventListener("submit", async (e) => {
 
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
-            throw new Error(msg);
+            throw new CustomError(msg);
         }
         const { user } = await response.json();
+        
         // записываем в localStorage
-        localStorage.setItem("user", JSON.stringify(user));
+        addUserToLocalStorage(user)
 
         // отобразить приветственное окно
         const timeDelaySec = 3;
         formDOM.innerHTML = displaySuccessAnswer(user.name, timeDelaySec);
         // перенаправить на главную страницу
         setTimeout(() => {
-            const startPage = "index.html";
-            window.location.replace(startPage);
+            window.location.assign("/");
         }, timeDelaySec * 1000);
     } catch (error) {
         console.log(error.message);
+        // если ошибка кастомная, отображаем ее сообщение
+        // если нет - "Что-то пошло не так..."
+        const customErr = {
+            message:
+                error instanceof CustomError
+                    ? error.message
+                    : "Что-то пошло не так. Повторите попытку позже",
+        };
 
         // отображаем alert с сообщением
-        toggleAlert(error);
+        toggleAlert(customErr);
     }
 });

@@ -4,6 +4,10 @@ import getElement from "./utils/getElement.js";
 import toggleSpinner from "./utils/toggleSpinner.js";
 import toggleAlert from "./utils/toggleAlert.js";
 
+// проверяем, есть ли в localStorage запись о пользователе
+import { getUserFromLocalStorage } from "./utils/localStorage.js";
+const user = getUserFromLocalStorage();
+
 const formDOM = getElement(".form");
 const fileInputDOM = getElement("#formFile");
 
@@ -32,6 +36,11 @@ formDOM.addEventListener("submit", async (e) => {
             method: "POST",
             body: formData,
         };
+        if (user) {
+            params.headers = {
+                Authorization: `Bearer ${user.token}`,
+            };
+        }
         const response = await fetch(url, params);
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();

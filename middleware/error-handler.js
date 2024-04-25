@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { CustomError } from "../errors/index.js";
 
 const errorTempFilesHandler = (err, req, res, next) => {
+    console.log('here2', err)
     const file = req.file;
     // если файл был загружен, удаляем папку tmp
     if (file && file.tempFilePath) {

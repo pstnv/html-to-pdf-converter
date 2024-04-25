@@ -5,6 +5,7 @@ import asyncWrapper from "../middleware/async.js";
 
 const convertController = asyncWrapper(async (req, res, next) => {
     const {
+        name: filename,
         unzippedFolder: { htmlPage },
     } = req.file;
 
@@ -33,8 +34,12 @@ const convertController = asyncWrapper(async (req, res, next) => {
     await browser.close();
     // процесс конвертации - окончание
 
-    //  добавляем результат в поле pdfBuffer в req.file
-    req.file.pdfBuffer = pdfBuffer;
+    //  добавляем результат в поле pdf в req.file
+    req.file.pdf = {
+        name: filename + ".pdf",
+        status: true,
+        buffer: pdfBuffer,
+    };
 
     next();
 });

@@ -4,9 +4,9 @@ import asyncWrapper from "../middleware/async.js";
 
 const responseController = asyncWrapper(async (req, res, next) => {
     const {
-        pdfBuffer,
+        pdf: { name: pdfName, buffer: pdfBuffer },
         tempFilePath,
-        unzippedFolder: { name: zipName, path: unzippedFolder },
+        unzippedFolder: { path: unzippedFolder },
     } = req.file;
 
     // удаляем zip-архив
@@ -22,7 +22,7 @@ const responseController = asyncWrapper(async (req, res, next) => {
     res.set({
         "Content-Type": "application/pdf",
         "Content-Length": pdfBuffer.length,
-        "Content-Disposition": `attachment; filename=${zipName}.pdf`,
+        "Content-Disposition": `attachment; filename=${pdfName}`,
     });
     res.status(StatusCodes.OK).send(pdfBuffer);
 });
