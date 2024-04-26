@@ -10,7 +10,7 @@ import express from "express";
 const router = express.Router();
 
 router
-    .route("/uploads")
+    .route("/")
     .post(
         uploadController,
         unzipController,

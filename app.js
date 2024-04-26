@@ -70,12 +70,12 @@ app.use(
 import connectDB from "./db/connectDB.js";
 import {
     auth as authenticateUser,
-    checkAuth as checkAuthentication,
+    checkAuth as authChecker,
 } from "./middleware/authentication.js";
 // routers
 import { router as convertionRouter } from "./routes/convertionRoutes.js";
 import { router as authRouter } from "./routes/auth.js";
-import { router as conversionsRouter } from "./routes/conversions.js";
+import { router as tasksRouter } from "./routes/tasks.js";
 // error handler
 import notFoundMiddleware from "./middleware/not-found.js";
 import {
@@ -85,8 +85,8 @@ import {
 
 // routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/conversions", authenticateUser, conversionsRouter);
-app.use("/api/v1/convertion", checkAuthentication, convertionRouter);
+app.use("/api/v1/tasks", authenticateUser, tasksRouter);
+app.use("/api/v1/html_to_pdf", authChecker, convertionRouter);
 
 // 404 page not found
 app.use(notFoundMiddleware);

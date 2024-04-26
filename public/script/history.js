@@ -1,4 +1,4 @@
-const url = "/api/v1/conversions";
+const url = "/api/v1/tasks";
 
 import getElement from "./utils/getElement.js";
 const tableBody = getElement("tbody");
@@ -24,15 +24,14 @@ const getAllTasks = async () => {
             const { msg } = await response.json();
             throw new Error(msg);
         }
-        const { conversions, count } = await response.json();
+        const { tasks, count } = await response.json();
         if (count === 0) {
-            console.log("записей нет");
             tableBody.innerHTML = "";
             // отображаем статус
             setStatus("Записей нет");
             return;
         }
-        const tableContent = displayTasks(conversions);
+        const tableContent = displayTasks(tasks);
         tableBody.innerHTML = tableContent;
         // очищаем статус
         setStatus();

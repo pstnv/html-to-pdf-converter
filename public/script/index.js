@@ -1,4 +1,4 @@
-const url = "/api/v1/convertion/uploads";
+const url = "/api/v1/html_to_pdf";
 
 import getElement from "./utils/getElement.js";
 import toggleSpinner from "./utils/toggleSpinner.js";
