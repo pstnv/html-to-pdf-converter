@@ -7,25 +7,28 @@ const auth = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer")) {
         throw new UnauthenticatedError("Авторизация не пройдена");
     }
-    const token = authHeader.split(" ").pop();
-    try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-        // прикрепляем юзера к маршруту conversions (без пароля!)
-        req.user = { userId: payload.userId, name: payload.name };
-        next();
-    } catch (error) {
+    // получаем токен
+    const token = authHeader.split(" ").pop();
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    if (!payload) {
         throw new UnauthenticatedError("Авторизация не пройдена");
     }
+
+    // прикрепляем юзера к маршруту conversions (без пароля!)
+    req.user = { userId: payload.userId, name: payload.name };
+    next();
 };
 
 const checkAuth = async (req, res, next) => {
     // проверяем заголовки headers
     const authHeader = req.headers.authorization;
+    // если их нет, продолжаем конвертацию без авторизации
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
+        return next();
+    }
+    // пытаемся авторизоваться
     try {
-        if (!authHeader || !authHeader.startsWith("Bearer")) {
-            return;
-        }
         const token = authHeader.split(" ").pop();
         const payload = jwt.verify(token, process.env.JWT_SECRET);
 
