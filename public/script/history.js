@@ -3,13 +3,12 @@ const url = "/api/v1/conversions";
 import getElement from "./utils/getElement.js";
 const tableBody = getElement("tbody");
 
-// import toggleAlert from "./utils/toggleAlert.js";
-// import displaySuccessAnswer from "./utils/successAnswer.js";
+import setStatus from "./utils/setStatus.js";
 
 import { getUserFromLocalStorage } from "./utils/localStorage.js";
 const user = getUserFromLocalStorage();
 
-// import CustomError from "./errors/custom.js";
+import CustomError from "./errors/custom.js";
 
 const getAllTasks = async () => {
     try {
@@ -30,23 +29,26 @@ const getAllTasks = async () => {
         if (count === 0) {
             console.log("записей нет");
             tableBody.innerHTML = "";
+            // отображаем статус
+            setStatus("Записей нет");
             return;
         }
         const tableContent = displayTasks(conversions);
         tableBody.innerHTML = tableContent;
+        // очищаем статус
+        setStatus();
     } catch (error) {
         console.log(error.message);
         // если ошибка кастомная, отображаем ее сообщение
         // если нет - "Что-то пошло не так..."
-        // const customErr = {
-        //     message:
-        //         error instanceof CustomError
-        //             ? error.message
-        //             : "Что-то пошло не так. Повторите попытку позже",
-        // };
-
-        // // отображаем alert с сообщением
-        // toggleAlert(customErr);
+        const customErr = {
+            message:
+                error instanceof CustomError
+                    ? error.message
+                    : "Что-то пошло не так. Повторите попытку позже",
+        };
+        // отображаем статутс с сообщением ошибки
+        setStatus(customErr.message);
     }
 };
 
@@ -140,19 +142,19 @@ async function deleteTask(id) {
             const { msg } = await response.json();
             throw new CustomError(msg);
         }
+        setStatus("Запись удалена", true);
     } catch (error) {
         console.log(error.message);
         // если ошибка кастомная, отображаем ее сообщение
         // если нет - "Что-то пошло не так..."
-        // const customErr = {
-        //     message:
-        //         error instanceof CustomError
-        //             ? error.message
-        //             : "Что-то пошло не так. Повторите попытку позже",
-        // };
-
-        // // отображаем alert с сообщением
-        // toggleAlert(customErr);
+        const customErr = {
+            message:
+                error instanceof CustomError
+                    ? error.message
+                    : "Что-то пошло не так. Повторите попытку позже",
+        };
+        // отображаем alert с сообщением
+        setStatus(customErr.message);
     } finally {
         getAllTasks();
     }

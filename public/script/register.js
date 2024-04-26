@@ -1,7 +1,7 @@
 const url = "/api/v1/auth/register";
 
 import getElement from "./utils/getElement.js";
-import toggleAlert from "./utils/toggleAlert.js";
+import setStatus from "./utils/setStatus.js";
 import displaySuccessAnswer from "./utils/successAnswer.js";
 import { addUserToLocalStorage } from "./utils/localStorage.js";
 
@@ -9,8 +9,8 @@ import CustomError from "./errors/custom.js";
 
 const formDOM = getElement("form");
 formDOM.addEventListener("input", (e) => {
-    // скрываем alert, если он отображался ранее
-    toggleAlert(null);
+    // очищаем статус, если он отображался ранее
+    setStatus();
 });
 
 formDOM.addEventListener("submit", async (e) => {
@@ -71,6 +71,6 @@ formDOM.addEventListener("submit", async (e) => {
         };
 
         // отображаем alert с сообщением
-        toggleAlert(customErr);
+        setStatus(customErr.message);
     }
 });

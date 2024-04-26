@@ -6,27 +6,11 @@ import { v2 as cloudinary } from "cloudinary";
 const getAllConversions = async (req, res) => {
     const { userId } = req.user;
     // ищем в MongoDB все записи с id пользователя
-    const conversions = await Conversion.find({ createdBy: userId });
+    const conversions = await Conversion.find({
+        createdBy: userId,
+    });
     res.status(StatusCodes.OK).json({ count: conversions.length, conversions });
 };
-
-// const getConversion = async (req, res) => {
-//     const {
-//         user: { userId },
-//         params: { id: conversionId },
-//     } = req;
-//     // ищем в MongoDB запись с id пользователя и id записи
-//     const conversion = await Conversion.findOne({
-//         createdBy: userId,
-//         _id: conversionId,
-//     });
-//     if (!conversion) {
-//         throw new NotFoundError(
-//             `Данные о конвертации с id: ${conversionId} не найдены`
-//         );
-//     }
-//     res.status(StatusCodes.OK).json({ conversion });
-// };
 
 const createConversion = async (req, res) => {
     const { userId } = req.user;

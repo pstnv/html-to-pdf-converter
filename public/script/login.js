@@ -1,7 +1,7 @@
 const url = "/api/v1/auth/login";
 
 import getElement from "./utils/getElement.js";
-import toggleAlert from "./utils/toggleAlert.js";
+import setStatus from "./utils/setStatus.js";
 import displaySuccessAnswer from "./utils/successAnswer.js";
 import {
     addUserToLocalStorage,
@@ -12,8 +12,8 @@ import CustomError from "./errors/custom.js";
 
 const formDOM = getElement("form");
 formDOM.addEventListener("input", (e) => {
-    // скрываем alert, если он отображался ранее
-    toggleAlert(null);
+    // очищаем статутс, если он отображался ранее
+    setStatus();
 });
 
 formDOM.addEventListener("submit", async (e) => {
@@ -71,8 +71,8 @@ formDOM.addEventListener("submit", async (e) => {
                     : "Что-то пошло не так. Повторите попытку позже",
         };
 
-        // отображаем alert с сообщением
-        toggleAlert(customErr);
+        // отображаем статус с сообщением об ошибке
+        setStatus(customErr.message);
     }
 });
 

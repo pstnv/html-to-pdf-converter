@@ -4,7 +4,9 @@ import { StatusCodes } from "http-status-codes";
 import { CustomError } from "../errors/index.js";
 
 const errorTempFilesHandler = (err, req, res, next) => {
-    console.log('here2', err)
+    console.log('here2', err.message)
+    console.log(err);
+    console.log("Конец описания ошибки")
     const file = req.file;
     // если файл был загружен, удаляем папку tmp
     if (file && file.tempFilePath) {
@@ -47,9 +49,10 @@ const errorResponder = (err, req, res, next) => {
         customError.statusCode = StatusCodes.BAD_REQUEST;
     }
 
-    // ошибка валидации полей при регистрации
-    // пользователь не заполнил одно или несколько обязательных полей
+    // ошибка в userId (userId не соответствует требованиям по длине или содержанию)
+    // - данные по userId не найдены
     if (err.name === "CastError") {
+        console.log("Я здесь!")
         customError.msg = `Данные о конвертации с id: ${err.value} не найдены`;
         customError.statusCode = StatusCodes.NOT_FOUND;
     }

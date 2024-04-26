@@ -2,7 +2,7 @@ const url = "/api/v1/convertion/uploads";
 
 import getElement from "./utils/getElement.js";
 import toggleSpinner from "./utils/toggleSpinner.js";
-import toggleAlert from "./utils/toggleAlert.js";
+import setStatus from "./utils/setStatus.js";
 
 // проверяем, есть ли в localStorage запись о пользователе
 import { getUserFromLocalStorage } from "./utils/localStorage.js";
@@ -12,8 +12,8 @@ const formDOM = getElement(".form");
 const fileInputDOM = getElement("#formFile");
 
 fileInputDOM.addEventListener("change", (e) => {
-    // скрываем alert, если он отображался ранее
-    toggleAlert(null);
+    // очищаем статус, если он отображался ранее
+    setStatus();
 });
 
 formDOM.addEventListener("submit", async (e) => {
@@ -63,11 +63,12 @@ formDOM.addEventListener("submit", async (e) => {
         anchor.style = "display:none";
         anchor.click();
         anchor.remove();
+        setStatus("Конвертация выполнена успешно", true);
     } catch (error) {
         console.log(error.message);
 
         // отображаем alert с сообщением
-        toggleAlert(error);
+        setStatus(error.message);
     } finally {
         // разблокируем форму и скрываем спиннер
         toggleSpinner(startConversionTime);
