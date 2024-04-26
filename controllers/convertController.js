@@ -1,9 +1,8 @@
 import puppeteer from "puppeteer";
 import url from "url";
 import { CustomError } from "../errors/index.js";
-import asyncWrapper from "../middleware/async.js";
 
-const convertController = asyncWrapper(async (req, res, next) => {
+const convertController = async (req, res, next) => {
     const {
         name: filename,
         unzippedFolder: { htmlPage },
@@ -26,7 +25,7 @@ const convertController = asyncWrapper(async (req, res, next) => {
         printBackground: true,
         preferCSSPageSize: true,
     };
-    let pdfBuffer = await page.pdf(pageOptions);
+    const pdfBuffer = await page.pdf(pageOptions);
     if (!pdfBuffer) {
         throw new CustomError("Результат не получен. Попробуйте позже");
     }
@@ -42,6 +41,6 @@ const convertController = asyncWrapper(async (req, res, next) => {
     };
 
     next();
-});
+};
 
 export default convertController;

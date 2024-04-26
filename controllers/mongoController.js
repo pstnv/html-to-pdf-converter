@@ -3,7 +3,7 @@ import Conversion from "../models/Conversion.js";
 const mongoController = async (req, res, next) => {
     // проверяем авторизацию
     const user = req.user;
-    // если пользователь не авторизован, переходим в responseController
+    // если пользователь не авторизован, пропускаем и переходим в responseController
     if (!user) {
         return next();
     }

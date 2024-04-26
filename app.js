@@ -19,7 +19,7 @@ cloudinary.config({
     api_key: process.env.CLOUD_API_KEY,
     api_secret: process.env.CLOUD_API_SECRET,
 });
-import { BadRequestError } from "./errors/index.js";
+import { ContentTooLargeError } from "./errors/index.js";
 
 app.use(express.static("./public"));
 
@@ -58,7 +58,7 @@ app.use(
         // next(uploadError) передает rangeError в errorHandlerMiddleware
         // загруженный файл удаляется автоматически
         limitHandler: function (req, res, next) {
-            const rangeError = new BadRequestError(
+            const rangeError = new ContentTooLargeError(
                 `Размер файла не должен превышать ${maxSizeGB}Гб`
             );
             next(rangeError);

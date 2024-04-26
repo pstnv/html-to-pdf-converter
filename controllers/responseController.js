@@ -1,8 +1,7 @@
 import { unlink, rm } from "fs/promises";
 import StatusCodes from "http-status-codes";
-import asyncWrapper from "../middleware/async.js";
 
-const responseController = asyncWrapper(async (req, res, next) => {
+const responseController = async (req, res, next) => {
     const {
         pdf: { name: pdfName, buffer: pdfBuffer },
         tempFilePath,
@@ -25,6 +24,6 @@ const responseController = asyncWrapper(async (req, res, next) => {
         "Content-Disposition": `attachment; filename=${pdfName}`,
     });
     res.status(StatusCodes.OK).send(pdfBuffer);
-});
+};
 
 export default responseController;

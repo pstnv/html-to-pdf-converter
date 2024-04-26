@@ -5,9 +5,6 @@
 4. логгер
 5. тяжеловесные сайты через chunks, pipe
 6. добавить фронту лоска?
-7. добавить asyncWrapper в auth.js controller и обработчик ошибок
-8. добавить asyncWrapper в authentication.js controller и обработчик ошибок
-9. исключить asyncWrapper в связи с использованием express-async-errors, переписать ошибки в ConvertController
 10. фронт на личный кабинет
 11. переписать convertController на проект final
 12. использовать npm validator https://github.com/validatorjs/validator.js для эл. почты вместо regex? Пишут, что регэкс загружает память
