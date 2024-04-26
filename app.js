@@ -12,16 +12,14 @@ import express from "express";
 const app = express();
 
 import fileUpload from "express-fileupload";
+// импортируем cloudinary и настраиваем доступ к нему
 import { v2 as cloudinary } from "cloudinary";
-// import cloudinary from "cloudinary";
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
     api_secret: process.env.CLOUD_API_SECRET,
 });
 import { BadRequestError } from "./errors/index.js";
-const maxSizeGB = process.env.MAX_SIZE;
-const maxSizeBytes = process.env.MAX_SIZE * 1024 * 1024 * 1024;
 
 app.use(express.static("./public"));
 
@@ -47,6 +45,9 @@ app.use(helmet());
 app.use(cors());
 // xss - фильтрация пользовательского ввода от атак межсайтового скриптинга (req.body, req.query, req.params)
 app.use(xss());
+// ограничение на максимальный размер загружаемого файла
+const maxSizeGB = process.env.MAX_SIZE;
+const maxSizeBytes = process.env.MAX_SIZE * 1024 * 1024 * 1024;
 app.use(
     fileUpload({
         useTempFiles: true,
