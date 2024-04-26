@@ -53,7 +53,7 @@ const errorResponder = (err, req, res, next) => {
     // - данные по userId не найдены
     if (err.name === "CastError") {
         console.log("Я здесь!")
-        customError.msg = `Данные о конвертации с id: ${err.value} не найдены`;
+        customError.msg = `Данные с id: ${err.value} пользователя не найдены`;
         customError.statusCode = StatusCodes.NOT_FOUND;
     }
 

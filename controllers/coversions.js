@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import Conversion from "../models/Conversion.js";
-// import { BadRequestError, NotFoundError } from "../errors/index.js";
+import { NotFoundError } from "../errors/index.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const getAllConversions = async (req, res) => {
@@ -31,25 +31,26 @@ const deleteConversion = async (req, res) => {
     } = req;
 
     // ищем в MongoDB запись с id пользователя и id записи
-    const conversion = await Conversion.findOne({
+    const conversionToDelete = await Conversion.findOne({
         createdBy: userId,
         _id: conversionId,
     });
-    if (!conversion) {
+    if (!conversionToDelete) {
         throw new NotFoundError(
             `Данные о конвертации с id: ${conversionId} не найдены`
         );
     }
 
     // удаляем файл из хранилища cloudinary по cloudId
-    const { cloudId } = conversion;
+    const { cloudId } = conversionToDelete;
     cloudinary.uploader.destroy(cloudId).catch((error) => {
+        // в случае ошибки при удалении файла из cloudinary
         // выводим в консоль ошибку, но не выбрасываем ее пользователю
         console.log("Не удалось удалить файл из cloudinary: ", error.message);
     });
 
     // удаляем запись в mongoDB
-    await Conversion.deleteOne(conversion);
+    await Conversion.deleteOne(conversionToDelete);
     res.status(StatusCodes.OK).send();
 };
 

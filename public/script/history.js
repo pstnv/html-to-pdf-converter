@@ -5,10 +5,9 @@ const tableBody = getElement("tbody");
 
 import setStatus from "./utils/setStatus.js";
 
+// загружаем данные о пользователе из localStorage
 import { getUserFromLocalStorage } from "./utils/localStorage.js";
 const user = getUserFromLocalStorage();
-
-import CustomError from "./errors/custom.js";
 
 const getAllTasks = async () => {
     try {
@@ -23,7 +22,7 @@ const getAllTasks = async () => {
 
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
-            throw new CustomError(msg);
+            throw new Error(msg);
         }
         const { conversions, count } = await response.json();
         if (count === 0) {
@@ -39,16 +38,8 @@ const getAllTasks = async () => {
         setStatus();
     } catch (error) {
         console.log(error.message);
-        // если ошибка кастомная, отображаем ее сообщение
-        // если нет - "Что-то пошло не так..."
-        const customErr = {
-            message:
-                error instanceof CustomError
-                    ? error.message
-                    : "Что-то пошло не так. Повторите попытку позже",
-        };
-        // отображаем статутс с сообщением ошибки
-        setStatus(customErr.message);
+        // отображаем статус с сообщением
+        setStatus("Не удается загрузить записи. Повторите попытку позже");
     }
 };
 
@@ -125,6 +116,8 @@ function displayTasks(tasks) {
 }
 
 async function deleteTask(id) {
+    // очищаем статус
+    setStatus();
     if (!id) {
         return;
     }
@@ -140,22 +133,16 @@ async function deleteTask(id) {
 
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
-            throw new CustomError(msg);
+            throw new Error(msg);
         }
         setStatus("Запись удалена", true);
     } catch (error) {
         console.log(error.message);
-        // если ошибка кастомная, отображаем ее сообщение
-        // если нет - "Что-то пошло не так..."
-        const customErr = {
-            message:
-                error instanceof CustomError
-                    ? error.message
-                    : "Что-то пошло не так. Повторите попытку позже",
-        };
-        // отображаем alert с сообщением
-        setStatus(customErr.message);
+        // отображаем статус с сообщением
+        setStatus("Не удается удалить запись. Повторите попытку позже");
     } finally {
-        getAllTasks();
+        setTimeout(() => {
+            getAllTasks();
+        }, 1000);
     }
 }
