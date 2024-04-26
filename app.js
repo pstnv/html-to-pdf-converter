@@ -46,8 +46,9 @@ app.use(cors());
 // xss - фильтрация пользовательского ввода от атак межсайтового скриптинга (req.body, req.query, req.params)
 app.use(xss());
 // ограничение на максимальный размер загружаемого файла
+const GIGABYTE = Math.pow(1024, 3); 
 const maxSizeGB = process.env.MAX_SIZE;
-const maxSizeBytes = process.env.MAX_SIZE * 1024 * 1024 * 1024;
+const maxSizeBytes = process.env.MAX_SIZE * GIGABYTE; // максимальный размер в байтах
 app.use(
     fileUpload({
         useTempFiles: true,
