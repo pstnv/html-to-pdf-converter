@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import Conversion from "../models/Conversion.js";
-import { BadRequestError, NotFoundError } from "../errors/index.js";
+// import { BadRequestError, NotFoundError } from "../errors/index.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const getAllConversions = async (req, res) => {
     const { userId } = req.user;
@@ -9,23 +10,23 @@ const getAllConversions = async (req, res) => {
     res.status(StatusCodes.OK).json({ count: conversions.length, conversions });
 };
 
-const getConversion = async (req, res) => {
-    const {
-        user: { userId },
-        params: { id: conversionId },
-    } = req;
-    // ищем в MongoDB запись с id пользователя и id записи
-    const conversion = await Conversion.findOne({
-        createdBy: userId,
-        _id: conversionId,
-    });
-    if (!conversion) {
-        throw new NotFoundError(
-            `Данные о конвертации с id: ${conversionId} не найдены`
-        );
-    }
-    res.status(StatusCodes.OK).json({ conversion });
-};
+// const getConversion = async (req, res) => {
+//     const {
+//         user: { userId },
+//         params: { id: conversionId },
+//     } = req;
+//     // ищем в MongoDB запись с id пользователя и id записи
+//     const conversion = await Conversion.findOne({
+//         createdBy: userId,
+//         _id: conversionId,
+//     });
+//     if (!conversion) {
+//         throw new NotFoundError(
+//             `Данные о конвертации с id: ${conversionId} не найдены`
+//         );
+//     }
+//     res.status(StatusCodes.OK).json({ conversion });
+// };
 
 const createConversion = async (req, res) => {
     const { userId } = req.user;
@@ -44,11 +45,28 @@ const deleteConversion = async (req, res) => {
         user: { userId },
         params: { id: conversionId },
     } = req;
-    await Conversion.findOneAndDelete({
+
+    // ищем в MongoDB запись с id пользователя и id записи
+    const conversion = await Conversion.findOne({
         createdBy: userId,
         _id: conversionId,
     });
+    if (!conversion) {
+        throw new NotFoundError(
+            `Данные о конвертации с id: ${conversionId} не найдены`
+        );
+    }
+
+    // удаляем файл из хранилища cloudinary по cloudId
+    const { cloudId } = conversion;
+    cloudinary.uploader.destroy(cloudId).catch((error) => {
+        // выводим в консоль ошибку, но не выбрасываем ее пользователю
+        console.log("Не удалось удалить файл из cloudinary: ", error.message);
+    });
+
+    // удаляем запись в mongoDB
+    await Conversion.deleteOne(conversion);
     res.status(StatusCodes.OK).send();
 };
 
-export { getAllConversions, getConversion, createConversion, deleteConversion };
+export { getAllConversions, createConversion, deleteConversion };

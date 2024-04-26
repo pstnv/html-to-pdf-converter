@@ -11,7 +11,7 @@ const ConversionSchema = new mongoose.Schema(
         status: {
             // статус
             type: Boolean,
-            required: [true, "статус"]
+            required: [true, "статус"],
         },
         createdBy: {
             // пользователь
@@ -22,6 +22,10 @@ const ConversionSchema = new mongoose.Schema(
         file: {
             type: String,
             required: [true, "ссылка на .pdf файл"],
+        },
+        cloudId: {
+            type: String,
+            required: [true, "cloudId"],
         },
     },
     { timestamps: true } // добавить время createdAt и updatedAt

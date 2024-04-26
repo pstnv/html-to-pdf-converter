@@ -17,7 +17,7 @@ const getAllTasks = async () => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${user.token}`,
+                Authorization: `Bearer ${user.token}`,
             },
         };
         const response = await fetch(url, params);
@@ -72,7 +72,13 @@ document.addEventListener("DOMContentLoaded", async (e) => {
 function displayTasks(tasks) {
     const tableContent = tasks
         .map((task) => {
-            const { createdAt, name, status, file, _id } = task;
+            const {
+                createdAt,
+                name: filename,
+                status,
+                file: link,
+                _id: id,
+            } = task;
 
             const options = {
                 year: "numeric",
@@ -88,7 +94,7 @@ function displayTasks(tasks) {
                 <tr>
                     <td>${date}</td>
                     <td class="break-word">
-                        ${name}
+                        ${filename}
                     </td>
                     <td>
                         <span class="status"
@@ -98,13 +104,15 @@ function displayTasks(tasks) {
                         /></span>
                     </td>
                     <td>
-                        <button class="button-action deleteButton" data-id="${_id}">
+                        <button class="button-action deleteButton" data-id="${id}">
                             <img src="./assets/icons/icon-trash.png" />
                         </button>
-                        <button class="button-action">
-                            <img
-                                src="./assets/icons/icon-download.png"
-                            />
+                        <button class="button-action downloadButton">
+                            <a href="${link}" target="_blank" download="${filename}" title="download file">
+                                <img
+                                    src="./assets/icons/icon-download.png"
+                                />
+                            </a>
                         </button>
                     </td>
                 </tr>

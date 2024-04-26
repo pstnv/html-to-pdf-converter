@@ -5,12 +5,10 @@ import streamifier from "streamifier";
 const cloudinaryController = async (req, res, next) => {
     // проверяем, если пользователь авторизован
     const user = req.user;
-    console.log("user здесь ", user);
     // если пользователь не авторизован, переходим к контроллеру ответа
     if (!user) {
         return next();
     }
-    console.log("ЮЗЕР ТУТ");
     // если пользователь авторизован, отправляем файл в cloudinary
     const {
         pdf: { buffer: pdfBuffer },
@@ -27,12 +25,17 @@ const cloudinaryController = async (req, res, next) => {
                 // выводим в консоль сообщение об ошибке
                 // но не выбрасываем ее,
                 // а исполняем следующий контроллер - responseController
+                // чтобы вернуть результат пользователю
                 console.log(error);
             }
-            console.log(result);
-            // если результат успешный, добавляем путь к файлу на cloudinary
+            // если результат успешный,
+            // добавляем путь к файлу на cloudinary (для скачивания)
+            // и его id (для удаления)
             if (result) {
+                // путь к файлу pdf на cloudinary
                 req.file.pdf.file = result.secure_url;
+                // public_id используется для доступа к файлу при его удалении с cloudinary
+                req.file.pdf.cloudId = result.public_id;
             }
 
             next();
