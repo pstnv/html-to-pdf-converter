@@ -4,6 +4,14 @@ import User from "../models/User.js";
 import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
 
 const register = async (req, res) => {
+    // проверяем, если пользователь зарегистрирован
+    const { email } = req.body;
+    const emailAlreadyExists = await User.findOne({ email });
+    if (emailAlreadyExists) {
+        throw new BadRequestError(
+            `Пользователь с email ${email} уже зарегистрирован`
+        );
+    }
     // получили данные из post-запроса
     // проверили на соответствие
     // переписали пароль на хешированный
