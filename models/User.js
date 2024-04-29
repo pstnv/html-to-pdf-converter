@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcript from "bcryptjs";
 import jwt from "jsonwebtoken";
+import validator from "validator";
 
 
 // схема пользователя
@@ -14,10 +15,10 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true, "email"],
-        match: [
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            "Введите корректный email",
-        ],
+        validate: {
+            validator: validator.isEmail,
+            message: "действующий email"
+        },
         unique: true,
     },
     password: {
