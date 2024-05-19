@@ -2,7 +2,7 @@ import { v2 as cloudinary } from "cloudinary";
 // streamifier используется для отправки buffer в cloudinary
 import streamifier from "streamifier";
 
-const cloudinaryController = async (req, res, next) => {
+const sendPDFToCloudinary = async (req, res, next) => {
     // проверяем, если пользователь авторизован
     const user = req.user;
     // если пользователь не авторизован, переходим к контроллеру ответа
@@ -44,4 +44,4 @@ const cloudinaryController = async (req, res, next) => {
     streamifier.createReadStream(pdfBuffer).pipe(cld_upload_stream);
 };
 
-export default cloudinaryController;
+export default sendPDFToCloudinary;

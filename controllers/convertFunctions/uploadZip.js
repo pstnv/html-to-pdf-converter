@@ -1,7 +1,7 @@
 import path from "path";
-import { BadRequestError } from "../errors/index.js";
+import { BadRequestError } from "../../errors/index.js";
 
-const uploadController = (req, res, next) => {
+const uploadZip = (req, res, next) => {
     // проверки:
     // запрос, не содержащий файлы
     if (!req.files) {
@@ -23,4 +23,4 @@ const uploadController = (req, res, next) => {
     next();
 };
 
-export default uploadController;
+export default uploadZip;

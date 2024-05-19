@@ -1,7 +1,7 @@
 import path from "path";
 import AdmZip from "adm-zip";
 
-const unzipController = (req, res, next) => {
+const unzipFolder = (req, res, next) => {
     const { tempFilePath: zipFilePath, name: zipName } = req.file;
     // создаем путь папки, в которую будет извлечен архив
     // она будет находиться в той же временной папке, имя папки = имя архива
@@ -20,4 +20,4 @@ const unzipController = (req, res, next) => {
     next();
 };
 
-export default unzipController;
+export default unzipFolder;

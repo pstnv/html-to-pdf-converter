@@ -74,8 +74,8 @@ import {
 } from "./middleware/authentication.js";
 // routers
 import { router as convertionRouter } from "./routes/convertionRoutes.js";
-import { router as authRouter } from "./routes/auth.js";
-import { router as tasksRouter } from "./routes/tasks.js";
+import { router as authRouter } from "./routes/authRoutes.js";
+import { router as tasksRouter } from "./routes/taskRoutes.js";
 // error handler
 import notFoundMiddleware from "./middleware/not-found.js";
 import {

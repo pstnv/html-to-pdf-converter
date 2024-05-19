@@ -1,6 +1,6 @@
-import Conversion from "../models/Conversion.js";
+import Conversion from "../../models/Conversion.js";
 
-const mongoController = async (req, res, next) => {
+const sendResultToMongoDB = async (req, res, next) => {
     // проверяем авторизацию
     const user = req.user;
     // если пользователь не авторизован, пропускаем и переходим в responseController
@@ -23,4 +23,4 @@ const mongoController = async (req, res, next) => {
     next();
 };
 
-export default mongoController;
+export default sendResultToMongoDB;

@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-import { getAllTasks, deleteTask } from "../controllers/tasks.js";
+import { getAllTasks, deleteTask } from "../controllers/taskController.js";
 
 router.route("/").get(getAllTasks);
 router.route("/:id").delete(deleteTask);

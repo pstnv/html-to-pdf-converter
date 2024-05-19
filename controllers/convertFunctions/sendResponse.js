@@ -1,7 +1,7 @@
 import { unlink, rm } from "fs/promises";
 import StatusCodes from "http-status-codes";
 
-const responseController = async (req, res, next) => {
+const sendResponse = async (req, res, next) => {
     const {
         pdf: { name: pdfName, buffer: pdfBuffer },
         tempFilePath,
@@ -26,4 +26,4 @@ const responseController = async (req, res, next) => {
     res.status(StatusCodes.OK).send(pdfBuffer);
 };
 
-export default responseController;
+export default sendResponse;
