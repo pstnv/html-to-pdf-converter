@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import bcript from "bcryptjs";
-import jwt from "jsonwebtoken";
 import validator from "validator";
 
 // схема пользователя
@@ -25,6 +24,12 @@ const UserSchema = new mongoose.Schema({
         required: [true, "пароль"],
         minlength: 6,
     },
+    verificationToken: String,
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    verified: Date,
 });
 
 // Mongoose Middleware документация https://mongoosejs.com/docs/middleware.html#pre

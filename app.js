@@ -93,7 +93,7 @@ app.use(notFoundMiddleware);
 app.use(errorTempFilesHandler);
 app.use(errorResponder);
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5001;
 const mongoURI = process.env.MONGO_URI;
 const start = async () => {
     try {
