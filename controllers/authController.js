@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 
 import User from "../models/User.js";
 import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
+import { attachCookiesToResponse } from "../utils/index.js";
 
 const register = async (req, res) => {
     // проверяем, если пользователь зарегистрирован
@@ -17,10 +18,12 @@ const register = async (req, res) => {
     // переписали пароль на хешированный
     // отправили новую запись в MongoDB
     const user = await User.create({ ...req.body });
-    // создали токен
-    const token = user.createJWT();
+    // создали профиль пользователя для токена
+    const tokenUser = { name: user.name, userId: user._id };
+    // добавляем токен в куки
+    attachCookiesToResponse({ res, user: tokenUser });
     res.status(StatusCodes.CREATED).json({
-        user: { name: user.name, email: user.email, token },
+        user: { user: tokenUser },
     });
 };
 
@@ -43,10 +46,21 @@ const login = async (req, res) => {
     if (!isPasswordCorrect) {
         throw new UnauthenticatedError(`Неправильный пароль`);
     }
-    const token = user.createJWT();
+    // создали профиль пользователя для токена
+    const tokenUser = { name: user.name, userId: user._id };
+    // добавляем токен в куки
+    attachCookiesToResponse({ res, user: tokenUser });
     res.status(StatusCodes.OK).json({
-        user: { name: user.name, email: user.email, token },
+        user: { user: tokenUser },
     });
 };
 
-export { register, login };
+const logout = async (req, res) => {
+    res.cookie("token", "logout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+    });
+    res.status(StatusCodes.OK).json({ msg: "Пользователь разлогинился" });
+};
+
+export { register, login, logout };

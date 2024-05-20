@@ -34,17 +34,6 @@ UserSchema.pre("save", async function () {
     const salt = await bcript.genSalt(10);
     this.password = await bcript.hash(this.password, salt);
 });
-// метод, создающий и возвращающий токен
-UserSchema.methods.createJWT = function () {
-    const token = jwt.sign(
-        { userId: this._id, name: this.name },
-        process.env.JWT_SECRET,
-        {
-            expiresIn: process.env.JWT_LIFETIME,
-        }
-    );
-    return token;
-};
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
     const isMatch = await bcript.compare(candidatePassword, this.password);

@@ -1,39 +1,37 @@
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import { UnauthenticatedError } from "../errors/index.js";
+import { isTokenValid } from "../utils/index.js";
 
-const auth = async (req, res, next) => {
-    // проверяем заголовки headers
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer")) {
+const authenticateUser = async (req, res, next) => {
+    const token = req.signedCookies.token;
+    // проверяем куки на наличие токена
+    if (!token) {
         throw new UnauthenticatedError("Авторизация не пройдена");
     }
-
-    // получаем токен
-    const token = authHeader.split(" ").pop();
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    if (!payload) {
+    try {
+        // проверяем действующий токен
+        const { name, userId } = isTokenValid(token);
+        // прикрепляем юзера к запросу (без пароля!)
+        req.user = { name, userId };
+        next();
+    } catch (error) {
         throw new UnauthenticatedError("Авторизация не пройдена");
     }
-
-    // прикрепляем юзера к маршруту conversions (без пароля!)
-    req.user = { userId: payload.userId, name: payload.name };
-    next();
 };
 
-const checkAuth = async (req, res, next) => {
-    // проверяем заголовки headers
-    const authHeader = req.headers.authorization;
+const checkAuthentication = async (req, res, next) => {
+    const token = req.signedCookies.token;
+    // проверяем куки на наличие токена
     // если их нет, продолжаем конвертацию без авторизации
-    if (!authHeader || !authHeader.startsWith("Bearer")) {
+    if (!token) {
         return next();
     }
     // пытаемся авторизоваться
     try {
-        const token = authHeader.split(" ").pop();
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-
-        // прикрепляем юзера к маршруту conversions (без пароля!)
-        req.user = { userId: payload.userId, name: payload.name };
+        // проверяем действующий токен
+        const { name, userId } = isTokenValid(token);
+        // прикрепляем юзера к запросу (без пароля!)
+        req.user = { name, userId };
     } catch (error) {
         // выводим в консоль ошибку, но не выбрасываем, т.к. авторизация не обязательна
         console.log(error.message);
@@ -42,4 +40,4 @@ const checkAuth = async (req, res, next) => {
     }
 };
 
-export { auth, checkAuth };
+export { authenticateUser, checkAuthentication };

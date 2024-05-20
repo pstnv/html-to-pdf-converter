@@ -7,6 +7,8 @@ import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
 import xss from "express-mongo-sanitize";
+// остальные пакеты
+import cookieParser from "cookie-parser";
 
 import express from "express";
 const app = express();
@@ -39,6 +41,7 @@ app.use(
 );
 // parse form data
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser(process.env.JWT_SECRET));
 app.use(express.json());
 // helmet - защита приложения путем установки http-заголовков
 app.use(helmet());
@@ -46,7 +49,7 @@ app.use(cors());
 // xss - фильтрация пользовательского ввода от атак межсайтового скриптинга (req.body, req.query, req.params)
 app.use(xss());
 // ограничение на максимальный размер загружаемого файла
-const GIGABYTE = Math.pow(1024, 3); 
+const GIGABYTE = Math.pow(1024, 3);
 const maxSizeGB = process.env.MAX_SIZE;
 const maxSizeBytes = process.env.MAX_SIZE * GIGABYTE; // максимальный размер в байтах
 app.use(
@@ -68,14 +71,13 @@ app.use(
 
 // connectDB
 import connectDB from "./db/connectDB.js";
-import {
-    auth as authenticateUser,
-    checkAuth as authChecker,
-} from "./middleware/authentication.js";
+// import {
+//     auth as authenticateUser,
+//     checkAuth as authChecker,
+// } from "./middleware/authentication.js";
 // routers
-import { router as convertionRouter } from "./routes/convertionRoutes.js";
 import { router as authRouter } from "./routes/authRoutes.js";
-import { router as tasksRouter } from "./routes/taskRoutes.js";
+import { router as taskRouter } from "./routes/taskRoutes.js";
 // error handler
 import notFoundMiddleware from "./middleware/not-found.js";
 import {
@@ -85,8 +87,9 @@ import {
 
 // routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/tasks", authenticateUser, tasksRouter);
-app.use("/api/v1/html_to_pdf", authChecker, convertionRouter);
+// app.use("/api/v1/tasks", authenticateUser, tasksRouter);
+app.use("/api/v1/tasks", taskRouter);
+// app.use("/api/v1/html_to_pdf", authChecker, convertionRouter);
 
 // 404 page not found
 app.use(notFoundMiddleware);

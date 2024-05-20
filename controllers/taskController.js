@@ -2,6 +2,15 @@ import { StatusCodes } from "http-status-codes";
 import Conversion from "../models/Conversion.js";
 import { NotFoundError } from "../errors/index.js";
 import { v2 as cloudinary } from "cloudinary";
+import {
+    uploadZip,
+    unzipFolder,
+    findHtmlFile,
+    convertHTMLToPDF,
+    sendPDFToCloudinary,
+    sendResultToMongoDB,
+    sendResponse,
+} from "./convertFunctions/index.js";
 
 const getAllTasks = async (req, res) => {
     const { userId } = req.user;
@@ -42,4 +51,14 @@ const deleteTask = async (req, res) => {
     res.status(StatusCodes.OK).send();
 };
 
-export { getAllTasks, deleteTask };
+const createTask = [
+    uploadZip, // загрузить архив
+    unzipFolder, // распаковать архив
+    findHtmlFile, // найти index.html в папке
+    convertHTMLToPDF, // конвертировать index.html в *.pdf
+    sendPDFToCloudinary, // если пользователь авторизован - отправить в облако *.pdf, иначе - пропустить
+    sendResultToMongoDB, // если пользователь авторизован - отправить информацию о конвертации в MongoDB, иначе - пропустить
+    sendResponse, // отправить ответ
+];
+
+export { getAllTasks, deleteTask, createTask };
