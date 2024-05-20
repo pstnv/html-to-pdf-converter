@@ -71,13 +71,10 @@ app.use(
 
 // connectDB
 import connectDB from "./db/connectDB.js";
-// import {
-//     auth as authenticateUser,
-//     checkAuth as authChecker,
-// } from "./middleware/authentication.js";
 // routers
 import { router as authRouter } from "./routes/authRoutes.js";
 import { router as taskRouter } from "./routes/taskRoutes.js";
+import { router as userRouter } from "./routes/userRouter.js";
 // error handler
 import notFoundMiddleware from "./middleware/not-found.js";
 import {
@@ -87,9 +84,8 @@ import {
 
 // routes
 app.use("/api/v1/auth", authRouter);
-// app.use("/api/v1/tasks", authenticateUser, tasksRouter);
 app.use("/api/v1/tasks", taskRouter);
-// app.use("/api/v1/html_to_pdf", authChecker, convertionRouter);
+app.use("/api/v1/users", userRouter);
 
 // 404 page not found
 app.use(notFoundMiddleware);

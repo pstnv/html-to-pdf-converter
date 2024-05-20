@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 
 import User from "../models/User.js";
 import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
-import { attachCookiesToResponse } from "../utils/index.js";
+import { attachCookiesToResponse, createTokenUser } from "../utils/index.js";
 
 const register = async (req, res) => {
     // проверяем, если пользователь зарегистрирован
@@ -19,7 +19,7 @@ const register = async (req, res) => {
     // отправили новую запись в MongoDB
     const user = await User.create({ ...req.body });
     // создали профиль пользователя для токена
-    const tokenUser = { name: user.name, userId: user._id };
+    const tokenUser = createTokenUser(user);
     // добавляем токен в куки
     attachCookiesToResponse({ res, user: tokenUser });
     res.status(StatusCodes.CREATED).json({
@@ -47,7 +47,7 @@ const login = async (req, res) => {
         throw new UnauthenticatedError(`Неправильный пароль`);
     }
     // создали профиль пользователя для токена
-    const tokenUser = { name: user.name, userId: user._id };
+    const tokenUser = createTokenUser(user);
     // добавляем токен в куки
     attachCookiesToResponse({ res, user: tokenUser });
     res.status(StatusCodes.OK).json({
