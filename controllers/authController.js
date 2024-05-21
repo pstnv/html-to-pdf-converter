@@ -186,14 +186,53 @@ const forgotPassword = async (req, res) => {
         // сохраняем пользователя
         await user.save();
     }
-
     res.status(StatusCodes.OK).json({
         msg: "На указанную почту отправлено письмо со ссылкой для сброса пароля. Проверьте почту",
     });
 };
 
 const resetPassword = async (req, res) => {
-    res.send("reset password");
+    const { token, email, password } = req.body;
+    if (!token || !email || !password) {
+        throw new BadRequestError("Все поля обязательны для заполнения");
+    }
+    // ищем пользователя в базе MongoDB по email
+    const user = await User.findOne({ email });
+    // не отправляем ответ, что пользователь не существует в целях безопасности
+    // чтобы не было ответа, какой пользователь существует, а какой - нет
+    // поэтому на все запросы ответ "На почту отправлено письмо"
+    if (user) {
+        // проверяем, что токен в запросе совпадает с токеном для сброса пароля
+        // и что срок действия токена для сброса пароля не истек
+        const currentDate = new Date();
+        if (
+            user.passwordToken === token &&
+            user.passwordTokenExpirationDate > currentDate
+        ) {
+            // устанавливаем новый пароль
+            user.password = password;
+            // сбрасываем токен и время его действия
+            user.passwordToken = null;
+            user.passwordTokenExpirationDate = null;
+            // сохраняем документ пользователя в MongoDB
+            await user.save();
+            res.status(StatusCodes.OK).json({
+                msg: "Пароль был успешно изменен. Для входа используйте новый пароль",
+            });
+        } else if (
+            user.passwordToken === token &&
+            user.passwordTokenExpirationDate <= currentDate
+        ) {
+            // если токен в запросе совпадает с токеном для сброса пароля,
+            // но срок действия токена для сброса пароля не истек
+            res.status(StatusCodes.OK).json({
+                msg: "Срок действия ссылки истек",
+            });
+        }
+    }
+    res.status(StatusCodes.OK).json({
+        msg: "Если вы все сделали правильно, ваш пароль должен быть изменен",
+    });
 };
 
 export { register, login, logout, verifyEmail, forgotPassword, resetPassword };
