@@ -8,6 +8,7 @@ import {
     attachCookiesToResponse,
     createTokenUser,
     sendVerificationEmail,
+    sendResetPasswordEmail,
 } from "../utils/index.js";
 
 const register = async (req, res) => {
@@ -28,14 +29,14 @@ const register = async (req, res) => {
     // отправили новую запись в MongoDB
     const user = await User.create({ ...req.body, verificationToken });
     // отправили письмо со ссылкой
-    const origin = "http://localhost:3000"; // в режиме dev, в продакшн - ссылка на фронт
+    const origin = process.env.ORIGIN; // в режиме dev localhost:3000, в продакшн - ссылка на фронт
 
     // переменные (tempOrigin, protocol, host, forwardedHost, forwardedProtocol)
     // не используются в проекте, показаны в учебных целях
     // const tempOrigin = req.get("origin"); // localhost:5000 <= back-end server
     // const protocol = req.protocol; // http
     // const host = req.get("host"); // localhost:5000
-    // const forwardedHost = req.get("x-forwarded-host"); // localhost:3000 <= front-end 9because we use proxy)
+    // const forwardedHost = req.get("x-forwarded-host"); // localhost:3000 <= front-end (because we use proxy)
     // const forwardedProtocol = req.get("x-forwarded-proto"); // http
 
     await sendVerificationEmail({
@@ -153,4 +154,46 @@ const logout = async (req, res) => {
     });
 };
 
-export { register, login, logout, verifyEmail };
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        throw new BadRequestError("Поля email обязательно для заполнения");
+    }
+    // ищем пользователя в базе MongoDB по email
+    const user = await User.findOne({ email });
+    // не отправляем ответ, что пользователь не существует в целях безопасности
+    // чтобы не было ответа, какой пользователь существует, а какой - нет
+    // поэтому на все запросы ответ "На почту отправлено письмо"
+    if (user) {
+        // создать токен для восстановления пароля
+        // встроенный модуль создает buffer, конвертируем в строку, каждый байт будет сконвертрован в hex-строку
+        const passwordToken = crypto.randomBytes(70).toString("hex");
+        // отправить письмо со ссылкой для восстановления
+        const origin = process.env.ORIGIN; // в режиме dev localhost:3000, в продакшн - ссылка на фронт
+        sendResetPasswordEmail({
+            name: user.name,
+            email: user.email,
+            token: passwordToken,
+            origin,
+        });
+
+        // срок действия ссылки
+        const tenMinutes = 1000 * 60 * 10;
+        const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
+        // вносим изменения в документ пользователя
+        user.passwordToken = passwordToken;
+        user.passwordTokenExpirationDate = passwordTokenExpirationDate;
+        // сохраняем пользователя
+        await user.save();
+    }
+
+    res.status(StatusCodes.OK).json({
+        msg: "На указанную почту отправлено письмо со ссылкой для сброса пароля. Проверьте почту",
+    });
+};
+
+const resetPassword = async (req, res) => {
+    res.send("reset password");
+};
+
+export { register, login, logout, verifyEmail, forgotPassword, resetPassword };
