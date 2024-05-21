@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import crypto from "crypto";
 
 import User from "../models/User.js";
+import Token from "../models/Token.js";
 import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
 import {
     attachCookiesToResponse,
@@ -48,6 +49,7 @@ const register = async (req, res) => {
     });
 };
 
+// пользователь переходит по ссылке для подтверждения email и делает запрос
 const verifyEmail = async (req, res) => {
     const { verificationToken, email } = req.body;
     const user = await User.findOne({ email });
@@ -92,10 +94,40 @@ const login = async (req, res) => {
     if (!user.isVerified) {
         throw new UnauthenticatedError(`Подтвердите свой email`);
     }
-    // создали профиль пользователя для токена
+    // создаем профиль пользователя для токена
     const tokenUser = createTokenUser(user);
+
+    // создаем переменную refreshToken и в качестве значения будем использовать:
+    // существующий или вновь созданный токен
+    let refreshToken = "";
+    // проверяем, есть ли у пользователя (в документе MongoDB) существующий токен
+    const existingToken = await Token.findOne({ user: user._id });
+    if (existingToken) {
+        // если токен существует, проверяем, является ли он действующим
+        const { isValid } = existingToken;
+        if (!isValid) {
+            throw new UnauthenticatedError("Недействительные учетные данные");
+        }
+        // если существующий токен является действительным, не перезаписываем его, а используем
+        refreshToken = existingToken.refreshToken;
+        // добавляем токен в куки
+        attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+        res.status(StatusCodes.OK).json({
+            user: { user: tokenUser },
+        });
+        return;
+    }
+    //если у пользователя нет документа Token, то создаем новый документ Токен для пользователя
+    // встроенный модуль создает buffer, конвертируем в строку, каждый байт будет сконвертрован в hex-строку
+    refreshToken = crypto.randomBytes(40).toString("hex");
+    const userAgent = req.headers["user-agent"];
+    const ip = req.ip;
+    const usertoken = { refreshToken, ip, userAgent, user: user._id };
+    // создаем документ токен в MongoDB
+    const token = await Token.create(usertoken);
+
     // добавляем токен в куки
-    attachCookiesToResponse({ res, user: tokenUser });
+    attachCookiesToResponse({ res, user: tokenUser, refreshToken });
     res.status(StatusCodes.OK).json({
         user: { user: tokenUser },
     });
