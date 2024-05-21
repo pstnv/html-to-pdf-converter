@@ -1,14 +1,18 @@
 import { StatusCodes } from "http-status-codes";
 import crypto from "crypto";
 
+// models MongoDB
 import User from "../models/User.js";
 import Token from "../models/Token.js";
+// errors
 import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
+// utils
 import {
     attachCookiesToResponse,
     createTokenUser,
     sendVerificationEmail,
     sendResetPasswordEmail,
+    createHash,
 } from "../utils/index.js";
 
 const register = async (req, res) => {
@@ -181,7 +185,7 @@ const forgotPassword = async (req, res) => {
         const tenMinutes = 1000 * 60 * 10;
         const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
         // вносим изменения в документ пользователя
-        user.passwordToken = passwordToken;
+        user.passwordToken = createHash(passwordToken);
         user.passwordTokenExpirationDate = passwordTokenExpirationDate;
         // сохраняем пользователя
         await user.save();
@@ -203,10 +207,11 @@ const resetPassword = async (req, res) => {
     // поэтому на все запросы ответ "На почту отправлено письмо"
     if (user) {
         // проверяем, что токен в запросе совпадает с токеном для сброса пароля
+        // (который хранится в захешированном виде в документе пользователя user)
         // и что срок действия токена для сброса пароля не истек
         const currentDate = new Date();
         if (
-            user.passwordToken === token &&
+            user.passwordToken === createHash(token) &&
             user.passwordTokenExpirationDate > currentDate
         ) {
             // устанавливаем новый пароль
@@ -220,10 +225,11 @@ const resetPassword = async (req, res) => {
                 msg: "Пароль был успешно изменен. Для входа используйте новый пароль",
             });
         } else if (
-            user.passwordToken === token &&
+            user.passwordToken === createHash(token) &&
             user.passwordTokenExpirationDate <= currentDate
         ) {
-            // если токен в запросе совпадает с токеном для сброса пароля,
+            // если токен в запросе совпадает с токеном для сброса пароля
+            // (который хранится в захешированном виде в документе пользователя user),
             // но срок действия токена для сброса пароля не истек
             res.status(StatusCodes.OK).json({
                 msg: "Срок действия ссылки истек",
