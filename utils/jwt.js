@@ -21,19 +21,20 @@ const attachCookiesToResponse = ({ res, user, refreshToken }) => {
     const refreshTokenJWT = createJWT({ payload: { user, refreshToken } });
 
     const oneDay = 1000 * 60 * 60 * 24;
+    const oneMonth = 1000 * 60 * 60 * 24;
     // этот куки (token) хранит accessToken с информацией о пользователе
     res.cookie("accessToken", accessTokenJWT, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // secure в режиме production (протокол https)
         signed: true,
-        expires: new Date(Date.now() + oneDays),
+        expires: new Date(Date.now() + oneDay),
     });
     // этот куки хранит accessToken с информацией о пользователе, а также refreshToken
     res.cookie("refreshToken", refreshTokenJWT, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // secure в режиме production (протокол https)
         signed: true,
-        expires: new Date(Date.now() + oneDay),
+        expires: new Date(Date.now() + oneMonth),
     });
 };
 

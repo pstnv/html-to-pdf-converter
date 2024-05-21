@@ -134,11 +134,23 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-    res.cookie("token", "logout", {
+    // если пользователь разлогинился
+    // удаляем документ токен из MongoDB
+    const { userId } = req.user;
+    await Token.findOneAndDelete({ user: userId });
+
+    // очищаем куки от accessToken и refreshToken
+    res.cookie("accessToken", "logout", {
         httpOnly: true,
         expires: new Date(Date.now()),
     });
-    res.status(StatusCodes.OK).json({ msg: "Пользователь разлогинился" });
+    res.cookie("refreshToken", "logout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+    });
+    res.status(StatusCodes.OK).json({
+        msg: "Пользователь вышел из учетной записи",
+    });
 };
 
 export { register, login, logout, verifyEmail };
