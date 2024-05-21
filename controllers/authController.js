@@ -224,16 +224,18 @@ const resetPassword = async (req, res) => {
             res.status(StatusCodes.OK).json({
                 msg: "Пароль был успешно изменен. Для входа используйте новый пароль",
             });
+            return;
         } else if (
             user.passwordToken === createHash(token) &&
             user.passwordTokenExpirationDate <= currentDate
         ) {
             // если токен в запросе совпадает с токеном для сброса пароля
             // (который хранится в захешированном виде в документе пользователя user),
-            // но срок действия токена для сброса пароля не истек
+            // но срок действия токена для сброса пароля истек
             res.status(StatusCodes.OK).json({
                 msg: "Срок действия ссылки истек",
             });
+            return;
         }
     }
     res.status(StatusCodes.OK).json({

@@ -36,6 +36,12 @@ const UserSchema = new mongoose.Schema({
     passwordTokenExpirationDate: {
         type: Date,
     },
+    emailToken: {
+        type: String,
+    },
+    emailTokenExpirationDate: {
+        type: Date,
+    },
 });
 
 // Mongoose Middleware документация https://mongoosejs.com/docs/middleware.html#pre
