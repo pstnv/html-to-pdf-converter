@@ -87,7 +87,8 @@
         <div class="container">
             <div class="col-md-7 col-lg-8">
                 <h4 class="mt-5">Моя учетная запись</h4>
-                <form>
+                <form method="POST" class="p-4 mt-4">
+                    <button type="button" class="btn-close d-block ms-auto" aria-label="Close"></button>
                     <div class="row gx-0 gy-3 my-5">
                         <!-- Имя -->
                         <div class="field col-12">
@@ -100,6 +101,7 @@
                                 class="form-control"
                                 id="firstName"
                                 required
+                                disabled
                             />
                             <div class="invalid-feedback">Введите имя</div>
                         </div>
@@ -130,6 +132,7 @@
                                     class="form-control"
                                     id="email"
                                     required
+                                    disabled
                                 />
                             </div>
                             <div class="invalid-feedback">Введите email</div>
@@ -145,7 +148,7 @@
                     </div>
 
                     <button
-                        class="btn btn-danger w-100 mt-4 p-2 fs-5"
+                        class="btn btn-danger w-100 mt-4 p-2 fs-5 btnSubmit"
                         type="submit"
                     >
                         Изменить

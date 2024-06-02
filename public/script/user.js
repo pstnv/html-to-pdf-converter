@@ -6,6 +6,12 @@ import setStatus from "./utils/setStatus.js";
 import CustomError from "./errors/custom.js";
 
 const formDOM = getElement("form");
+// делаем выборку всех input в форме
+const inputFieldsDOM = formDOM.querySelectorAll("input");
+const btnSubmitDOM = getElement(".btnSubmit");
+const btnCloseDOM = getElement(".btn-close");
+// переменная с информацией о пользователе
+const userInfo = {};
 
 // загрузить страницу с профилем пользователя
 async function loadUserInfo() {
@@ -21,14 +27,15 @@ async function loadUserInfo() {
 
         // получаем данные о пользователе из ответа
         const { user } = await response.json();
-        // делаем выборку всех input в форме
-        const inputFieldsDOM = formDOM.querySelectorAll("input");
-        // проходимся по коллекции - по каждому input
+        // проходимся циклом inputFieldsDOM по коллекции - по каждому input
         inputFieldsDOM.forEach((input) => {
             const field = input.name;
             // если пользователь имеет свойство, совпадающее с полем input.name,
-            // заполняем это поле или оставляем пустым
+            // заполняем поле input
+            // или оставляем пустым
             input.value = user[field] || "";
+            // записываем в userInfo свойство из input
+            userInfo[field] = input.value;
         });
     } catch (error) {
         console.log(error.message);
@@ -47,3 +54,46 @@ async function loadUserInfo() {
 
 // при загрузке страницы загрузить профиль пользователя
 loadUserInfo();
+
+formDOM.addEventListener("submit", (e) => {
+    e.preventDefault();
+    // нажата кнопка "Изменить"
+    // активируется форма - все поля становятся доступными для редактировани
+    // текст на кнопке сохранить
+    if (!formDOM.classList.contains("active")) {
+        inputFieldsDOM.forEach((input) => {
+            input.disabled = false;
+        });
+        formDOM.classList.add("active");
+        btnSubmitDOM.textContent = "Сохранить";
+        return false;
+    } else {
+        // нажата кнопка "Сохранить"
+        // валидируем форму
+        // отправляем запрос на сервер
+        // вносим новые данные в форму
+        // вносим новые данные в пользователя
+        // инпуты.disabled
+        // кнопка "Изменить"
+        // сообщение об успешной операции или ошибке (3 секунды)
+        // рефактор повторяющихся функций
+
+        // снимаем класс active с формы
+        formDOM.classList.remove("active");
+        btnSubmitDOM.textContent = "Изменить";
+        return false;
+    }
+});
+
+btnCloseDOM.addEventListener("click", () => {
+    inputFieldsDOM.forEach((input) => {
+        const field = input.name;
+        // если пользователь имеет свойство, совпадающее с полем input.name,
+        // заполняем поле input
+        // или оставляем пустым
+        input.value = userInfo[field] || "";
+        input.disabled = true;
+    });
+    formDOM.classList.remove("active");
+    btnSubmitDOM.textContent = "Изменить";
+});
