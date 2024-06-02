@@ -35,18 +35,6 @@ const authenticateUser = async (req, res, next) => {
             refreshToken: existingToken.refreshToken,
         });
         return next();
-    } catch (error) {}
-    const token = req.signedCookies.token;
-    // проверяем куки на наличие токена
-    if (!token) {
-        throw new UnauthenticatedError("Авторизация не пройдена");
-    }
-    try {
-        // проверяем действующий токен
-        const { name, userId } = isTokenValid(token);
-        // прикрепляем юзера к запросу (без пароля!)
-        req.user = { name, userId };
-        next();
     } catch (error) {
         throw new UnauthenticatedError("Авторизация не пройдена");
     }
