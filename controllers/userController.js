@@ -13,7 +13,12 @@ import {
 } from "../utils/index.js";
 
 const showCurrentUser = async (req, res) => {
-    res.status(StatusCodes.OK).json({ user: req.user });
+    const { userId } = req.user;
+    // найти документ пользователя в MongoDB, убрать из результатов пароль
+    const user = await User.findOne({ _id: userId }).select("-password");
+    res.status(StatusCodes.OK).json({
+        user: { name: user.name, email: user.email },
+    });
 };
 
 const updateUser = async (req, res) => {
