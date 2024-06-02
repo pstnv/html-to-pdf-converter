@@ -3,10 +3,6 @@ const url = "/api/v1/auth/login";
 import getElement from "./utils/getElement.js";
 import setStatus from "./utils/setStatus.js";
 import displaySuccessAnswer from "./utils/successAnswer.js";
-import {
-    addUserToLocalStorage,
-    getUserFromLocalStorage,
-} from "./utils/localStorage.js";
 
 import CustomError from "./errors/custom.js";
 
@@ -50,8 +46,6 @@ formDOM.addEventListener("submit", async (e) => {
             throw new CustomError(msg);
         }
         const { user } = await response.json();
-        // записываем пользователя в localStorage
-        addUserToLocalStorage(user);
 
         // отобразить приветственное окно
         const timeDelaySec = 3;
@@ -74,18 +68,4 @@ formDOM.addEventListener("submit", async (e) => {
         // отображаем статус с сообщением об ошибке
         setStatus(customErr.message);
     }
-});
-
-document.addEventListener("DOMContentLoaded", (e) => {
-    const user = getUserFromLocalStorage();
-    if (!user) {
-        return;
-    }
-    // отобразить приветственное окно
-    const timeDelaySec = 3;
-    formDOM.innerHTML = displaySuccessAnswer(user.name, timeDelaySec);
-    // перенаправить на главную страницу
-    setTimeout(() => {
-        window.location.assign("/");
-    }, timeDelaySec * 1000);
 });

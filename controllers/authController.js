@@ -117,9 +117,7 @@ const login = async (req, res) => {
         refreshToken = existingToken.refreshToken;
         // добавляем токен в куки
         attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-        res.status(StatusCodes.OK).json({
-            user: { user: tokenUser },
-        });
+        res.status(StatusCodes.OK).json({ user: tokenUser });
         return;
     }
     //если у пользователя нет документа Token, то создаем новый документ Токен для пользователя
@@ -129,13 +127,11 @@ const login = async (req, res) => {
     const ip = req.ip;
     const usertoken = { refreshToken, ip, userAgent, user: user._id };
     // создаем документ токен в MongoDB
-    const token = await Token.create(usertoken);
+    await Token.create(usertoken);
 
     // добавляем токен в куки
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-    res.status(StatusCodes.OK).json({
-        user: { user: tokenUser },
-    });
+    res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 const logout = async (req, res) => {

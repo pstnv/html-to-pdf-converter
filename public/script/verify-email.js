@@ -37,9 +37,9 @@ try {
         throw new CustomError(msg);
     }
     statusDOM.innerHTML = `
-                    <h2 class="fs-4 my-4">${msg}</h2>
+                    <h3 class="fs-4 my-4">${msg}</h3>
                     <a class="my-4" href="login.html">
-                        <button type="submit" class="btn btn-danger w-100 m-0">
+                        <button class="btn btn-danger w-100 m-0">
                             Войти
                         </button>
                     </a>`;
