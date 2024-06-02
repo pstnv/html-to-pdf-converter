@@ -2,8 +2,6 @@ const url = "/api/v1/auth/register";
 
 import getElement from "./utils/getElement.js";
 import setStatus from "./utils/setStatus.js";
-import displaySuccessAnswer from "./utils/successAnswer.js";
-import { addUserToLocalStorage } from "./utils/localStorage.js";
 
 import CustomError from "./errors/custom.js";
 
@@ -43,11 +41,12 @@ formDOM.addEventListener("submit", async (e) => {
         };
         const response = await fetch(url, params);
 
+        // получаем сообщение из ответа
+        const { msg } = await response.json();
+        // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
         if (Math.floor(response.status / 100) !== 2) {
-            const { msg } = await response.json();
             throw new CustomError(msg);
         }
-        const { msg } = await response.json();
 
         // отобразить приветственное окно
         formDOM.innerHTML = `
@@ -68,8 +67,7 @@ formDOM.addEventListener("submit", async (e) => {
                     ? error.message
                     : "Что-то пошло не так. Повторите попытку позже",
         };
-
-        // отображаем alert с сообщением
+        // отображаем alert с сообщением об ошибке
         setStatus(customErr.message);
     }
 });
