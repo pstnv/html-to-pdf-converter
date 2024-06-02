@@ -47,18 +47,17 @@ formDOM.addEventListener("submit", async (e) => {
             const { msg } = await response.json();
             throw new CustomError(msg);
         }
-        const { user } = await response.json();
-        
-        // записываем в localStorage
-        addUserToLocalStorage(user)
+        const { msg } = await response.json();
 
         // отобразить приветственное окно
-        const timeDelaySec = 3;
-        formDOM.innerHTML = displaySuccessAnswer(user.name, timeDelaySec);
-        // перенаправить на главную страницу
-        setTimeout(() => {
-            window.location.assign("/");
-        }, timeDelaySec * 1000);
+        formDOM.innerHTML = `
+            <div class="text-center my-1">
+                <i class="fa-solid fa-check fa-4x"></i>
+            </div>
+            <h2 class="fs-4">Завершите регистрацию</h2>
+            <p class="greet-msg">
+                ${msg}
+            </p>`;
     } catch (error) {
         console.log(error.message);
         // если ошибка кастомная, отображаем ее сообщение
