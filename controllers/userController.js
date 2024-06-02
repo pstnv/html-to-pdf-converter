@@ -134,7 +134,7 @@ const verifyUpdateUserEmail = async (req, res) => {
         // создаем новый токен, т.к. поля пользователя изменились
         const tokenUser = createTokenUser(user);
         // и прикрепляем cookie
-        attachCookiesToResponse({ res, user: tokenUser });
+        // attachCookiesToResponse({ res, user: tokenUser });  // не нужно авториовать пользователя автоматически при смене почты, должен залогиниться сам?
         res.status(StatusCodes.OK).json({
             msg: "Почта успешно изменена. Для входа используйте новый email",
         });
