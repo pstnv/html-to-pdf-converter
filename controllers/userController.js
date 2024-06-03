@@ -25,7 +25,7 @@ const updateUser = async (req, res) => {
     // *в текущем наборе пользователь имеет поля name, email, password
     // **email и password изменяются отдельной функцией
     const { name } = req.body;
-    // проверяем, что переданы оба поля - имя и email
+    // проверяем, что передано поле name
     if (!name) {
         throw new BadRequestError("Все поля обязательны для заполнения");
     }
