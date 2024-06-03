@@ -21,7 +21,7 @@ const attachCookiesToResponse = ({ res, user, refreshToken }) => {
     const refreshTokenJWT = createJWT({ payload: { user, refreshToken } });
 
     const oneDay = 1000 * 60 * 60 * 24;
-    const oneMonth = 1000 * 60 * 60 * 24;
+    const oneMonth = 1000 * 60 * 60 * 24 * 30;
     // этот куки (token) хранит accessToken с информацией о пользователе
     res.cookie("accessToken", accessTokenJWT, {
         httpOnly: true,
