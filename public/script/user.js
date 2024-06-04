@@ -59,8 +59,8 @@ loadUserInfo();
 formDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
     // нажата кнопка "Изменить"
-    // активируется форма - все поля становятся доступными для редактировани
-    // текст на кнопке сохранить
+    // активируется форма - все поля становятся доступными для редактирования
+    // текст на кнопке "Сохранить"
     if (!formDOM.classList.contains("active")) {
         formFieldsCollection.forEach((input) => {
             input.disabled = false;
@@ -124,6 +124,11 @@ formDOM.addEventListener("submit", async (e) => {
         // отображаем alert с сообщением об ошибке
         setStatus(customErr.message);
     } finally {
+        // дезактивируется форма - все поля становятся недоступными для редактировани
+        // текст на кнопке "Изменить"
+        formFieldsCollection.forEach((input) => {
+            input.disabled = true;
+        });
         formDOM.classList.remove("active");
         btnSubmitDOM.textContent = "Изменить";
         return false;
