@@ -5,14 +5,14 @@ import setStatus from "./utils/setStatus.js";
 
 import CustomError from "./errors/custom.js";
 
-// контейнер статуса
-const statusDOM = getElement(".status-body");
+// контейнер для статусов
+const alertDOM = getElement(".status-body");
 
 // получаем данные из url строки - token и email
 const query = new URLSearchParams(window.location.search.slice(1));
 const token = query.get("token");
 const email = query.get("email");
-setStatus("Пожалуйста, ждите...");
+setStatus({ container: alertDOM, message: "Пожалуйста, ждите..." });
 
 try {
     // формируем тело запроса
@@ -36,13 +36,14 @@ try {
     if (Math.floor(response.status / 100) !== 2) {
         throw new CustomError(msg);
     }
-    statusDOM.innerHTML = `
-                    <h3 class="fs-4 my-4">${msg}</h3>
-                    <a class="my-4" href="login.html">
-                        <button class="btn btn-danger w-100 m-0">
-                            Войти
-                        </button>
-                    </a>`;
+    const html = `
+                <h3 class="fs-4 my-4">${msg}</h3>
+                <a class="my-4" href="login.html">
+                    <button class="btn btn-danger w-100 m-0">
+                        Войти
+                    </button>
+                </a>`;
+    setStatus({ container: alertDOM, html });
 } catch (error) {
     console.log(error.message);
     // если ошибка кастомная, отображаем ее сообщение
@@ -54,5 +55,5 @@ try {
                 : "Что-то пошло не так. Проверьте ссылку и повторите попытку позже",
     };
     // отображаем alert с сообщением об ошибке
-    setStatus(customErr.message);
+    setStatus({ container: alertDOM, message: customErr.message });
 }

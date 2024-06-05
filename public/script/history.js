@@ -5,6 +5,9 @@ const tableBody = getElement("tbody");
 
 import setStatus from "./utils/setStatus.js";
 
+// контейнер для статусов
+const alertDOM = getElement(".alert-msg");
+
 // загружаем данные о пользователе из localStorage
 import { getUserFromLocalStorage } from "./utils/localStorage.js";
 const user = getUserFromLocalStorage();
@@ -28,17 +31,20 @@ const getAllTasks = async () => {
         if (count === 0) {
             tableBody.innerHTML = "";
             // отображаем статус
-            setStatus("Записей нет");
+            setStatus({ container: alertDOM, message: "Записей нет" });
             return;
         }
         const tableContent = displayTasks(tasks);
         tableBody.innerHTML = tableContent;
         // очищаем статус
-        setStatus();
+        setStatus({ container: alertDOM });
     } catch (error) {
         console.log(error.message);
         // отображаем статус с сообщением
-        setStatus("Не удается загрузить записи. Повторите попытку позже");
+        setStatus({
+            container: alertDOM,
+            message: "Не удается загрузить записи. Повторите попытку позже",
+        });
     }
 };
 
@@ -116,7 +122,9 @@ function displayTasks(tasks) {
 
 async function deleteTask(id) {
     // очищаем статус
-    setStatus();
+    setStatus({
+        container: alertDOM,
+    });
     if (!id) {
         return;
     }
@@ -134,11 +142,18 @@ async function deleteTask(id) {
             const { msg } = await response.json();
             throw new Error(msg);
         }
-        setStatus("Запись удалена", true);
+        setStatus({
+            container: alertDOM,
+            message: "Запись удалена",
+            clear: true,
+        });
     } catch (error) {
         console.log(error.message);
         // отображаем статус с сообщением
-        setStatus("Не удается удалить запись. Повторите попытку позже");
+        setStatus({
+            container: alertDOM,
+            message: "Не удается удалить запись. Повторите попытку позже",
+        });
     } finally {
         setTimeout(() => {
             getAllTasks();

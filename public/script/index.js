@@ -11,9 +11,12 @@ const user = getUserFromLocalStorage();
 const formDOM = getElement(".form");
 const fileInputDOM = getElement("#formFile");
 
+// контейнер для статусов в форме пользователя
+const alertDOM = getElement(".alert-msg");
+
 fileInputDOM.addEventListener("change", (e) => {
     // очищаем статус, если он отображался ранее
-    setStatus();
+    setStatus({ container: alertDOM });
 });
 
 formDOM.addEventListener("submit", async (e) => {
@@ -63,12 +66,19 @@ formDOM.addEventListener("submit", async (e) => {
         anchor.style = "display:none";
         anchor.click();
         anchor.remove();
-        setStatus("Конвертация выполнена успешно", true);
+        setStatus({
+            container: alertDOM,
+            message: "Конвертация выполнена успешно",
+            clear: true,
+        });
     } catch (error) {
         console.log(error.message);
 
         // отображаем alert с сообщением
-        setStatus(error.message);
+        setStatus({
+            container: alertDOM,
+            message: error.message,
+        });
     } finally {
         // разблокируем форму и скрываем спиннер
         toggleSpinner(startConversionTime);

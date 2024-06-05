@@ -6,10 +6,12 @@ import displaySuccessAnswer from "./utils/successAnswer.js";
 
 import CustomError from "./errors/custom.js";
 
+// контейнер для статусов в форме пользователя
+const alertDOM = getElement(".alert-msg");
 const formDOM = getElement("form");
 formDOM.addEventListener("input", (e) => {
     // очищаем статутс, если он отображался ранее
-    setStatus();
+    setStatus({ container: alertDOM });
 });
 
 formDOM.addEventListener("submit", async (e) => {
@@ -66,6 +68,6 @@ formDOM.addEventListener("submit", async (e) => {
         };
 
         // отображаем статус с сообщением об ошибке
-        setStatus(customErr.message);
+        setStatus({ container: alertDOM, message: customErr.message });
     }
 });
