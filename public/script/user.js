@@ -131,7 +131,7 @@ userFormDOM.addEventListener("submit", async (e) => {
             JSON.stringify(userInfo) !== JSON.stringify(newUserInfo);
         // если изменений нет, выходим из функции без сохранения
         if (!isUpdated) {
-            throw new CustomError("Нет данных для изменения");
+            throw new CustomError("Карточка обновлена с учетом изменений");
         }
 
         const params = {
@@ -222,7 +222,7 @@ changeEmailFormDOM.addEventListener("submit", async function (e) {
         // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
         // блокируем кнопки (Сохранить и Отмена) на время запроса на сервер для исключения нескольких запросов одновременно
         btnsChangeEmailFormDOM.forEach((btn) => (btn.disabled = true));
-        
+
         // имена полей формы
         const formFields = [...changeEmailFormFieldsCollection].map(
             (elem) => elem.name
@@ -318,6 +318,6 @@ btnOkConfirmEmail.addEventListener("click", () => {
     setStatus({
         container: alertUserFormDOM,
     });
+    // обновляем профиль пользователя
+    loadUserInfo();
 });
-
-// **если пользователь подтвердил почту - перевести на страницу подтверждения
