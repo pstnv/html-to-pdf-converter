@@ -1,6 +1,14 @@
+:root {
+    --input-size: 350px;
+}
+
 body {
     margin: 0;
     background-color: rgb(244, 244, 244);
+}
+.modal-open {
+    overflow: hidden;
+    padding-right: 0px;
 }
 
 * {
@@ -39,16 +47,16 @@ form {
     box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.4);
 }
 
-.btn-close  {
+.btn-close {
     visibility: hidden;
     box-shadow: none !important;
 }
 
-form.active .btn-close {
+#userForm.active .btn-close {
     visibility: visible;
 }
 
-input.form-control {
+#userForm input.form-control {
     margin-left: auto;
     max-width: 80%;
     border-color: transparent;
@@ -56,7 +64,7 @@ input.form-control {
     font-size: 16px;
 }
 
-form.active input.form-control {
+#userForm.active input.form-control {
     box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.4);
 }
 
@@ -69,8 +77,46 @@ form.active input.form-control {
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
 }
 
+/* modal */
+.modal-content {
+    position: relative;
+}
+
+#changeEmailForm .form-label {
+    font-size: 14px;
+}
+
+#changeEmailForm .form-control {
+    margin-left: auto;
+    max-width: var(--input-size) !important;
+    box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.4);
+    font-size: 16px;
+}
+
+#emailToConfirm {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bs-modal-bg);
+    display: flex;
+}
+
+#emailToConfirm.hide {
+    display: none;
+    border: 1px solid red
+}
+
+@media all and (max-width: 576px) {
+    :root {
+        --input-size: 300px;
+    }
+}
+
 @media all and (max-width: 400px) {
-    .form-label {
-        font-size: 14px;
+    :root {
+        --input-size: 250;
     }
 }

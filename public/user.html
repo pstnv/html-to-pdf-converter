@@ -87,7 +87,7 @@
         <div class="container">
             <div class="col-md-7 col-lg-8">
                 <h4 class="mt-5">Моя учетная запись</h4>
-                <form method="POST" class="p-4 mt-4">
+                <form method="POST" class="p-4 mt-4" id="userForm">
                     <button
                         type="button"
                         class="btn-close d-block ms-auto"
@@ -104,45 +104,29 @@
                                 name="name"
                                 class="form-control"
                                 id="firstName"
-                                required
                                 disabled
                             />
-                            <div class="invalid-feedback">Введите имя</div>
                         </div>
-
-                        <!-- Фамилия -->
-                        <!-- <div class="field col-12">
-                            <label for="lastName" class="form-label"
-                                >Фамилия</label
-                            >
-                            <input
-                                type="text"
-                                name="lastName"
-                                class="form-control"
-                                id="lastName"
-                                value="Иванов"
-                            />
-                        </div> -->
 
                         <!-- Email -->
                         <div class="col-12">
                             <div class="field">
                                 <label for="email" class="form-label"
-                                    >Email</label
+                                    >Email*</label
                                 >
                                 <input
                                     type="email"
                                     name="email"
                                     class="form-control"
                                     id="email"
-                                    required
                                     disabled
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal"
                                 />
                             </div>
                             <small class="text text-end text-muted"
-                                >Для изменения почты вам будет выслано письмо на новый адрес</small
+                                >*Для изменения email требуется подтверить новый адрес</small
                             >
-                            <div class="invalid-feedback">Введите email</div>
                         </div>
                     </div>
                     <div class="input-wrapper col-12">
@@ -161,6 +145,120 @@
                         Изменить
                     </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Изменение почты</h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Для подтверждения email вам будет выслано письмо на
+                            новую почту. Перейдите по ссылке, указанной в теле
+                            письма.
+                        </p>
+                        <p>
+                            <strong>Важно помнить</strong>, что почта является
+                            также и вашим логином, поэтому после ее смены при
+                            авторизации нужно будет вводить новую почту.
+                        </p>
+
+                        <form method="POST" id="changeEmailForm">
+                            <div class="row gx-0 gy-3 my-5">
+                                <!-- Новый Email -->
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <label for="newEmail" class="form-label"
+                                            >Новый Email</label
+                                        >
+                                        <input
+                                            type="email"
+                                            name="newEmail"
+                                            id="newEmail"
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <!-- Повторить новый Email -->
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <label
+                                            for="newEmailRepeat"
+                                            class="form-label"
+                                            >Повторите новый email</label
+                                        >
+                                        <input
+                                            type="email"
+                                            name="newEmailRepeat"
+                                            id="newEmailRepeat"
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <!-- Пароль для подтверждения -->
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <label for="password" class="form-label"
+                                            >Введите пароль</label
+                                        >
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- status message -->
+                            <div class="text-center p-0 my-4" role="alert">
+                                <i
+                                    class="fa-solid fa-triangle-exclamation me-2"
+                                ></i>
+                                <span class="alert-msg p-0"></span>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                                >
+                                    Отмена
+                                </button>
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger ms-3"
+                                >
+                                    Сохранить новый email
+                                </button>
+                            </div>
+                        </form>
+                        <!-- HIDDEN MESSAGE -->
+                        <div id="emailToConfirm" class="flex-column justify-content-center align-items-center hide">
+                            <div class="text-center my-1">
+                                <i class="fa-solid fa-check fa-4x"></i>
+                            </div>
+                            <h2 class="fs-4">Подтвердите новый email</h2>
+                            <p class="greet-msg mt-2 text-center">
+                                На указанную почту отправлено письмо со ссылкой
+                                для подтверждения. Проверьте почту
+                            </p>
+                            <button type="button" class="btn btn-danger btnOK">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <script

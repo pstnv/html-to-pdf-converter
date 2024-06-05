@@ -1,16 +1,35 @@
-const userInfoUrL = "/api/v1/users/showMe";
-const updateUserInfoUrL = "/api/v1/users/updateUser";
+const userInfoURL = "/api/v1/users/showMe";
+const updateUserInfoURL = "/api/v1/users/updateUser";
+const updateUserEmailURL = "/api/v1/users/updateUserEmail";
 
 import getElement from "./utils/getElement.js";
 import setStatus from "./utils/setStatus.js";
 
 import CustomError from "./errors/custom.js";
 
-const formDOM = getElement("form");
-// делаем выборку всех input в форме
-const formFieldsCollection = formDOM.querySelectorAll("input");
-const btnSubmitDOM = getElement(".btnSubmit");
-const btnCloseDOM = getElement(".btn-close");
+// форма данных пользователя
+const userFormDOM = getElement("#userForm");
+// делаем выборку всех input в форме userFormDOM
+const userFormFieldsCollection = userFormDOM.querySelectorAll("input");
+const btnSubmitUserFormDOM = getElement(".btnSubmit");
+const btnCloseUserFormDOM = getElement(".btn-close");
+const emailInputUserFormDOM = getElement("#email");
+// контейнер для сообщений в форме пользователя
+const alertMsgUserFormDOM = getElement("#userForm .alert-msg");
+
+// форма для изменения email
+const changeEmailFormDOM = getElement("#changeEmailForm");
+// делаем выборку всех input в форме userFormDOM
+const changeEmailFormFieldsCollection =
+    changeEmailFormDOM.querySelectorAll("input");
+// контейнер для сообщений в форме обновления email
+const alertMsgchangeEmailFormDOM = getElement("#changeEmailForm .alert-msg");
+// модальное окно
+const modalDOMBS = new bootstrap.Modal(getElement("#modal"));
+// контейнер для сообщения об успешном изменении почты
+const alertEmailToConfirm = getElement("#emailToConfirm");
+const btnOkEmailToConfirm = getElement(".btnOK");
+
 // переменная с информацией о пользователе
 const userInfo = {};
 
@@ -18,7 +37,7 @@ const userInfo = {};
 async function loadUserInfo() {
     try {
         // получаем данные о пользователе, get-запрос, авторизация через куки
-        const response = await fetch(userInfoUrL);
+        const response = await fetch(userInfoURL);
 
         // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
         if (Math.floor(response.status / 100) !== 2) {
@@ -29,7 +48,7 @@ async function loadUserInfo() {
         // получаем данные о пользователе из ответа
         const { user } = await response.json();
         // проходимся циклом inputFieldsDOM по коллекции - по каждому input
-        formFieldsCollection.forEach((input) => {
+        userFormFieldsCollection.forEach((input) => {
             const field = input.name;
             // если пользователь имеет свойство, совпадающее с полем input.name,
             // заполняем поле input
@@ -49,40 +68,47 @@ async function loadUserInfo() {
                     : "Что-то пошло не так. Повторите попытку позже",
         };
         // отображаем alert с сообщением об ошибке
-        setStatus(customErr.message);
+        setStatus({
+            container: alertMsgUserFormDOM,
+            message: customErr.message,
+        });
     }
 }
 
 // при загрузке страницы загрузить профиль пользователя
 loadUserInfo();
 
-formDOM.addEventListener("submit", async (e) => {
+userFormDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
     // нажата кнопка "Изменить"
     // активируется форма - все поля становятся доступными для редактирования
     // текст на кнопке "Сохранить"
-    if (!formDOM.classList.contains("active")) {
-        formFieldsCollection.forEach((input) => {
+    if (!userFormDOM.classList.contains("active")) {
+        userFormFieldsCollection.forEach((input) => {
             input.disabled = false;
         });
-        formDOM.classList.add("active");
-        btnSubmitDOM.textContent = "Сохранить";
+        userFormDOM.classList.add("active");
+        btnSubmitUserFormDOM.textContent = "Сохранить";
         return false;
     }
     // нажата кнопка "Сохранить"
     try {
         // имена полей формы
-        const formFields = [...formFieldsCollection].map((elem) => elem.name);
+        const formFields = [...userFormFieldsCollection].map(
+            (elem) => elem.name
+        );
         // данные формы
-        const formData = new FormData(formDOM);
+        const formData = new FormData(userFormDOM);
         // проверяем, что все поля формы заполнены
-        const isValid = formFields.every((field) => !!formData.get(field));
+        const isValid = formFields.every(
+            (field) => !!formData.get(field).trim()
+        );
         if (!isValid) {
             throw new CustomError("Все поля формы должны быть заполнены");
         }
         // формируем тело запроса
         const newUserInfo = formFields.reduce((acc, field) => {
-            acc[field] = formData.get(field);
+            acc[field] = formData.get(field).trim();
             return acc;
         }, {});
         // проверяем, что новые данные пользователя отличаются от исходных (есть хотя бы одно изменение)
@@ -90,8 +116,8 @@ formDOM.addEventListener("submit", async (e) => {
             JSON.stringify(userInfo) !== JSON.stringify(newUserInfo);
         // если изменений нет, выходим из функции без сохранения
         if (!isUpdated) {
-            formDOM.classList.remove("active");
-            btnSubmitDOM.textContent = "Изменить";
+            userFormDOM.classList.remove("active");
+            btnSubmitUserFormDOM.textContent = "Изменить";
             return false;
         }
 
@@ -102,17 +128,31 @@ formDOM.addEventListener("submit", async (e) => {
             },
             body: JSON.stringify(newUserInfo),
         };
-        const response = await fetch(updateUserInfoUrL, params);
+        const response = await fetch(updateUserInfoURL, params);
 
-        // получаем сообщение из ответа
-        const { user } = await response.json();
         // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
         if (Math.floor(response.status / 100) !== 2) {
+            const { msg } = await response.json();
             throw new CustomError(msg);
         }
+        //обновляем данные о пользователе в карточке
+        await loadUserInfo();
         // отобразить сообщение об успехе
-        setStatus("Данные пользователя изменены", true);
+        setStatus({
+            container: alertMsgUserFormDOM,
+            message: "Данные пользователя обновлены",
+            clear: true,
+        });
     } catch (error) {
+        console.log(error);
+        // сбрасываем изменения в форме
+        userFormFieldsCollection.forEach((input) => {
+            const field = input.name;
+            // если пользователь имеет свойство, совпадающее с полем input.name,
+            // заполняем поле input
+            // или оставляем пустым
+            input.value = userInfo[field] || "";
+        });
         // если ошибка кастомная, отображаем ее сообщение
         // если нет - "Что-то пошло не так..."
         const customErr = {
@@ -122,21 +162,27 @@ formDOM.addEventListener("submit", async (e) => {
                     : "Что-то пошло не так. Повторите попытку позже",
         };
         // отображаем alert с сообщением об ошибке
-        setStatus(customErr.message);
+        setStatus({
+            container: alertMsgUserFormDOM,
+            message: customErr.message,
+        });
     } finally {
         // дезактивируется форма - все поля становятся недоступными для редактировани
         // текст на кнопке "Изменить"
-        formFieldsCollection.forEach((input) => {
+        userFormFieldsCollection.forEach((input) => {
             input.disabled = true;
         });
-        formDOM.classList.remove("active");
-        btnSubmitDOM.textContent = "Изменить";
+        userFormDOM.classList.remove("active");
+        btnSubmitUserFormDOM.textContent = "Изменить";
         return false;
     }
 });
 
-btnCloseDOM.addEventListener("click", () => {
-    formFieldsCollection.forEach((input) => {
+// закрыть форму (кнопка крестик) без сохранения изменений
+// сбрасываем изменения
+// дезактивируем форму
+btnCloseUserFormDOM.addEventListener("click", () => {
+    userFormFieldsCollection.forEach((input) => {
         const field = input.name;
         // если пользователь имеет свойство, совпадающее с полем input.name,
         // заполняем поле input
@@ -144,6 +190,101 @@ btnCloseDOM.addEventListener("click", () => {
         input.value = userInfo[field] || "";
         input.disabled = true;
     });
-    formDOM.classList.remove("active");
-    btnSubmitDOM.textContent = "Изменить";
+    userFormDOM.classList.remove("active");
+    btnSubmitUserFormDOM.textContent = "Изменить";
 });
+
+
+
+changeEmailFormDOM.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    try {
+        // имена полей формы
+        const formFields = [...changeEmailFormFieldsCollection].map(
+            (elem) => elem.name
+        );
+        // данные формы
+        const formData = new FormData(changeEmailFormDOM);
+        // проверяем, что все поля формы заполнены
+        const isValid = formFields.every(
+            (field) => !!formData.get(field).trim()
+        );
+        if (!isValid) {
+            throw new CustomError("Все поля формы должны быть заполнены");
+        }
+        // проверяем, что оба поля почта совпадают
+        const newEmail = formData.get("newEmail").trim();
+        const newEmailRepeat = formData.get("newEmailRepeat").trim();
+        if (newEmail !== newEmailRepeat) {
+            throw new CustomError("Введенные email адреса не совпадают");
+        }
+        // проверяем, что почта изменилась
+        const oldEmail = userInfo.email;
+        if (newEmail === oldEmail) {
+            throw new CustomError("Нет данных для изменения");
+        }
+
+        // формируем тело запроса
+        const body = formFields.reduce((acc, field) => {
+            acc[field] = formData.get(field).trim();
+            return acc;
+        }, {});
+
+        const params = {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        };
+        const response = await fetch(updateUserEmailURL, params);
+
+        // получаем сообщение из ответа
+        const { msg } = await response.json();
+        // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
+        if (Math.floor(response.status / 100) !== 2) {
+            throw new CustomError(msg);
+        }
+        // показываем сообщение об успешном запросе на изменение email
+        // и необходимости его подтверждения
+        alertEmailToConfirm.classList.remove("hide");
+    } catch (error) {
+        console.log(error.message);
+        // если ошибка кастомная, отображаем ее сообщение
+        // если нет - "Что-то пошло не так..."
+        const customErr = {
+            message:
+                error instanceof CustomError
+                    ? error.message
+                    : "Что-то пошло не так. Повторите попытку позже",
+        };
+        // отображаем alert с сообщением об ошибке
+        setStatus({
+            container: alertMsgchangeEmailFormDOM,
+            message: customErr.message,
+        });
+    }
+});
+
+emailInputUserFormDOM.addEventListener("click", () => {
+    // скрываем контейнер с сообщением
+    alertEmailToConfirm.classList.add("hide");
+    // очищаем форму
+    changeEmailFormDOM.reset();
+    // скрываем модальное окно
+    modalDOMBS.hide();
+});
+
+btnOkEmailToConfirm.addEventListener("click", () => {
+    // скрываем контейнер с сообщением
+    alertEmailToConfirm.classList.add("hide");
+    // очищаем форму
+    changeEmailFormDOM.reset();
+    // скрываем модальное окно
+    modalDOMBS.hide();
+});
+
+
+// заблокировать форму на время обращения к серверу
+// **если пользователь подтвердил почту - перевести на страницу подтверждения

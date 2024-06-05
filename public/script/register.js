@@ -21,14 +21,14 @@ formDOM.addEventListener("submit", async (e) => {
         // данные формы
         const formData = new FormData(formDOM);
         // проверяем, что все поля формы заполнены
-        const isValid = formFields.every((field) => !!formData.get(field));
+        const isValid = formFields.every((field) => !!formData.get(field).trim());
         if (!isValid) {
             throw new CustomError("Все поля формы должны быть заполнены");
         }
 
         // формируем тело запроса
         const body = formFields.reduce((acc, field) => {
-            acc[field] = formData.get(field);
+            acc[field] = formData.get(field).trim();
             return acc;
         }, {});
 

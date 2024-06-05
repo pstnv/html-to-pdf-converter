@@ -66,9 +66,12 @@ const updateUserPassword = async (req, res) => {
 };
 
 const updateUserEmail = async (req, res) => {
-    const { newEmail } = req.body;
-    if (!newEmail) {
+    const { newEmail, newEmailRepeat, password } = req.body;
+    if (!newEmail || !newEmailRepeat || !password) {
         throw new BadRequestError("Все поля обязательны для заполнения");
+    }
+    if (newEmail !== newEmailRepeat) {
+        throw new BadRequestError("Введенные email адреса не совпадают");
     }
     // проверяем, если пользователь с новым newEmail уже зарегистрирован
     const emailAlreadyExists = await User.findOne({ email: newEmail });
@@ -80,6 +83,12 @@ const updateUserEmail = async (req, res) => {
     // ищем пользователя в MongoDB
     const { userId } = req.user;
     const user = await User.findOne({ _id: userId });
+
+    // проверяем, что старый пароль введен правильно
+    const isPasswordCorrect = await user.comparePassword(password);
+    if (!isPasswordCorrect) {
+        throw new UnauthenticatedError("Введен неверный пароль");
+    }
     // создать токен для изменения почты
     // встроенный модуль создает buffer, конвертируем в строку, каждый байт будет сконвертрован в hex-строку
     const emailToken = crypto.randomBytes(70).toString("hex");
@@ -137,7 +146,7 @@ const verifyUpdateUserEmail = async (req, res) => {
         // сохраняем документ пользователя в MongoDB
         await user.save();
         // создаем новый токен, т.к. поля пользователя изменились
-        const tokenUser = createTokenUser(user);
+        createTokenUser(user);
         // и прикрепляем cookie
         // attachCookiesToResponse({ res, user: tokenUser });  // не нужно авториовать пользователя автоматически при смене почты, должен залогиниться сам?
         res.status(StatusCodes.OK).json({
