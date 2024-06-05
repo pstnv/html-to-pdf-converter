@@ -222,6 +222,7 @@ changeEmailFormDOM.addEventListener("submit", async function (e) {
         // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
         // блокируем кнопки (Сохранить и Отмена) на время запроса на сервер для исключения нескольких запросов одновременно
         btnsChangeEmailFormDOM.forEach((btn) => (btn.disabled = true));
+        
         // имена полей формы
         const formFields = [...changeEmailFormFieldsCollection].map(
             (elem) => elem.name
