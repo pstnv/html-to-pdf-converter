@@ -14,22 +14,24 @@ const userFormFieldsCollection = userFormDOM.querySelectorAll("input");
 const btnSubmitUserFormDOM = getElement(".btnSubmit");
 const btnCloseUserFormDOM = getElement(".btn-close");
 const emailInputUserFormDOM = getElement("#email");
-// контейнер для сообщений в форме пользователя
-const alertMsgUserFormDOM = getElement("#userForm .alert-msg");
+// контейнер для статусов в форме пользователя
+const alertUserFormDOM = getElement("#userForm .alert-msg");
 
 // форма для изменения email
 const changeEmailFormDOM = getElement("#changeEmailForm");
 // делаем выборку всех input в форме userFormDOM
 const changeEmailFormFieldsCollection =
     changeEmailFormDOM.querySelectorAll("input");
-const btnSubmitChangeEmailFormDOM = getElement(".btnSubmit");
-// контейнер для сообщений в форме обновления email
-const alertMsgchangeEmailFormDOM = getElement("#changeEmailForm .alert-msg");
+const btnsChangeEmailFormDOM = changeEmailFormDOM.querySelectorAll(
+    ".btnChangeEmailForm"
+);
+// контейнер для статусов в форме обновления email
+const alertChangeEmailFormDOM = getElement("#changeEmailForm .alert-msg");
 // модальное окно
 const modalDOMBS = new bootstrap.Modal(getElement("#modal"));
 // контейнер для сообщения об успешном изменении почты
-const alertEmailToConfirm = getElement("#emailToConfirm");
-const btnOkEmailToConfirm = getElement(".btnOK");
+const alertConfirmEmail = getElement("#emailToConfirm");
+const btnOkConfirmEmail = getElement(".btnOK");
 
 // переменная с информацией о пользователе
 const userInfo = {};
@@ -70,7 +72,7 @@ async function loadUserInfo() {
         };
         // отображаем alert с сообщением об ошибке
         setStatus({
-            container: alertMsgUserFormDOM,
+            container: alertUserFormDOM,
             message: customErr.message,
         });
     }
@@ -83,7 +85,7 @@ userFormDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
     // очищаем статус, если он отображался ранее
     setStatus({
-        container: alertMsgUserFormDOM,
+        container: alertUserFormDOM,
     });
     if (!userFormDOM.classList.contains("active")) {
         // нажата кнопка "Изменить"
@@ -100,7 +102,7 @@ userFormDOM.addEventListener("submit", async (e) => {
     try {
         // отображаем alert со статусом ожидания
         setStatus({
-            container: alertMsgUserFormDOM,
+            container: alertUserFormDOM,
             message: "Пожалуйста, ждите...",
         });
         // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
@@ -150,7 +152,7 @@ userFormDOM.addEventListener("submit", async (e) => {
         await loadUserInfo();
         // отобразить сообщение об успехе
         setStatus({
-            container: alertMsgUserFormDOM,
+            container: alertUserFormDOM,
             message: "Данные пользователя обновлены",
             clear: true,
         });
@@ -176,7 +178,7 @@ userFormDOM.addEventListener("submit", async (e) => {
         };
         // отображаем alert с сообщением об ошибке
         setStatus({
-            container: alertMsgUserFormDOM,
+            container: alertUserFormDOM,
             message: customErr.message,
         });
         // разблокируем кнопку отправки формы в случае ошибки
@@ -211,19 +213,15 @@ btnCloseUserFormDOM.addEventListener("click", () => {
 
 changeEmailFormDOM.addEventListener("submit", async function (e) {
     e.preventDefault();
-    // очищаем статус, если он отображался ранее
-    setStatus({
-        container: alertMsgUserFormDOM,
-    });
     try {
         // отображаем alert со статусом ожидания
         setStatus({
-            container: alertMsgchangeEmailFormDOM,
+            container: alertChangeEmailFormDOM,
             message: "Пожалуйста, ждите...",
         });
         // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
-        // блокируем кнопку на время запроса на сервер для исключения нескольких запросов одновременно
-        btnSubmitChangeEmailFormDOM.disabled = true;
+        // блокируем кнопки (Сохранить и Отмена) на время запроса на сервер для исключения нескольких запросов одновременно
+        btnsChangeEmailFormDOM.forEach((btn) => (btn.disabled = true));
         // имена полей формы
         const formFields = [...changeEmailFormFieldsCollection].map(
             (elem) => elem.name
@@ -270,11 +268,11 @@ changeEmailFormDOM.addEventListener("submit", async function (e) {
         if (Math.floor(response.status / 100) !== 2) {
             throw new CustomError(msg);
         }
-        // разблокируем кнопку отправки формы, когда работа с сервером завершена
-        btnSubmitUserFormDOM.disabled = false;
+        // разблокируем кнопки (Сохранить и Отмена), когда работа с сервером завершена
+        btnsChangeEmailFormDOM.forEach((btn) => (btn.disabled = false));
         // показываем сообщение об успешном запросе на изменение email
         // и необходимости его подтверждения
-        alertEmailToConfirm.classList.remove("hide");
+        alertConfirmEmail.classList.remove("hide");
     } catch (error) {
         console.log(error.message);
         // если ошибка кастомная, отображаем ее сообщение
@@ -287,31 +285,39 @@ changeEmailFormDOM.addEventListener("submit", async function (e) {
         };
         // отображаем alert с сообщением об ошибке
         setStatus({
-            container: alertMsgchangeEmailFormDOM,
+            container: alertChangeEmailFormDOM,
             message: customErr.message,
         });
-        // разблокируем кнопку отправки формы в случае ошибки
-        btnSubmitUserFormDOM.disabled = false;
+        // разблокируем кнопки (Сохранить и Отмена) в случае ошибки
+        btnsChangeEmailFormDOM.forEach((btn) => (btn.disabled = false));
     }
 });
 
 emailInputUserFormDOM.addEventListener("click", () => {
     // скрываем контейнер с сообщением
-    alertEmailToConfirm.classList.add("hide");
+    alertConfirmEmail.classList.add("hide");
     // очищаем форму
     changeEmailFormDOM.reset();
     // скрываем модальное окно
     modalDOMBS.hide();
+    // очищаем статус, если он отображался ранее
+    setStatus({
+        container: alertChangeEmailFormDOM,
+    });
 });
 
-btnOkEmailToConfirm.addEventListener("click", () => {
+btnOkConfirmEmail.addEventListener("click", () => {
     // скрываем контейнер с сообщением
-    alertEmailToConfirm.classList.add("hide");
+    alertConfirmEmail.classList.add("hide");
     // очищаем форму
     changeEmailFormDOM.reset();
     // скрываем модальное окно
     modalDOMBS.hide();
+    // очищаем статус, если он отображался ранее
+    setStatus({
+        container: alertUserFormDOM,
+    });
 });
 
 // **если пользователь подтвердил почту - перевести на страницу подтверждения
-// переписать setStatus
+// добавить блокировку почты на время регистрации
