@@ -22,6 +22,7 @@ const changeEmailFormDOM = getElement("#changeEmailForm");
 // делаем выборку всех input в форме userFormDOM
 const changeEmailFormFieldsCollection =
     changeEmailFormDOM.querySelectorAll("input");
+const btnSubmitChangeEmailFormDOM = getElement(".btnSubmit");
 // контейнер для сообщений в форме обновления email
 const alertMsgchangeEmailFormDOM = getElement("#changeEmailForm .alert-msg");
 // модальное окно
@@ -80,10 +81,14 @@ loadUserInfo();
 
 userFormDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // нажата кнопка "Изменить"
-    // активируется форма - все поля становятся доступными для редактирования
-    // текст на кнопке "Сохранить"
+    // очищаем статус, если он отображался ранее
+    setStatus({
+        container: alertMsgUserFormDOM,
+    });
     if (!userFormDOM.classList.contains("active")) {
+        // нажата кнопка "Изменить"
+        // активируется форма - все поля становятся доступными для редактирования
+        // текст на кнопке "Сохранить"
         userFormFieldsCollection.forEach((input) => {
             input.disabled = false;
         });
@@ -93,6 +98,14 @@ userFormDOM.addEventListener("submit", async (e) => {
     }
     // нажата кнопка "Сохранить"
     try {
+        // отображаем alert со статусом ожидания
+        setStatus({
+            container: alertMsgUserFormDOM,
+            message: "Пожалуйста, ждите...",
+        });
+        // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
+        // блокируем кнопку на время запроса на сервер для исключения нескольких запросов одновременно
+        btnSubmitUserFormDOM.disabled = true;
         // имена полей формы
         const formFields = [...userFormFieldsCollection].map(
             (elem) => elem.name
@@ -116,9 +129,7 @@ userFormDOM.addEventListener("submit", async (e) => {
             JSON.stringify(userInfo) !== JSON.stringify(newUserInfo);
         // если изменений нет, выходим из функции без сохранения
         if (!isUpdated) {
-            userFormDOM.classList.remove("active");
-            btnSubmitUserFormDOM.textContent = "Изменить";
-            return false;
+            throw new CustomError("Нет данных для изменения");
         }
 
         const params = {
@@ -143,6 +154,8 @@ userFormDOM.addEventListener("submit", async (e) => {
             message: "Данные пользователя обновлены",
             clear: true,
         });
+        // разблокируем кнопку отправки формы, когда работа с сервером завершена
+        btnSubmitUserFormDOM.disabled = false;
     } catch (error) {
         console.log(error);
         // сбрасываем изменения в форме
@@ -166,6 +179,8 @@ userFormDOM.addEventListener("submit", async (e) => {
             container: alertMsgUserFormDOM,
             message: customErr.message,
         });
+        // разблокируем кнопку отправки формы в случае ошибки
+        btnSubmitUserFormDOM.disabled = false;
     } finally {
         // дезактивируется форма - все поля становятся недоступными для редактировани
         // текст на кнопке "Изменить"
@@ -194,12 +209,21 @@ btnCloseUserFormDOM.addEventListener("click", () => {
     btnSubmitUserFormDOM.textContent = "Изменить";
 });
 
-
-
 changeEmailFormDOM.addEventListener("submit", async function (e) {
     e.preventDefault();
-
+    // очищаем статус, если он отображался ранее
+    setStatus({
+        container: alertMsgUserFormDOM,
+    });
     try {
+        // отображаем alert со статусом ожидания
+        setStatus({
+            container: alertMsgchangeEmailFormDOM,
+            message: "Пожалуйста, ждите...",
+        });
+        // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
+        // блокируем кнопку на время запроса на сервер для исключения нескольких запросов одновременно
+        btnSubmitChangeEmailFormDOM.disabled = true;
         // имена полей формы
         const formFields = [...changeEmailFormFieldsCollection].map(
             (elem) => elem.name
@@ -246,6 +270,8 @@ changeEmailFormDOM.addEventListener("submit", async function (e) {
         if (Math.floor(response.status / 100) !== 2) {
             throw new CustomError(msg);
         }
+        // разблокируем кнопку отправки формы, когда работа с сервером завершена
+        btnSubmitUserFormDOM.disabled = false;
         // показываем сообщение об успешном запросе на изменение email
         // и необходимости его подтверждения
         alertEmailToConfirm.classList.remove("hide");
@@ -264,6 +290,8 @@ changeEmailFormDOM.addEventListener("submit", async function (e) {
             container: alertMsgchangeEmailFormDOM,
             message: customErr.message,
         });
+        // разблокируем кнопку отправки формы в случае ошибки
+        btnSubmitUserFormDOM.disabled = false;
     }
 });
 
@@ -285,6 +313,5 @@ btnOkEmailToConfirm.addEventListener("click", () => {
     modalDOMBS.hide();
 });
 
-
-// заблокировать форму на время обращения к серверу
 // **если пользователь подтвердил почту - перевести на страницу подтверждения
+// переписать setStatus

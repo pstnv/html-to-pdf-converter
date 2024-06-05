@@ -6,17 +6,16 @@ const setStatus = ({
     html: innerHTML = "",
     clear = false,
 }) => {
-    console.log(container);
-    // если передан контейнер и есть html(innerHTML), отображаем
+    // если не передан контейнер, возвращаемся
     if (!container) {
-        console.log("не передан container");
         return;
     }
     if (innerHTML) {
         container.innerHTML = innerHTML;
-    } else if (textContent) {
+    } else {
         container.textContent = textContent;
     }
+    // очищаем контейнер от сообщения через delayMsec
     if (clear) {
         setTimeout(() => {
             container.innerHTML = "";
