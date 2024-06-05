@@ -38,4 +38,21 @@ const attachCookiesToResponse = ({ res, user, refreshToken }) => {
     });
 };
 
-export { createJWT, isTokenValid, attachCookiesToResponse };
+const clearCookiesFromResponse = async ({ res }) => {
+    // очищаем куки от accessToken и refreshToken
+    res.cookie("accessToken", "logout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+    });
+    res.cookie("refreshToken", "logout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+    });
+};
+
+export {
+    createJWT,
+    isTokenValid,
+    attachCookiesToResponse,
+    clearCookiesFromResponse,
+};

@@ -9,6 +9,7 @@ import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
 // utils
 import {
     attachCookiesToResponse,
+    clearCookiesFromResponse,
     createTokenUser,
     sendVerificationEmail,
     sendResetPasswordEmail,
@@ -141,14 +142,7 @@ const logout = async (req, res) => {
     await Token.findOneAndDelete({ user: userId });
 
     // очищаем куки от accessToken и refreshToken
-    res.cookie("accessToken", "logout", {
-        httpOnly: true,
-        expires: new Date(Date.now()),
-    });
-    res.cookie("refreshToken", "logout", {
-        httpOnly: true,
-        expires: new Date(Date.now()),
-    });
+    clearCookiesFromResponse({ res });
     res.status(StatusCodes.OK).json({
         msg: "Пользователь вышел из учетной записи",
     });

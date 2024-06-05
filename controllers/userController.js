@@ -145,10 +145,8 @@ const verifyUpdatedUserEmail = async (req, res) => {
         user.emailTokenExpirationDate = null;
         // сохраняем документ пользователя в MongoDB
         await user.save();
-        // создаем новый токен, т.к. поля пользователя изменились
-        createTokenUser(user);
-        // и прикрепляем cookie
-        // attachCookiesToResponse({ res, user: tokenUser });  // не нужно авторизовать пользователя автоматически при смене почты, должен залогиниться сам?
+        // пока что не просим пользователя залогиниться и не очищаем куки -
+        // открытый вопрос для использования 2FA
         res.status(StatusCodes.OK).json({
             msg: "Почта успешно изменена. Для входа используйте новый email",
         });

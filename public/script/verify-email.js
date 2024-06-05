@@ -26,7 +26,7 @@ try {
     };
 
     const params = {
-        method: confirm === "register" ? "POST" : "PATCH",
+        method: confirmType === "register" ? "POST" : "PATCH",
         headers: {
             "Content-Type": "application/json",
         },
