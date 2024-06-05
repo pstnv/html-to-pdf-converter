@@ -1,4 +1,7 @@
-const url = "/api/v1/auth/verify-email";
+const url = {
+    register: "/api/v1/auth/verify-email",
+    update: "/api/v1/users/verifyUpdatedUserEmail",
+};
 
 import getElement from "./utils/getElement.js";
 import setStatus from "./utils/setStatus.js";
@@ -6,12 +9,13 @@ import setStatus from "./utils/setStatus.js";
 import CustomError from "./errors/custom.js";
 
 // контейнер для статусов
-const alertDOM = getElement(".status-body");
+const alertDOM = getElement(".alert-msg");
 
 // получаем данные из url строки - token и email
 const query = new URLSearchParams(window.location.search.slice(1));
 const token = query.get("token");
 const email = query.get("email");
+const confirmType = query.get("confirm"); // либо register, либо update
 setStatus({ container: alertDOM, message: "Пожалуйста, ждите..." });
 
 try {
@@ -22,13 +26,14 @@ try {
     };
 
     const params = {
-        method: "POST",
+        method: confirm === "register" ? "POST" : "PATCH",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
     };
-    const response = await fetch(url, params);
+    const verifyEmailURL = url[confirmType];
+    const response = await fetch(verifyEmailURL, params);
 
     // получаем сообщение из ответа
     const { msg } = await response.json();

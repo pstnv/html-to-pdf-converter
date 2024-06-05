@@ -6,7 +6,9 @@ const sendUpdateEmailEmail = async ({
     token,
     origin,
 }) => {
-    const updateEmailLink = `${origin}/user/confirm-email-change?token=${token}&email=${email}`;
+    const confirmType = "update"
+    // const verifyEmailLink = `${origin}/verify-email?token=${verificationToken}&email=${email}`;
+    const updateEmailLink = `${origin}/verify-email.html?token=${token}&email=${email}&confirm=${confirmType}`;
     const message = `
     <h4>Здравствуйте, ${name}!</h4>
     <p>Для сброса изменения email-адреса перейдите по ссылке: 

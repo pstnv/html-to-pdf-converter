@@ -6,8 +6,9 @@ const sendVerificationEmail = async ({
     verificationToken,
     origin,
 }) => {
+    const confirmType = "register";
     // const verifyEmailLink = `${origin}/verify-email?token=${verificationToken}&email=${email}`;
-    const verifyEmailLink = `${origin}/verify-email.html?token=${verificationToken}&email=${email}`;
+    const verifyEmailLink = `${origin}/verify-email.html?token=${verificationToken}&email=${email}&confirm=${confirmType}`;
     const message = `
     <h4>Здравствуйте, ${name}!</h4>
     <p>Для завершения регистрации перейдите по ссылке: 

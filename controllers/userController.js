@@ -115,9 +115,9 @@ const updateUserEmail = async (req, res) => {
 };
 
 // пользователь переходит по ссылке для подтверждения нового email и делает запрос
-const verifyUpdateUserEmail = async (req, res) => {
-    const { token, newEmail } = req.body;
-    if (!token || !newEmail) {
+const verifyUpdatedUserEmail = async (req, res) => {
+    const { verificationToken: emailToken, email: newEmail } = req.body;
+    if (!emailToken || !newEmail) {
         throw new BadRequestError("Все поля обязательны для заполнения");
     }
     // повторно проверяем, если пользователь с новым newEmail уже зарегистрирован
@@ -135,7 +135,7 @@ const verifyUpdateUserEmail = async (req, res) => {
     // и что срок действия токена для изменения почты не истек
     const currentDate = new Date();
     if (
-        user.emailToken === createHash(token) &&
+        user.emailToken === createHash(emailToken) &&
         user.emailTokenExpirationDate > currentDate
     ) {
         // устанавливаем новый email
@@ -148,13 +148,13 @@ const verifyUpdateUserEmail = async (req, res) => {
         // создаем новый токен, т.к. поля пользователя изменились
         createTokenUser(user);
         // и прикрепляем cookie
-        // attachCookiesToResponse({ res, user: tokenUser });  // не нужно авториовать пользователя автоматически при смене почты, должен залогиниться сам?
+        // attachCookiesToResponse({ res, user: tokenUser });  // не нужно авторизовать пользователя автоматически при смене почты, должен залогиниться сам?
         res.status(StatusCodes.OK).json({
             msg: "Почта успешно изменена. Для входа используйте новый email",
         });
         return;
     } else if (
-        user.emailToken === createHash(token) &&
+        user.emailToken === createHash(emailToken) &&
         user.emailTokenExpirationDate <= currentDate
     ) {
         // если токен в запросе совпадает с токеном для сброса почты
@@ -166,7 +166,7 @@ const verifyUpdateUserEmail = async (req, res) => {
         return;
     }
     res.status(StatusCodes.OK).json({
-        msg: "Если вы все сделали правильно, ваша почта должна быть изменена",
+        msg: "Email подтвержден. Ваша была изменена. Войдите с новыми учетными данными",
     });
 };
 
@@ -175,5 +175,5 @@ export {
     updateUser,
     updateUserPassword,
     updateUserEmail,
-    verifyUpdateUserEmail,
+    verifyUpdatedUserEmail,
 };
