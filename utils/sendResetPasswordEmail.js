@@ -1,7 +1,7 @@
 import { sendEmail } from "./sendEmail.js";
 
 const sendResetPasswordEmail = async ({ name, email, token, origin }) => {
-    const resetPasswordLink = `${origin}/user/reset-password?token=${token}&email=${email}`;
+    const resetPasswordLink = `${origin}/reset-password.html?token=${token}&email=${email}`;
     const message = `
     <h4>Здравствуйте, ${name}!</h4>
     <p>Для сброса пароля перейдите по ссылке: 
