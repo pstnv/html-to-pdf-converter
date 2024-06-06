@@ -16,6 +16,6 @@ router.route("/updateUserPassword").patch(authenticateUser, updateUserPassword);
 router.route("/updateUserEmail").patch(authenticateUser, updateUserEmail);
 router
     .route("/verifyUpdatedUserEmail")
-    .patch(authenticateUser, verifyUpdatedUserEmail);
+    .post(authenticateUser, verifyUpdatedUserEmail);
 
 export { router };
