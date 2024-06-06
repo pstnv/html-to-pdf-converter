@@ -30,9 +30,17 @@ const register = async (req, res) => {
     // получили данные из post-запроса
     // проверили на соответствие
     // переписали пароль на хешированный
-    // добавили verificationToken
+
+    // срок действия ссылки
+    const oneDay = 1000 * 60 * 60 * 24;
+    const verificationTokenExpirationDate = new Date(Date.now() + oneDay);
+    // добавили verificationToken и verificationTokenExpirationDate
     // отправили новую запись в MongoDB
-    const user = await User.create({ ...req.body, verificationToken });
+    const user = await User.create({
+        ...req.body,
+        verificationToken,
+        verificationTokenExpirationDate,
+    });
     // отправили письмо со ссылкой
     const origin = process.env.ORIGIN; // в режиме dev localhost:3000, в продакшн - ссылка на фронт
 
@@ -62,15 +70,24 @@ const verifyEmail = async (req, res) => {
     if (!user) {
         throw new UnauthenticatedError("Неудачная верификация");
     }
+    const currentDate = new Date();
     // сверяем verificationToken из запроса (письма) в тем, что записан в поле пользователя user.verificationToken
+    // и проверяем, что срок его действия не истек
     if (user.verificationToken !== verificationToken) {
         throw new UnauthenticatedError("Неудачная верификация");
+    } else if (
+        // если токен совпадает, но срок его действия истек
+        user.verificationToken === verificationToken &&
+        user.verificationTokenExpirationDate <= currentDate
+    ) {
+        throw new UnauthenticatedError("Срок действия ссылки истек");
     }
-    // в случае, если токены совпали
+    // в случае, если токены совпали, и срок действия токена не окончен
     // меняем поля пользователя (пользователь верифицирован, дата верификации, очищаем токен)
     user.isVerified = true;
     user.verified = Date.now();
-    user.verificationToken = "";
+    user.verificationToken = null;
+    user.verificationTokenExpirationDate = null;
     // сохраняем изменения в пользователе
     await user.save();
     res.status(StatusCodes.OK).json({
@@ -158,7 +175,8 @@ const forgotPassword = async (req, res) => {
     // не отправляем ответ, что пользователь не существует в целях безопасности
     // чтобы не было ответа, какой пользователь существует, а какой - нет
     // поэтому на все запросы ответ "На почту отправлено письмо"
-    if (user) {
+    if (user && user.isVerified) {
+        // если пользователь найден, и его провиль подтвержден
         // создать токен для восстановления пароля
         // встроенный модуль создает buffer, конвертируем в строку, каждый байт будет сконвертрован в hex-строку
         const passwordToken = crypto.randomBytes(70).toString("hex");
@@ -171,8 +189,8 @@ const forgotPassword = async (req, res) => {
             origin,
         });
 
-        // срок действия ссылки
-        const tenMinutes = 1000 * 60 * 10;
+        // срок действия ссылки 10 минут
+        const tenMinutes = 1000 * 60 * 1;
         const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
         // вносим изменения в документ пользователя
         user.passwordToken = createHash(passwordToken);
@@ -222,14 +240,11 @@ const resetPassword = async (req, res) => {
             // если токен в запросе совпадает с токеном для сброса пароля
             // (который хранится в захешированном виде в документе пользователя user),
             // но срок действия токена для сброса пароля истек
-            res.status(StatusCodes.OK).json({
-                msg: "Срок действия ссылки истек",
-            });
-            return;
+            throw new BadRequestError("Срок действия ссылки истек");
         }
     }
     res.status(StatusCodes.OK).json({
-        msg: "Если вы все сделали правильно, ваш пароль должен быть изменен",
+        msg: "Пароль был успешно изменен. Для входа используйте новый пароль",
     });
 };
 
