@@ -1,12 +1,12 @@
-const url = "/api/v1/auth/login";
+const url = "/api/v1/auth/forgot-password";
 
 import getElement from "./utils/getElement.js";
 import setStatus from "./utils/setStatus.js";
-import displaySuccessAnswer from "./utils/successAnswer.js";
 
 import CustomError from "./errors/custom.js";
 
 // контейнер для статусов в форме пользователя
+const btnSubmitFormDOM = getElement(".btnSubmit");
 const alertDOM = getElement(".alert-msg");
 const formDOM = getElement("form");
 formDOM.addEventListener("input", (e) => {
@@ -18,6 +18,14 @@ formDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
+        // отображаем alert со статусом ожидания
+        setStatus({
+            container: alertDOM,
+            message: "Пожалуйста, ждите...",
+        });
+        // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
+        // блокируем кнопки (Сохранить и Отмена) на время запроса на сервер для исключения нескольких запросов одновременно
+        btnSubmitFormDOM.disabled = true;
         // имена полей формы
         const formFieldsCollection = formDOM.querySelectorAll("input") || [];
         const formFields = [...formFieldsCollection].map((elem) => elem.name);
@@ -43,19 +51,19 @@ formDOM.addEventListener("submit", async (e) => {
         };
         const response = await fetch(url, params);
 
+        const { msg } = await response.json();
+
         if (Math.floor(response.status / 100) !== 2) {
-            const { msg } = await response.json();
             throw new CustomError(msg);
         }
-        const { user } = await response.json();
 
-        // отобразить приветственное окно
-        const timeDelaySec = 3;
-        formDOM.innerHTML = displaySuccessAnswer(user.name, timeDelaySec);
-        // перенаправить на главную страницу
-        setTimeout(() => {
-            window.location.assign("/");
-        }, timeDelaySec * 1000);
+        // разблокируем кнопку формы, когда работа с сервером завершена
+        btnSubmitFormDOM.disabled = false;
+        // очищаем статус, если он отображался ранее
+        setStatus({
+            container: alertDOM,
+            message: msg,
+        });
     } catch (error) {
         console.log(error.message);
         // если ошибка кастомная, отображаем ее сообщение
@@ -69,5 +77,7 @@ formDOM.addEventListener("submit", async (e) => {
 
         // отображаем статус с сообщением об ошибке
         setStatus({ container: alertDOM, message: customErr.message });
+        // разблокируем кнопки (Сохранить и Отмена), когда работа с сервером завершена
+        btnSubmitFormDOM.disabled = false;
     }
 });
