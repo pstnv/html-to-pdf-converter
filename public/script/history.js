@@ -1,24 +1,26 @@
 const url = "/api/v1/tasks";
 
-import getElement from "./utils/getElement.js";
-const tableBody = getElement("tbody");
-
 import setStatus from "./utils/setStatus.js";
+import getElement from "./utils/getElement.js";
 
+// таблица для записей
+const tableBody = getElement("tbody");
 // контейнер для статусов
 const alertDOM = getElement(".alert-msg");
 
-// загружаем данные о пользователе из localStorage
-import { getUserFromLocalStorage } from "./utils/localStorage.js";
-const user = getUserFromLocalStorage();
+document.addEventListener("DOMContentLoaded", async (e) => {
+    await getAllTasks();
+});
+tableBody.addEventListener("click", deleteBtnHandler);
 
-const getAllTasks = async () => {
+
+// получить все задачи
+async function getAllTasks() {
     try {
         const params = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`,
             },
         };
         const response = await fetch(url, params);
@@ -28,9 +30,9 @@ const getAllTasks = async () => {
             throw new Error(msg);
         }
         const { tasks, count } = await response.json();
-        if (count === 0) {
+        // если массив пуст, отображаем статус Записей нет
+        if (!count) {
             tableBody.innerHTML = "";
-            // отображаем статус
             setStatus({ container: alertDOM, message: "Записей нет" });
             return;
         }
@@ -46,27 +48,8 @@ const getAllTasks = async () => {
             message: "Не удается загрузить записи. Повторите попытку позже",
         });
     }
-};
-
-document.addEventListener("DOMContentLoaded", async (e) => {
-    e.preventDefault();
-    if (!user) {
-        console.log("пользователь не найден в локальном хранилище");
-        window.location.assign("login.html");
-        return;
-    }
-    await getAllTasks();
-    tableBody.addEventListener("click", (e) => {
-        const isDeleteButton =
-            e.target.parentElement.classList.contains("deleteButton");
-        if (isDeleteButton) {
-            const deleteButton = e.target.parentElement;
-            const taskId = deleteButton.getAttribute("data-id");
-            deleteTask(taskId);
-        }
-    });
-});
-
+}
+// отрисовать таблицу с задачами
 function displayTasks(tasks) {
     const tableContent = tasks
         .map((task) => {
@@ -120,20 +103,34 @@ function displayTasks(tasks) {
     return tableContent;
 }
 
+// обработчик удаления задачи
+async function deleteBtnHandler(e) {
+    const isDeleteButton =
+        e.target.parentElement.classList.contains("deleteButton");
+    if (isDeleteButton) {
+        const deleteButton = e.target.parentElement;
+        const taskId = deleteButton.getAttribute("data-id");
+        await deleteTask(taskId);
+        const isEmpty = tableBody.innerHTML === "";
+        if (isEmpty) {
+            setStatus({ container: alertDOM, message: "Записей нет"});
+        }
+    }
+}
+// удалить задачу
 async function deleteTask(id) {
     // очищаем статус
     setStatus({
         container: alertDOM,
     });
     if (!id) {
-        return;
+        throw new Error("id задачи не найден");
     }
     try {
         const params = {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`,
             },
         };
         const response = await fetch(`${url}/${id}`, params);
@@ -142,6 +139,7 @@ async function deleteTask(id) {
             const { msg } = await response.json();
             throw new Error(msg);
         }
+        await getAllTasks();
         setStatus({
             container: alertDOM,
             message: "Запись удалена",
@@ -154,9 +152,7 @@ async function deleteTask(id) {
             container: alertDOM,
             message: "Не удается удалить запись. Повторите попытку позже",
         });
-    } finally {
-        setTimeout(() => {
-            getAllTasks();
-        }, 1000);
     }
 }
+
+// блокировать таблицу на время удаления задачи
