@@ -19,7 +19,7 @@ const sendResultToMongoDB = async (req, res, next) => {
     // поле file записано в cloudController
     // поле createdBy добавлено в этом контроллере
 
-    const conversion = await Conversion.create(pdf);
+    await Conversion.create(pdf);
     next();
 };
 

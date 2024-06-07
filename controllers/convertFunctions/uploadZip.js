@@ -15,8 +15,8 @@ const uploadZip = (req, res, next) => {
         throw new BadRequestError("Загрузите zip-архив");
     }
     // добавляем поля name и basename
-    const fileName = file.name;
-    file.basename = fileName;
+    const fileName = file.name; // имя файла без расширения
+    file.basename = fileName; // имя файла с расширением
     file.name = path.parse(fileName).name;
     req.file = file;
 

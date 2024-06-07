@@ -18,12 +18,16 @@ const authenticateUser = async (req, res, next) => {
 
         // если срок действия accessToken истек, обращаемся к refreshToken
         // проверяем, есть ли действующий токен refreshToken для длинных сессий
+        if (!refreshToken) {
+            throw new UnauthenticatedError("Авторизация не пройдена");
+        }
+        // проверяем, что он есть в базе и является действующим
         const payload = isTokenValid(refreshToken);
         const existingToken = await Token.findOne({
             user: payload.user.userId,
             refreshToken: payload.refreshToken,
         });
-        // если токен не существует или не является действующим, выбрасываем ошибку
+        // если токен не существует или срок действия истек , выбрасываем ошибку
         if (!existingToken || !existingToken?.isValid) {
             throw new UnauthenticatedError("Авторизация не пройдена");
         }
@@ -55,6 +59,11 @@ const checkAuthentication = async (req, res, next) => {
 
         // если срок действия accessToken истек, обращаемся к refreshToken
         // проверяем, есть ли действующий токен refreshToken для длинных сессий
+        // если refreshToken отсутствует, не выбрасываем ошибку - продолжаем конвертацию без авторизации
+        if (!refreshToken) {
+            return next();
+        }
+        // если refreshToken существует, проверяем, что он есть в базе и является действующим
         const payload = isTokenValid(refreshToken);
         const existingToken = await Token.findOne({
             user: payload.user.userId,
@@ -77,7 +86,6 @@ const checkAuthentication = async (req, res, next) => {
     } catch (error) {
         // выводим в консоль ошибку, но не выбрасываем, т.к. авторизация не обязательна
         console.log(error.message);
-    } finally {
         next();
     }
 };

@@ -4,9 +4,7 @@ import getElement from "./utils/getElement.js";
 import toggleSpinner from "./utils/toggleSpinner.js";
 import setStatus from "./utils/setStatus.js";
 
-// проверяем, есть ли в localStorage запись о пользователе
-import { getUserFromLocalStorage } from "./utils/localStorage.js";
-const user = getUserFromLocalStorage();
+import CustomError from "./errors/custom.js";
 
 const formDOM = getElement(".form");
 const fileInputDOM = getElement("#formFile");
@@ -29,9 +27,9 @@ formDOM.addEventListener("submit", async (e) => {
 
         const file = fileInputDOM.files[0];
         if (!file) {
-            throw new Error("Загрузите архив");
+            throw new CustomError("Загрузите архив");
         }
-
+        // прикрепляем файл
         const formData = new FormData();
         formData.append("file", file);
 
@@ -39,25 +37,21 @@ formDOM.addEventListener("submit", async (e) => {
             method: "POST",
             body: formData,
         };
-        if (user) {
-            params.headers = {
-                Authorization: `Bearer ${user.token}`,
-            };
-        }
         const response = await fetch(url, params);
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
-            throw new Error(msg);
+            throw new CustomError(msg);
         }
         const blob = await response.blob();
 
-        // имя из заголовка ответа
+        // получаем имя файла из заголовка ответа
         const contentDisposition = response.headers.get("content-disposition");
         const filenameResponse = contentDisposition.split("filename=").pop();
-        // резервное имя из отправляемого файла
+        // если предыдущий способ не дал результат - получаем имя из отправленного пользователем файла
         const filenameRequest = file.name.split(".zip").shift() + ".pdf";
+        // присваиваемое файлу имя
         const filename = filenameRequest || filenameResponse;
-
+        // принудительный запуск скачивания резульата под файлом filename
         let dataURL = URL.createObjectURL(blob);
         let anchor = document.createElement("a");
         anchor.href = dataURL;
@@ -68,7 +62,7 @@ formDOM.addEventListener("submit", async (e) => {
         anchor.remove();
         setStatus({
             container: alertDOM,
-            message: "Конвертация выполнена успешно",
+            message: "Конвертация выполнена успешно. Файл скачан",
             clear: true,
         });
     } catch (error) {

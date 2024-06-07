@@ -13,6 +13,6 @@ import {
 
 router.route("/").get(authenticateUser, getAllTasks);
 router.route("/html_to_pdf").post(checkAuthentication, createTask);
-router.route("/:id").delete(authenticateUser, deleteTask);
+router.route("/:id").delete(deleteTask);
 
 export { router };
