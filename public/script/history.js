@@ -1,17 +1,21 @@
-const url = "/api/v1/tasks";
+const tasksURL = "/api/v1/tasks";
 
 import setStatus from "./utils/setStatus.js";
 import getElement from "./utils/getElement.js";
+import logoutUser from "./utils/logout.js";
 
 // таблица для записей
 const tableBody = getElement("tbody");
 // контейнер для статусов
 const alertDOM = getElement(".alert-msg");
+// ссылка Выйти
+const logoutDOM = getElement(".logout");
 
 document.addEventListener("DOMContentLoaded", async (e) => {
     await getAllTasks();
 });
 tableBody.addEventListener("click", deleteBtnHandler);
+logoutDOM.addEventListener("click", logoutUser);
 
 
 // получить все задачи
@@ -23,7 +27,7 @@ async function getAllTasks() {
                 "Content-Type": "application/json",
             },
         };
-        const response = await fetch(url, params);
+        const response = await fetch(tasksURL, params);
 
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
@@ -113,7 +117,7 @@ async function deleteBtnHandler(e) {
         await deleteTask(taskId);
         const isEmpty = tableBody.innerHTML === "";
         if (isEmpty) {
-            setStatus({ container: alertDOM, message: "Записей нет"});
+            setStatus({ container: alertDOM, message: "Записей нет" });
         }
     }
 }
@@ -133,7 +137,7 @@ async function deleteTask(id) {
                 "Content-Type": "application/json",
             },
         };
-        const response = await fetch(`${url}/${id}`, params);
+        const response = await fetch(`${tasksURL}/${id}`, params);
 
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();

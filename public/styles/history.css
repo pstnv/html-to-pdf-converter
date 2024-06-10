@@ -23,6 +23,10 @@ body {
     --bs-dropdown-link-active-bg: rgb(108, 117, 125, 0.5);
 }
 
+.dropdown-item {
+    cursor: pointer;
+}
+
 .table-wrapper {
     padding: 20px;
     background-color: white;

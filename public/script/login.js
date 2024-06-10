@@ -5,6 +5,7 @@ import setStatus from "./utils/setStatus.js";
 import displaySuccessAnswer from "./utils/successAnswer.js";
 
 import CustomError from "./errors/custom.js";
+import { setUser, removeUser } from "./utils/localStorage.js";
 
 // контейнер для статусов в форме пользователя
 const alertDOM = getElement(".alert-msg");
@@ -48,6 +49,8 @@ formDOM.addEventListener("submit", async (e) => {
             throw new CustomError(msg);
         }
         const { user } = await response.json();
+        // сохраняем в localStorage запись, что пользователь залогинился
+        setUser();
 
         // отобразить приветственное окно
         const timeDelaySec = 3;
@@ -66,6 +69,8 @@ formDOM.addEventListener("submit", async (e) => {
                     ? error.message
                     : "Что-то пошло не так. Повторите попытку позже",
         };
+        // очищаем localStorage от записи, что пользователь залогинен
+        removeUser();
 
         // отображаем статус с сообщением об ошибке
         setStatus({ container: alertDOM, message: customErr.message });

@@ -3,19 +3,40 @@ const url = "/api/v1/tasks/html_to_pdf";
 import getElement from "./utils/getElement.js";
 import toggleSpinner from "./utils/toggleSpinner.js";
 import setStatus from "./utils/setStatus.js";
+import { getUser } from "./utils/localStorage.js";
+import logoutUser from "./utils/logout.js";
 
 import CustomError from "./errors/custom.js";
 
 const formDOM = getElement(".form");
 const fileInputDOM = getElement("#formFile");
-
 // контейнер для статусов в форме пользователя
 const alertDOM = getElement(".alert-msg");
+// контейнер для статусов в форме пользователя
+const logLinkDOM = getElement(".logLink");
 
-fileInputDOM.addEventListener("change", (e) => {
-    // очищаем статус, если он отображался ранее
+// при загрузке страницы отобразить header корректно
+document.addEventListener("DOMContentLoaded", displayPageHeader);
+// если пользователь выбирает файл, очищаем статус (на слуйчай, если отображался ранее)
+fileInputDOM.addEventListener("change", clearStatus);
+
+// если пользователь залогинен, в header отобразить "Выйти",если нет - "Войти"
+function displayPageHeader() {
+    const user = getUser();
+    if (user) {
+        logLinkDOM.textContent = "Выйти";
+        logLinkDOM.href = "";
+        logLinkDOM.addEventListener("click", logoutUser);
+    } else {
+        logLinkDOM.textContent = "Вход/регистрация";
+        logLinkDOM.href = "login.html";
+        logLinkDOM.removeEventListener("click", logoutUser);
+    }
+}
+// очистить статус
+function clearStatus() {
     setStatus({ container: alertDOM });
-});
+}
 
 formDOM.addEventListener("submit", async (e) => {
     e.preventDefault();

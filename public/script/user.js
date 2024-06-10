@@ -4,6 +4,7 @@ const updateUserEmailURL = "/api/v1/users/updateUserEmail";
 
 import getElement from "./utils/getElement.js";
 import setStatus from "./utils/setStatus.js";
+import logoutUser from "./utils/logout.js";
 
 import CustomError from "./errors/custom.js";
 
@@ -32,9 +33,16 @@ const modalDOMBS = new bootstrap.Modal(getElement("#modal"));
 // контейнер для сообщения об успешном изменении почты
 const alertConfirmEmail = getElement("#emailToConfirm");
 const btnOkConfirmEmail = getElement(".btnOK");
+// ссылка Выйти
+const logoutDOM = getElement(".logout");
 
 // переменная с информацией о пользователе
 const userInfo = {};
+
+
+// при загрузке страницы загрузить профиль пользователя
+loadUserInfo();
+logoutDOM.addEventListener("click", logoutUser);
 
 // загрузить страницу с профилем пользователя
 async function loadUserInfo() {
@@ -77,9 +85,6 @@ async function loadUserInfo() {
         });
     }
 }
-
-// при загрузке страницы загрузить профиль пользователя
-loadUserInfo();
 
 userFormDOM.addEventListener("submit", async (e) => {
     e.preventDefault();

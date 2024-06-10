@@ -31,6 +31,10 @@ body {
     --bs-dropdown-link-active-bg: rgb(108, 117, 125, 0.5);
 }
 
+.dropdown-item {
+    cursor: pointer;
+}
+
 div.field {
     display: flex;
     align-items: center;
