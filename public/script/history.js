@@ -3,6 +3,7 @@ const tasksURL = "/api/v1/tasks";
 import setStatus from "./utils/setStatus.js";
 import getElement from "./utils/getElement.js";
 import logoutUser from "./utils/logout.js";
+import { getUser } from "./utils/localStorage.js";
 
 // таблица для записей
 const tableBody = getElement("tbody");
@@ -11,12 +12,20 @@ const alertDOM = getElement(".alert-msg");
 // ссылка Выйти
 const logoutDOM = getElement(".logout");
 
-document.addEventListener("DOMContentLoaded", async (e) => {
-    await getAllTasks();
-});
+document.addEventListener("DOMContentLoaded", displayContent);
 tableBody.addEventListener("click", deleteBtnHandler);
 logoutDOM.addEventListener("click", logoutUser);
 
+// при загрузке страницы проверить, существует ли запись в localStorage о пользователе
+// если не существует - редирект на страницу авторизации
+// если существует - запросить все записи задач
+function displayContent() {
+    const user = getUser();
+    if (!user) {
+        return window.location.assign("login.html");
+    }
+    getAllTasks();
+}
 
 // получить все задачи
 async function getAllTasks() {
@@ -28,6 +37,11 @@ async function getAllTasks() {
             },
         };
         const response = await fetch(tasksURL, params);
+
+        // если пользователь не авторизован, перебросить его на страницу авторизации
+        if (response.status === 401) {
+            window.location.assign("login.html");
+        }
 
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
@@ -138,6 +152,11 @@ async function deleteTask(id) {
             },
         };
         const response = await fetch(`${tasksURL}/${id}`, params);
+
+        // если пользователь не авторизован, перебросить его на страницу авторизации
+        if (response.status === 401) {
+            window.location.assign("login.html");
+        }
 
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();

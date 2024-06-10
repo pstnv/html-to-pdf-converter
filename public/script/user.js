@@ -5,6 +5,7 @@ const updateUserEmailURL = "/api/v1/users/updateUserEmail";
 import getElement from "./utils/getElement.js";
 import setStatus from "./utils/setStatus.js";
 import logoutUser from "./utils/logout.js";
+import { getUser } from "./utils/localStorage.js";
 
 import CustomError from "./errors/custom.js";
 
@@ -41,14 +42,29 @@ const userInfo = {};
 
 
 // при загрузке страницы загрузить профиль пользователя
-loadUserInfo();
+document.addEventListener("DOMContentLoaded", displayContent);
 logoutDOM.addEventListener("click", logoutUser);
 
+// при загрузке страницы проверить, существует ли запись в localStorage о пользователе
+// если не существует - редирект на страницу авторизации
+// если существует - запросить профиль пользователя
+function displayContent() {
+    const user = getUser();
+    if (!user) {
+        return window.location.assign("login.html");
+    }
+    loadUserInfo();
+}
 // загрузить страницу с профилем пользователя
 async function loadUserInfo() {
     try {
         // получаем данные о пользователе, get-запрос, авторизация через куки
         const response = await fetch(userInfoURL);
+
+        // если пользователь не авторизован, перебросить его на страницу авторизации
+        if (response.status === 401) {
+            window.location.assign("login.html");
+        }
 
         // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
         if (Math.floor(response.status / 100) !== 2) {
@@ -147,6 +163,11 @@ userFormDOM.addEventListener("submit", async (e) => {
             body: JSON.stringify(newUserInfo),
         };
         const response = await fetch(updateUserInfoURL, params);
+
+        // если пользователь не авторизован, перебросить его на страницу авторизации
+        if (response.status === 401) {
+            window.location.assign("login.html");
+        }
 
         // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
         if (Math.floor(response.status / 100) !== 2) {
@@ -267,6 +288,11 @@ changeEmailFormDOM.addEventListener("submit", async function (e) {
             body: JSON.stringify(body),
         };
         const response = await fetch(updateUserEmailURL, params);
+
+        // если пользователь не авторизован, перебросить его на страницу авторизации
+        if (response.status === 401) {
+            window.location.assign("login.html");
+        }
 
         // получаем сообщение из ответа
         const { msg } = await response.json();
