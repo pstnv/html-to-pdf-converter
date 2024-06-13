@@ -31,8 +31,11 @@ morgan.token("memory", (req, res) => {
 */
 const settings = ":date[web] :status :filename :response-time :memory";
 
+// добавить поля settings, записать в файл
 const logger = morgan(settings, {
-    stream: accessLogStream,
+    stream: {
+        write: accessLogStream,
+    },
 });
 
 export default logger;
