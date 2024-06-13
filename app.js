@@ -1,4 +1,4 @@
-import {app, connectDB} from "./expressServer.js"
+import { app, connectDB } from "./expressServer.js";
 
 // запустить сервер
 const port = process.env.PORT || 8000;

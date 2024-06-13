@@ -31,8 +31,6 @@ import {
 // serve static files from the './public' directory
 app.use(express.static("./public"));
 
-
-
 // ====== MIDDLEWARE CONfIG ======
 
 // ограничение частоты запросов к API
@@ -72,7 +70,6 @@ const cloudinaryConfig = {
     api_secret: process.env.CLOUD_API_SECRET,
 };
 
-
 // ====== MIDDLEWARE SETUP ======
 
 // express-rate-limit - ограничение частоты запросов к API
@@ -84,7 +81,6 @@ app.use(cors());
 // xss - фильтрация пользовательского ввода от атак межсайтового скриптинга (req.body, req.query, req.params)
 app.use(xss());
 
-
 // ====== EXPRESS REQUEST MIDDLEWARE SETUP ======
 
 // parse form data
@@ -94,7 +90,6 @@ app.use(express.json());
 app.use(fileUpload(fileUploadConfig));
 // базы данных
 cloudinary.config(cloudinaryConfig);
-
 
 // ====== SETUP ROUTES ======
 
