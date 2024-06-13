@@ -4,9 +4,9 @@ import { StatusCodes } from "http-status-codes";
 import { CustomError } from "../errors/index.js";
 
 const errorTempFilesHandler = (err, req, res, next) => {
-    console.log('here2', err.message)
+    console.log("here2", err.message);
     console.log(err);
-    console.log("Конец описания ошибки")
+    console.log("Конец описания ошибки");
     const file = req.file;
     // если файл был загружен, удаляем папку tmp
     if (file && file.tempFilePath) {
@@ -52,7 +52,7 @@ const errorResponder = (err, req, res, next) => {
     // ошибка в userId (userId не соответствует требованиям по длине или содержанию)
     // - данные по userId не найдены
     if (err.name === "CastError") {
-        console.log("Я здесь!")
+        console.log("Я здесь!");
         customError.msg = `Данные с id: ${err.value} пользователя не найдены`;
         customError.statusCode = StatusCodes.NOT_FOUND;
     }
@@ -64,6 +64,8 @@ const errorResponder = (err, req, res, next) => {
         )} уже существует`;
         customError.statusCode = StatusCodes.BAD_REQUEST;
     }
+    // добавить поле для morgan middleware (logger)
+    res.errMessage = customError.msg;
 
     return res.status(customError.statusCode).json({ msg: customError.msg });
 };
