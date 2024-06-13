@@ -1,9 +1,8 @@
 import { glob } from "glob";
 import path from "path";
-import { NotFoundError } from "../errors/index.js";
-import asyncWrapper from "../middleware/async.js";
+import { NotFoundError } from "../../errors/index.js";
 
-const htmlController = asyncWrapper(async (req, res, next) => {
+const findHtmlFile = async (req, res, next) => {
     const { unzippedFolder } = req.file;
 
     // поиск index.html в папке
@@ -25,5 +24,5 @@ const htmlController = asyncWrapper(async (req, res, next) => {
     };
 
     next();
-});
-export default htmlController;
+};
+export default findHtmlFile;

@@ -1,7 +1,7 @@
 import path from "path";
-import { BadRequestError } from "../errors/index.js";
+import { BadRequestError } from "../../errors/index.js";
 
-const uploadController = (req, res, next) => {
+const uploadZip = (req, res, next) => {
     // проверки:
     // запрос, не содержащий файлы
     if (!req.files) {
@@ -15,12 +15,12 @@ const uploadController = (req, res, next) => {
         throw new BadRequestError("Загрузите zip-архив");
     }
     // добавляем поля name и basename
-    const fileName = file.name;
-    file.basename = fileName;
+    const fileName = file.name; // имя файла без расширения
+    file.basename = fileName; // имя файла с расширением
     file.name = path.parse(fileName).name;
     req.file = file;
 
     next();
 };
 
-export default uploadController;
+export default uploadZip;

@@ -1,10 +1,10 @@
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import getPage from "../utils/getPagePath.js";
+import { StatusCodes } from "http-status-codes";
 
 const notFoundMiddleware = (req, res) => {
-    res.status(404).sendFile(resolve(__dirname, "../public/not-found.html"));
+    // полный путь до страницы
+    const page = getPage("not-found.html");
+    res.status(StatusCodes.NOT_FOUND).sendFile(page);
 };
 
 export default notFoundMiddleware;

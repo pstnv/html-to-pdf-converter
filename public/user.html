@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Мой аккаунт</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.css"
+            integrity="sha512-U9Y1sGB3sLIpZm3ePcrKbXVhXlnQNcuwGQJ2WjPjnp6XHqVTdgIlbaDzJXJIAuCTp3y22t+nhI4B88F/5ldjFA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <link rel="icon" href="./assets/icons/ico-convert.ico" />
+        <link rel="stylesheet" href="./styles/user.css" />
+    </head>
+    <body>
+        <header class="header py-3 mb-3 border-bottom">
+            <div
+                class="container-fluid d-flex justify-content-between align-items-center px-3 px-sm-5"
+            >
+                <div>
+                    <a
+                        class="d-flex align-items-center link-body-emphasis text-decoration-none"
+                        href="index.html"
+                    >
+                        <img
+                            alt="конвертёр"
+                            height="32"
+                            src="./assets/icons/icon-main.png"
+                        />
+                        <span class="logo-text ms-1 fw-bold">PDFConverter</span>
+                    </a>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a
+                            href="#"
+                            class="d-block"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="true"
+                        >
+                            <img
+                                src="./assets/icons/icon-user.png"
+                                alt="профиль пользователя"
+                                width="32"
+                                height="32"
+                                class="rounded-circle"
+                            />
+                        </a>
+                        <ul
+                            class="dropdown-menu text-small shadow"
+                            data-popper-placement="bottom-end"
+                            style="
+                                position: absolute;
+                                inset: 0px 0px auto auto;
+                                margin: 0px;
+                                transform: translate(0px, 34px);
+                                z-index: 100;
+                            "
+                        >
+                            <li>
+                                <a class="dropdown-item" href="history.html"
+                                    >Мои задачи</a
+                                >
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="user.html"
+                                    >Профиль</a
+                                >
+                            </li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <a class="dropdown-item logout">Выйти</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="col-md-7 col-lg-8">
+                <h4 class="mt-5">Моя учетная запись</h4>
+                <form method="POST" class="p-4 mt-4" id="userForm">
+                    <button
+                        type="button"
+                        class="btn-close d-block ms-auto"
+                        aria-label="Close"
+                    ></button>
+                    <div class="row gx-0 gy-3 my-5">
+                        <!-- Имя -->
+                        <div class="field col-12">
+                            <label for="firstName" class="form-label"
+                                >Имя</label
+                            >
+                            <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                id="firstName"
+                                disabled
+                            />
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-12">
+                            <div class="field">
+                                <label for="email" class="form-label"
+                                    >Email*</label
+                                >
+                                <input
+                                    type="email"
+                                    name="email"
+                                    class="form-control"
+                                    id="email"
+                                    disabled
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal"
+                                />
+                            </div>
+                            <small class="text text-end text-muted"
+                                >*Для изменения email требуется подтверить новый
+                                адрес</small
+                            >
+                        </div>
+                    </div>
+                    <div class="input-wrapper col-12">
+                        <div class="text-center p-0" role="alert">
+                            <i
+                                class="fa-solid fa-triangle-exclamation me-2"
+                            ></i>
+                            <span class="alert-msg p-0"></span>
+                        </div>
+                    </div>
+
+                    <button
+                        class="btn btn-danger w-100 mt-4 p-2 fs-5 btnSubmit"
+                        type="submit"
+                    >
+                        Изменить
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Изменение почты</h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Для подтверждения email вам будет выслано письмо на
+                            новую почту. Перейдите по ссылке, указанной в теле
+                            письма.
+                        </p>
+                        <p>
+                            <strong>Важно помнить</strong>, что почта является
+                            также и вашим логином, поэтому после ее смены при
+                            авторизации нужно будет вводить новую почту.
+                        </p>
+
+                        <form method="POST" id="changeEmailForm">
+                            <div class="row gx-0 gy-3 my-5">
+                                <!-- Новый Email -->
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <label for="newEmail" class="form-label"
+                                            >Новый Email</label
+                                        >
+                                        <input
+                                            type="email"
+                                            name="newEmail"
+                                            id="newEmail"
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <!-- Повторить новый Email -->
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <label
+                                            for="newEmailRepeat"
+                                            class="form-label"
+                                            >Повторите новый email</label
+                                        >
+                                        <input
+                                            type="email"
+                                            name="newEmailRepeat"
+                                            id="newEmailRepeat"
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <!-- Пароль для подтверждения -->
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <label for="password" class="form-label"
+                                            >Введите пароль</label
+                                        >
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- status message -->
+                            <div class="text-center p-0 my-4" role="alert">
+                                <i
+                                    class="fa-solid fa-triangle-exclamation me-2"
+                                ></i>
+                                <span class="alert-msg p-0"></span>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary btnChangeEmailForm"
+                                    data-bs-dismiss="modal"
+                                >
+                                    Отмена
+                                </button>
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger ms-3 btnChangeEmailForm"
+                                >
+                                    Сохранить новый email
+                                </button>
+                            </div>
+                        </form>
+                        <!-- HIDDEN MESSAGE -->
+                        <div
+                            id="emailToConfirm"
+                            class="flex-column justify-content-center align-items-center hide"
+                        >
+                            <div class="text-center my-1">
+                                <i class="fa-solid fa-check fa-4x"></i>
+                            </div>
+                            <h2 class="fs-4">Подтвердите новый email</h2>
+                            <p class="greet-msg mt-2 text-center">
+                                На указанную почту отправлено письмо со ссылкой
+                                для подтверждения. Проверьте почту
+                            </p>
+                            <button type="button" class="btn btn-danger btnOK">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"
+        ></script>
+        <script type="module" src="./script/user.js"></script>
+    </body>
+</html>
