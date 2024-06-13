@@ -71,10 +71,8 @@ app.use(
 
 // connectDB
 import connectDB from "./db/connectDB.js";
-// routers
-import { router as authRouter } from "./routes/authRoutes.js";
-import { router as taskRouter } from "./routes/taskRoutes.js";
-import { router as userRouter } from "./routes/userRouter.js";
+// router
+import { router } from "./routes/index.js";
 // error handler
 import notFoundMiddleware from "./middleware/not-found.js";
 import {
@@ -83,10 +81,7 @@ import {
 } from "./middleware/error-handler.js";
 
 // routes
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/tasks", taskRouter);
-app.use("/api/v1/users", userRouter);
-
+app.use(router);
 // 404 page not found
 app.use(notFoundMiddleware);
 // обработка ошибок
