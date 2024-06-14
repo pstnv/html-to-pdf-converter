@@ -6,7 +6,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node app.js",
-        "dev": "nodemon ./app.js"
+        "dev": "nodemon ./app.js",
+        "swagger": "node ./swagger.js"
     },
     "author": "Irina Postnova",
     "license": "ISC",
@@ -31,6 +32,9 @@
         "nodemailer": "^6.9.13",
         "puppeteer": "^22.6.3",
         "streamifier": "^0.1.1",
+        "swagger-autogen": "^2.23.7",
+        "swagger-jsdoc": "^6.2.8",
+        "swagger-ui-express": "^5.0.1",
         "validator": "^13.11.0"
     },
     "devDependencies": {
