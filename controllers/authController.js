@@ -61,6 +61,46 @@ const register = async (req, res) => {
     res.status(StatusCodes.CREATED).json({
         msg: "Пользователь зарегистрирован. Проверьте указанную электронную почту, чтобы подтвердить аккаунт",
     });
+
+    /*
+        #swagger.summary = 'Register a new user'
+        #swagger.description = 'User fills in the registration form - name, email, password' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['user'] = {
+            in: 'body',
+            description: 'Add new user',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/AddUser'
+            }
+        }
+        #swagger.responses[201] = {
+            schema: {
+                msg: 'Your email has been successfully registered. Please check your email to complete your profile'
+            },
+            description: 'User registered successfully',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field name (email or password) is required'
+            },
+            description: 'User registration failed. Missing name (email or password)',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'This email is already registered'
+            },
+            description: 'User registration failed. The email is already registered',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'User registration failed. Internal server error',
+        }    
+        */
 };
 
 // пользователь переходит по ссылке для подтверждения email и делает запрос
@@ -150,6 +190,54 @@ const login = async (req, res) => {
     // добавляем токен в куки
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
     res.status(StatusCodes.OK).json({ user: tokenUser });
+
+    /*
+        #swagger.summary = 'Login a user'
+        #swagger.description = 'User fills in the login form - email, password' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['user'] = {
+            in: 'body',
+            description: 'Login a user',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/User'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                user: {
+                    $ref: '#/definitions/TokenUser'
+                }
+            },
+            description: 'User logged in successfully',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field name (email or password) is required'
+            },
+            description: 'User login failed. Missing name (email or password)',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'User with this email not found'
+            },
+            description: 'User login failed. User not found',
+        }        
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Wrong password/ Invalid credentials'
+            },
+            description: 'User login failed. Invalid credentials',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'User login failed. Internal server error',
+        }    
+    */
 };
 
 const logout = async (req, res) => {

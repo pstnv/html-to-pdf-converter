@@ -20,39 +20,86 @@
   "schemes": [
     "http"
   ],
-  "consumes": [
-    "application/zip"
-  ],
-  "produces": [
-    "application/pdf"
-  ],
   "paths": {
     "/api/v1/auth/register": {
       "post": {
-        "description": "",
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register a new user",
+        "description": "User fills in the registration form - name, email, password",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "body",
+            "name": "user",
             "in": "body",
+            "description": "Add new user",
+            "required": true,
             "schema": {
               "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/AddUser"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Your email has been successfully  . Please check your email to complete your profile"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User   successfully"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "This email is already  "
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User registration failed. The email is already registered"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User registration failed. Internal server error"
           }
         }
       }
     },
     "/api/v1/auth/verify-email": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -80,38 +127,102 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "description": "",
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login a user",
+        "description": "User fills in the login form - email, password",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "Login a user",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/User"
+            }
+          },
           {
             "name": "user-agent",
             "in": "header",
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/TokenUser"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User logged in successfully"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "The field name (email or password) is required"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User login failed. Missing name (email or password)"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Wrong password/ Invalid credentials"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User login failed. Invalid credentials"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User login failed. Internal server error"
           }
         }
       }
     },
     "/api/v1/auth/logout": {
       "delete": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -122,6 +233,9 @@
     },
     "/api/v1/auth/forgot-password": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -146,6 +260,9 @@
     },
     "/api/v1/auth/reset-password": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -176,6 +293,9 @@
     },
     "/api/v1/tasks/": {
       "get": {
+        "tags": [
+          "Tasks"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -186,6 +306,9 @@
     },
     "/api/v1/tasks/html_to_pdf": {
       "post": {
+        "tags": [
+          "Tasks"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -196,6 +319,9 @@
     },
     "/api/v1/tasks/{id}": {
       "delete": {
+        "tags": [
+          "Tasks"
+        ],
         "description": "",
         "parameters": [
           {
@@ -214,6 +340,9 @@
     },
     "/api/v1/users/showMe": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -224,6 +353,9 @@
     },
     "/api/v1/users/updateUser": {
       "patch": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -248,6 +380,9 @@
     },
     "/api/v1/users/updateUserPassword": {
       "patch": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -275,6 +410,9 @@
     },
     "/api/v1/users/updateUserEmail": {
       "patch": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -305,6 +443,9 @@
     },
     "/api/v1/users/verifyUpdatedUserEmail": {
       "post": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -329,6 +470,64 @@
           }
         }
       }
+    }
+  },
+  "definitions": {
+    "AddUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Shura"
+        },
+        "email": {
+          "type": "string",
+          "example": "shura@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "secret"
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "password"
+      ]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "shura@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "secret"
+        }
+      },
+      "required": [
+        "email",
+        "password"
+      ]
+    },
+    "TokenUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Shura"
+        },
+        "userId": {
+          "type": "string",
+          "example": "666be590c71440513405199c"
+        }
+      },
+      "required": [
+        "name",
+        "userId"
+      ]
     }
   }
 }
