@@ -44,6 +44,20 @@ const doc = {
             $email: "shura@example.com",
             $password: "secret",
         },
+        Conversion: {
+            $_id: "6669fa927fee84f72b3c2282",
+            $name: "success.arch.pdf",
+            $status: true,
+            $createdBy: "6666aff21c2e29132a56f32f",
+            $file: "https://res.cloudinary.com/dx1bfr5u6/image/upload/v1718221457/converte…",
+            $cloudId: "converter-upload/fpjwsfcbmzd63kyzhhtb",
+            $createdAt: "2024-06-12T19:44:18.649+00:00",
+            $updatedAt: "2024-06-12T19:44:18.649+00:00",
+        },
+        DeleteTask: "6669fa927fee84f72b3c2282",
+        DeleteTaskUser: {
+            userId: "6666aff21c2e29132a56f32f",
+        },
     },
 };
 

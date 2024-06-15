@@ -38,7 +38,7 @@
           {
             "name": "user",
             "in": "body",
-            "description": "Add new user",
+            "description": "The request body contains name, email, password",
             "required": true,
             "schema": {
               "type": "object",
@@ -100,27 +100,71 @@
         "tags": [
           "Authentication"
         ],
-        "description": "",
+        "summary": "Verify new user email",
+        "description": "User gets an email with a link to complete registration",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "The request body contains email and verificationToken",
+            "required": true,
             "schema": {
               "type": "object",
-              "properties": {
-                "verificationToken": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/VerifyUser"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Your email has been successfully confirmed. Please login with your email and password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User completed registration"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Verification failed"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User completion of registration failed"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User completion of registration failed. Internal server error"
           }
         }
       }
@@ -140,9 +184,9 @@
         ],
         "parameters": [
           {
-            "name": "user",
+            "name": "body",
             "in": "body",
-            "description": "Login a user",
+            "description": "The request body contains email, password",
             "required": true,
             "schema": {
               "type": "object",
@@ -223,10 +267,44 @@
         "tags": [
           "Authentication"
         ],
-        "description": "",
+        "summary": "Log out a user",
+        "description": "User clicked the button \"Logout\"",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "User logged out"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User logged out"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User logout failed. Internal server error"
           }
         }
       }
@@ -236,24 +314,71 @@
         "tags": [
           "Authentication"
         ],
-        "description": "",
+        "summary": "User forgot password",
+        "description": "User fills in the form - email",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "The request body contains user email",
+            "required": true,
             "schema": {
               "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/ForgotUserPassword"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Please check the email for instructions to reset your password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Link to reset password was sent to the user email"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "The field email is required"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Reset password failed. Missing email"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Reset password failed. Internal server error"
           }
         }
       }
@@ -263,30 +388,71 @@
         "tags": [
           "Authentication"
         ],
-        "description": "",
+        "summary": "Reset user password",
+        "description": "User fills in the form - email, password",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "The request body contains token, email, password",
+            "required": true,
             "schema": {
               "type": "object",
-              "properties": {
-                "token": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/ResetUserPassword"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "The password was changed. Please use new password to login"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User has changed password"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Link has expired"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Changing password failed. Link has expired"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Changing password failed. Internal server error"
           }
         }
       }
@@ -296,10 +462,50 @@
         "tags": [
           "Tasks"
         ],
-        "description": "",
+        "summary": "Fetch all tasks",
+        "description": "User must be authorized",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "example": 1
+                },
+                "tasks": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Conversion"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Tasks successfully fetched"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Internal server error"
           }
         }
       }
@@ -322,18 +528,82 @@
         "tags": [
           "Tasks"
         ],
-        "description": "",
+        "summary": "Delete the task",
+        "description": "User must be authorized",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "The request params contains task id",
+            "schema": {
+              "type": "string",
+              "$ref": "#/definitions/DeleteTask"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The request body contains user id and params - task id",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/DeleteTaskUser"
+            }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Task deleted successfully"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Task deleted successfully"
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "The task not found"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Task deletion failed. The task not found"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Internal server error"
           }
         }
       }
@@ -528,6 +798,117 @@
         "name",
         "userId"
       ]
+    },
+    "VerifyUser": {
+      "type": "object",
+      "properties": {
+        "verificationToken": {
+          "type": "string",
+          "example": "verificationToken"
+        },
+        "email": {
+          "type": "string",
+          "example": "shura@example.com"
+        }
+      },
+      "required": [
+        "verificationToken",
+        "email"
+      ]
+    },
+    "ForgotUserPassword": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "shura@example.com"
+        }
+      },
+      "required": [
+        "email"
+      ]
+    },
+    "ResetUserPassword": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "example": "token"
+        },
+        "email": {
+          "type": "string",
+          "example": "shura@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "secret"
+        }
+      },
+      "required": [
+        "token",
+        "email",
+        "password"
+      ]
+    },
+    "Conversion": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "6669fa927fee84f72b3c2282"
+        },
+        "name": {
+          "type": "string",
+          "example": "success.arch.pdf"
+        },
+        "status": {
+          "type": "boolean",
+          "example": true
+        },
+        "createdBy": {
+          "type": "string",
+          "example": "6666aff21c2e29132a56f32f"
+        },
+        "file": {
+          "type": "string",
+          "example": "https://res.cloudinary.com/dx1bfr5u6/image/upload/v1718221457/converte…"
+        },
+        "cloudId": {
+          "type": "string",
+          "example": "converter-upload/fpjwsfcbmzd63kyzhhtb"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2024-06-12T19:44:18.649+00:00"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2024-06-12T19:44:18.649+00:00"
+        }
+      },
+      "required": [
+        "_id",
+        "name",
+        "status",
+        "createdBy",
+        "file",
+        "cloudId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "DeleteTask": {
+      "type": "string",
+      "example": "6669fa927fee84f72b3c2282"
+    },
+    "DeleteTaskUser": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "example": "6666aff21c2e29132a56f32f"
+        }
+      }
     }
   }
 }

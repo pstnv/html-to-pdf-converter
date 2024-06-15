@@ -158,14 +158,14 @@ async function deleteTask(id) {
             window.location.assign("login.html");
         }
 
+        const { msg } = await response.json();
         if (Math.floor(response.status / 100) !== 2) {
-            const { msg } = await response.json();
             throw new Error(msg);
         }
         await getAllTasks();
         setStatus({
             container: alertDOM,
-            message: "Запись удалена",
+            message: msg,
             clear: true,
         });
     } catch (error) {

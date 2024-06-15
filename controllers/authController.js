@@ -301,7 +301,7 @@ const logout = async (req, res) => {
             schema: {
                 msg: 'Something went wrong. Please try again later'
             },
-            description: 'User logout. Internal server error',
+            description: 'User logout failed. Internal server error',
         }    
     */
 };

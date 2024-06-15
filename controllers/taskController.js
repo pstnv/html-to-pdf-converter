@@ -19,6 +19,25 @@ const getAllTasks = async (req, res) => {
         createdBy: userId,
     });
     res.status(StatusCodes.OK).json({ count: tasks.length, tasks });
+
+    /*
+        #swagger.summary = 'Fetch all tasks'
+        #swagger.description = 'User must be authorized' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']        
+        #swagger.responses[200] = {
+            schema: {
+                count: 1, tasks: [{$ref: '#/definitions/Conversion'}]
+            },
+            description: 'Tasks successfully fetched',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+    */
 };
 
 const deleteTask = async (req, res) => {
@@ -48,7 +67,51 @@ const deleteTask = async (req, res) => {
 
     // удаляем запись в mongoDB
     await Conversion.deleteOne(taskToDelete);
-    res.status(StatusCodes.OK).send();
+    res.status(StatusCodes.OK).send({ msg: "Запись удалена" });
+
+    /*
+        #swagger.summary = 'Delete the task'
+        #swagger.description = 'User must be authorized' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains user id and params - task id',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/DeleteTaskUser'
+            }
+        }
+        #swagger.parameters['id'] = {
+            in: 'path',
+            name: "id",
+            description: 'The request params contains task id',
+            required: true,
+            schema: {
+                type: "string",
+                $ref: '#/definitions/DeleteTask'
+            }
+        }   
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'Task deleted successfully'
+            },
+            description: 'Task deleted successfully',
+        }
+        #swagger.responses[404] = {
+            schema: {
+                msg: 'The task not found'
+            },
+            description: 'Task deletion failed. The task not found',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+    */
 };
 
 const createTask = [
