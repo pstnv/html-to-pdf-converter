@@ -32,6 +32,18 @@ const doc = {
             $name: "Shura",
             $userId: "666be590c71440513405199c",
         },
+        VerifyUser: {
+            $verificationToken: "verificationToken",
+            $email: "shura@example.com",
+        },
+        ForgotUserPassword: {
+            $email: "shura@example.com",
+        },
+        ResetUserPassword: {
+            $token: "token",
+            $email: "shura@example.com",
+            $password: "secret",
+        },
     },
 };
 

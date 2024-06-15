@@ -69,7 +69,7 @@ const register = async (req, res) => {
         #swagger.consumes = ['application/json']
         #swagger.parameters['user'] = {
             in: 'body',
-            description: 'Add new user',
+            description: 'The request body contains name, email, password',
             required: true,
             schema: {
                 type: "object",
@@ -133,6 +133,40 @@ const verifyEmail = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "Email подтвержден. Регистрация завершена",
     });
+
+    /*
+        #swagger.summary = 'Verify new user email'
+        #swagger.description = 'User gets an email with a link to complete registration' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains email and verificationToken',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/VerifyUser'
+            }
+        }
+        #swagger.responses[201] = {
+            schema: {
+                msg: 'Your email has been successfully confirmed. Please login with your email and password'
+            },
+            description: 'User completed registration',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Verification failed'
+            },
+            description: 'User completion of registration failed',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'User completion of registration failed. Internal server error',
+        }    
+        */
 };
 
 const login = async (req, res) => {
@@ -196,9 +230,9 @@ const login = async (req, res) => {
         #swagger.description = 'User fills in the login form - email, password' 
         #swagger.produces = ['application/json']
         #swagger.consumes = ['application/json']
-        #swagger.parameters['user'] = {
+        #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Login a user',
+            description: 'The request body contains email, password',
             required: true,
             schema: {
                 type: "object",
@@ -251,6 +285,25 @@ const logout = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "Пользователь вышел из учетной записи",
     });
+
+    /*
+        #swagger.summary = 'Log out a user'
+        #swagger.description = 'User clicked the button "Logout"' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'User logged out'
+            },
+            description: 'User logged out',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'User logout. Internal server error',
+        }    
+    */
 };
 
 const forgotPassword = async (req, res) => {
@@ -289,6 +342,40 @@ const forgotPassword = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "На указанную почту отправлено письмо со ссылкой для сброса пароля. Проверьте почту",
     });
+
+    /*
+        #swagger.summary = 'User forgot password'
+        #swagger.description = 'User fills in the form - email' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains user email',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/ForgotUserPassword'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'Please check the email for instructions to reset your password'
+            },
+            description: 'Link to reset password was sent to the user email',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field email is required'
+            },
+            description: 'Reset password failed. Missing email',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Reset password failed. Internal server error',
+        }    
+    */
 };
 
 const resetPassword = async (req, res) => {
@@ -334,6 +421,46 @@ const resetPassword = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "Пароль был успешно изменен. Для входа используйте новый пароль",
     });
+
+    /*
+        #swagger.summary = 'Reset user password'
+        #swagger.description = 'User fills in the form - email, password' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains token, email, password',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/ResetUserPassword'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'The password was changed. Please use new password to login'
+            },
+            description: 'User has changed password',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field email (or password) is required'
+            },
+            description: 'Changing password failed. Missing email (or password)',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'Link has expired'
+            },
+            description: 'Changing password failed. Link has expired',
+        }  
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Changing password failed. Internal server error',
+        }    
+    */
 };
 
 export { register, login, logout, verifyEmail, forgotPassword, resetPassword };
