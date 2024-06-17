@@ -331,7 +331,7 @@ const forgotPassword = async (req, res) => {
         });
 
         // срок действия ссылки 10 минут
-        const tenMinutes = 1000 * 60 * 1;
+        const tenMinutes = 1000 * 60 * 10;
         const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
         // вносим изменения в документ пользователя
         user.passwordToken = createHash(passwordToken);
