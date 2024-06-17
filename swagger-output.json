@@ -121,7 +121,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "schema": {
               "type": "object",
               "properties": {
@@ -136,20 +136,20 @@
             },
             "description": "User completed registration"
           },
-          "401": {
+          "400": {
             "schema": {
               "type": "object",
               "properties": {
                 "msg": {
                   "type": "string",
-                  "example": "Verification failed"
+                  "example": "The field email (or verificationToken) is required"
                 }
               },
               "xml": {
                 "name": "main"
               }
             },
-            "description": "User completion of registration failed"
+            "description": "User completion of registration failed. Missing email (or verificationToken)"
           },
           "500": {
             "schema": {
@@ -492,6 +492,21 @@
             },
             "description": "Tasks successfully fetched"
           },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Authentication failed"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User must be authenticated"
+          },
           "500": {
             "schema": {
               "type": "object",
@@ -551,11 +566,11 @@
           {
             "name": "body",
             "in": "body",
-            "description": "The request body contains user id and params - task id",
+            "description": "The request body contains user id",
             "required": true,
             "schema": {
               "type": "object",
-              "$ref": "#/definitions/DeleteTaskUser"
+              "$ref": "#/definitions/UserWithId"
             }
           }
         ],
@@ -574,6 +589,21 @@
               }
             },
             "description": "Task deleted successfully"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Authentication failed"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User must be authenticated"
           },
           "404": {
             "schema": {
@@ -613,10 +643,58 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Show current user",
+        "description": "User must be authorized",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/CurrentUser"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Current user successfully fetched"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Authentication failed"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User must be authenticated"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Internal server error"
           }
         }
       }
@@ -626,24 +704,85 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Update user info",
+        "description": "User must be authorized",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "The request body contains user parameters - name",
+            "required": true,
             "schema": {
               "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/UpdateUser"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/TokenUpdatedUser"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User updated successfully"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "The field name is required"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User update failed. Missing name"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Authentication failed"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User must be authenticated"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Internal server error"
           }
         }
       }
@@ -653,27 +792,86 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Update user password",
+        "description": "User must be authorized",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "The request body contains user parameters - oldPassword, newPassword",
+            "required": true,
             "schema": {
               "type": "object",
-              "properties": {
-                "oldPassword": {
-                  "example": "any"
-                },
-                "newPassword": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/UpdateUserPassword"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "User password updated successfully"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User password updated successfully"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "The fields oldPassword and newPassword are required"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User update failed. Missing oldPassword (or newPassword)"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Authentication failed"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User must be authenticated"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Internal server error"
           }
         }
       }
@@ -683,30 +881,86 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Update user email",
+        "description": "User must be authorized",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "The request body contains user parameters - newEmail, newEmailRepeat, password, newPassword",
+            "required": true,
             "schema": {
               "type": "object",
-              "properties": {
-                "newEmail": {
-                  "example": "any"
-                },
-                "newEmailRepeat": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/UpdateUserEmail"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Please check your new email to confirm it"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User needs to check new email to confirm it"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "The fields newEmail (or newEmailRepeat, password) is required"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User email update failed. Missing newEmail (or newEmailRepeat, password)"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Authentication failed"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User must be authenticated"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Internal server error"
           }
         }
       }
@@ -716,27 +970,86 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Verify new user email",
+        "description": "User gets an email with a link to complete registration",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "The request body contains email and verificationToken",
+            "required": true,
             "schema": {
               "type": "object",
-              "properties": {
-                "verificationToken": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/VerifyNewUserEmail"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "User email updated. Please login with your new email"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User email updated"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "The field email (or verificationToken) is required"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User email update failed. Missing email (or verificationToken)"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Authentication failed"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "User must be authenticated"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Internal server error"
           }
         }
       }
@@ -901,14 +1214,119 @@
       "type": "string",
       "example": "6669fa927fee84f72b3c2282"
     },
-    "DeleteTaskUser": {
+    "UserWithId": {
       "type": "object",
       "properties": {
         "userId": {
           "type": "string",
           "example": "6666aff21c2e29132a56f32f"
         }
-      }
+      },
+      "required": [
+        "userId"
+      ]
+    },
+    "CurrentUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Shura"
+        },
+        "email": {
+          "type": "string",
+          "example": "shura@example.com"
+        }
+      },
+      "required": [
+        "name",
+        "email"
+      ]
+    },
+    "UpdateUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Shurochka"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "TokenUpdatedUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Shurochka"
+        },
+        "userId": {
+          "type": "string",
+          "example": "666be590c71440513405199c"
+        }
+      },
+      "required": [
+        "name",
+        "userId"
+      ]
+    },
+    "UpdateUserPassword": {
+      "type": "object",
+      "properties": {
+        "oldPassword": {
+          "type": "string",
+          "example": "secret"
+        },
+        "newPassword": {
+          "type": "string",
+          "example": "newsecret"
+        }
+      },
+      "required": [
+        "oldPassword",
+        "newPassword"
+      ]
+    },
+    "UpdateUserEmail": {
+      "type": "object",
+      "properties": {
+        "newEmail": {
+          "type": "string",
+          "example": "newshura@example.com"
+        },
+        "newEmailRepeat": {
+          "type": "string",
+          "example": "newshura@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "secret"
+        }
+      },
+      "required": [
+        "newEmail",
+        "newEmailRepeat",
+        "password"
+      ]
+    },
+    "VerifyNewUserEmail": {
+      "type": "object",
+      "properties": {
+        "verificationToken": {
+          "type": "string",
+          "example": "verificationToken"
+        },
+        "email": {
+          "type": "string",
+          "example": "newshura@example.com"
+        }
+      },
+      "required": [
+        "verificationToken",
+        "email"
+      ]
     }
   }
 }

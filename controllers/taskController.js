@@ -24,12 +24,18 @@ const getAllTasks = async (req, res) => {
         #swagger.summary = 'Fetch all tasks'
         #swagger.description = 'User must be authorized' 
         #swagger.produces = ['application/json']
-        #swagger.consumes = ['application/json']        
+        #swagger.consumes = ['application/json']
         #swagger.responses[200] = {
             schema: {
                 count: 1, tasks: [{$ref: '#/definitions/Conversion'}]
             },
             description: 'Tasks successfully fetched',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
         }
         #swagger.responses[500] = {
             schema: {
@@ -74,15 +80,6 @@ const deleteTask = async (req, res) => {
         #swagger.description = 'User must be authorized' 
         #swagger.produces = ['application/json']
         #swagger.consumes = ['application/json']
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'The request body contains user id and params - task id',
-            required: true,
-            schema: {
-                type: "object",
-                $ref: '#/definitions/DeleteTaskUser'
-            }
-        }
         #swagger.parameters['id'] = {
             in: 'path',
             name: "id",
@@ -92,12 +89,27 @@ const deleteTask = async (req, res) => {
                 type: "string",
                 $ref: '#/definitions/DeleteTask'
             }
-        }   
+        }
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains user id',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/UserWithId'
+            }
+        } 
         #swagger.responses[200] = {
             schema: {
                 msg: 'Task deleted successfully'
             },
             description: 'Task deleted successfully',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
         }
         #swagger.responses[404] = {
             schema: {

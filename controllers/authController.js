@@ -148,17 +148,17 @@ const verifyEmail = async (req, res) => {
                 $ref: '#/definitions/VerifyUser'
             }
         }
-        #swagger.responses[201] = {
+        #swagger.responses[200] = {
             schema: {
                 msg: 'Your email has been successfully confirmed. Please login with your email and password'
             },
             description: 'User completed registration',
         }
-        #swagger.responses[401] = {
+        #swagger.responses[400] = {
             schema: {
-                msg: 'Verification failed'
+                msg: 'The field email (or verificationToken) is required'
             },
-            description: 'User completion of registration failed',
+            description: 'User completion of registration failed. Missing email (or verificationToken)',
         }
         #swagger.responses[500] = {
             schema: {

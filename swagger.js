@@ -55,8 +55,32 @@ const doc = {
             $updatedAt: "2024-06-12T19:44:18.649+00:00",
         },
         DeleteTask: "6669fa927fee84f72b3c2282",
-        DeleteTaskUser: {
-            userId: "6666aff21c2e29132a56f32f",
+        UserWithId: {
+            $userId: "6666aff21c2e29132a56f32f",
+        },
+        CurrentUser: {
+            $name: "Shura",
+            $email: "shura@example.com",
+        },
+        UpdateUser: {
+            $name: "Shurochka",
+        },
+        TokenUpdatedUser: {
+            $name: "Shurochka",
+            $userId: "666be590c71440513405199c",
+        },
+        UpdateUserPassword: {
+            $oldPassword: "secret",
+            $newPassword: "newsecret",
+        },
+        UpdateUserEmail: {
+            $newEmail: "newshura@example.com",
+            $newEmailRepeat: "newshura@example.com",
+            $password: "secret",
+        },
+        VerifyNewUserEmail: {
+            $verificationToken: "verificationToken",
+            $email: "newshura@example.com",
         },
     },
 };
