@@ -1,12 +1,13 @@
+import dotenv from "dotenv"; // доступ к переменным среды
+dotenv.config();
+
 // тестовый вариант
 export default {
     host: "smtp.ethereal.email",
     port: 587,
     auth: {
-        // user: "kiarra12@ethereal.email",
-        // pass: "g5YrPTHTpNvBDqvm7F",
-        user: "katrine.ward14@ethereal.email",
-        pass: "kXtyTy3JF9wTFgzXQe",
+        user: process.env.ETHEREAL_USER,
+        pass: process.env.ETHEREAL_PASSWORD,
     },
 };
 

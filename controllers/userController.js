@@ -19,6 +19,31 @@ const showCurrentUser = async (req, res) => {
     res.status(StatusCodes.OK).json({
         user: { name: user.name, email: user.email },
     });
+
+    /*
+        #swagger.summary = 'Show current user'
+        #swagger.description = 'User must be authenticated' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.responses[200] = {
+            schema: {
+                user: {$ref: '#/definitions/CurrentUser'}
+            },
+            description: 'Current user successfully fetched',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+    */
 };
 
 const updateUser = async (req, res) => {
@@ -42,6 +67,46 @@ const updateUser = async (req, res) => {
     // и прикрепляем cookie
     attachCookiesToResponse({ res, user: tokenUser });
     res.status(StatusCodes.OK).json({ user: tokenUser });
+
+    /*
+        #swagger.summary = 'Update user info'
+        #swagger.description = 'User must be authenticated' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains user parameters - name',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/UpdateUser'
+            }
+        } 
+        #swagger.responses[200] = {
+            schema: {
+                user: {$ref: '#/definitions/TokenUpdatedUser'}
+            },
+            description: 'User updated successfully',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field name is required'
+            },
+            description: 'User update failed. Missing name',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+    */
 };
 
 const updateUserPassword = async (req, res) => {
@@ -63,6 +128,46 @@ const updateUserPassword = async (req, res) => {
     // сохраняем изменения в пользователе
     await user.save();
     res.status(StatusCodes.OK).json({ msg: "Пароль был изменен" });
+
+    /*
+        #swagger.summary = 'Update user password'
+        #swagger.description = 'User must be authenticated' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains user parameters - oldPassword, newPassword',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/UpdateUserPassword'
+            }
+        } 
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'User password updated successfully'
+            },
+            description: 'User password updated successfully',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The fields oldPassword and newPassword are required'
+            },
+            description: 'User update failed. Missing oldPassword (or newPassword)',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+    */
 };
 
 const updateUserEmail = async (req, res) => {
@@ -112,6 +217,46 @@ const updateUserEmail = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "На указанную почту отправлено письмо со ссылкой для подтверждения. Проверьте почту",
     });
+
+    /*
+        #swagger.summary = 'Update user email'
+        #swagger.description = 'User must be authenticated' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains user parameters - newEmail, newEmailRepeat, password, newPassword',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/UpdateUserEmail'
+            }
+        } 
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'Please check your new email to confirm it'
+            },
+            description: 'User needs to check new email to confirm it',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The fields newEmail (or newEmailRepeat, password) is required'
+            },
+            description: 'User email update failed. Missing newEmail (or newEmailRepeat, password)',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+    */
 };
 
 // пользователь переходит по ссылке для подтверждения нового email и делает запрос
@@ -163,6 +308,46 @@ const verifyUpdatedUserEmail = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "Email подтвержден. Ваша была изменена. Войдите с новыми учетными данными",
     });
+
+    /*
+        #swagger.summary = 'Verify new user email'
+        #swagger.description = 'User gets an email with a link to complete registration' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains email and verificationToken',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/VerifyNewUserEmail'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'User email updated. Please login with your new email'
+            },
+            description: 'User email updated',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field email (or verificationToken) is required'
+            },
+            description: 'User email update failed. Missing email (or verificationToken)',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+        */
 };
 
 export {

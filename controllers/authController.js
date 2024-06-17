@@ -61,6 +61,46 @@ const register = async (req, res) => {
     res.status(StatusCodes.CREATED).json({
         msg: "Пользователь зарегистрирован. Проверьте указанную электронную почту, чтобы подтвердить аккаунт",
     });
+
+    /*
+        #swagger.summary = 'Register a new user'
+        #swagger.description = 'User fills in the registration form - name, email, password' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['user'] = {
+            in: 'body',
+            description: 'The request body contains name, email, password',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/AddUser'
+            }
+        }
+        #swagger.responses[201] = {
+            schema: {
+                msg: 'Your email has been successfully registered. Please check your email to complete your profile'
+            },
+            description: 'User registered successfully',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field name (email or password) is required'
+            },
+            description: 'User registration failed. Missing name (email or password)',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'This email is already registered'
+            },
+            description: 'User registration failed. The email is already registered',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'User registration failed. Internal server error',
+        }    
+        */
 };
 
 // пользователь переходит по ссылке для подтверждения email и делает запрос
@@ -93,6 +133,40 @@ const verifyEmail = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "Email подтвержден. Регистрация завершена",
     });
+
+    /*
+        #swagger.summary = 'Verify new user email'
+        #swagger.description = 'User gets an email with a link to complete registration' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains email and verificationToken',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/VerifyUser'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'Your email has been successfully confirmed. Please login with your email and password'
+            },
+            description: 'User completed registration',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field email (or verificationToken) is required'
+            },
+            description: 'User completion of registration failed. Missing email (or verificationToken)',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'User completion of registration failed. Internal server error',
+        }    
+        */
 };
 
 const login = async (req, res) => {
@@ -150,6 +224,54 @@ const login = async (req, res) => {
     // добавляем токен в куки
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
     res.status(StatusCodes.OK).json({ user: tokenUser });
+
+    /*
+        #swagger.summary = 'Login a user'
+        #swagger.description = 'User fills in the login form - email, password' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains email, password',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/User'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                user: {
+                    $ref: '#/definitions/TokenUser'
+                }
+            },
+            description: 'User logged in successfully',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field name (email or password) is required'
+            },
+            description: 'User login failed. Missing name (email or password)',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'User with this email not found'
+            },
+            description: 'User login failed. User not found',
+        }        
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Wrong password/ Invalid credentials'
+            },
+            description: 'User login failed. Invalid credentials',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'User login failed. Internal server error',
+        }    
+    */
 };
 
 const logout = async (req, res) => {
@@ -163,6 +285,25 @@ const logout = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "Пользователь вышел из учетной записи",
     });
+
+    /*
+        #swagger.summary = 'Log out a user'
+        #swagger.description = 'User clicked the button "Logout"' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'User logged out'
+            },
+            description: 'User logged out',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'User logout failed. Internal server error',
+        }    
+    */
 };
 
 const forgotPassword = async (req, res) => {
@@ -190,7 +331,7 @@ const forgotPassword = async (req, res) => {
         });
 
         // срок действия ссылки 10 минут
-        const tenMinutes = 1000 * 60 * 1;
+        const tenMinutes = 1000 * 60 * 10;
         const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
         // вносим изменения в документ пользователя
         user.passwordToken = createHash(passwordToken);
@@ -201,6 +342,40 @@ const forgotPassword = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "На указанную почту отправлено письмо со ссылкой для сброса пароля. Проверьте почту",
     });
+
+    /*
+        #swagger.summary = 'User forgot password'
+        #swagger.description = 'User fills in the form - email' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains user email',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/ForgotUserPassword'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'Please check the email for instructions to reset your password'
+            },
+            description: 'Link to reset password was sent to the user email',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field email is required'
+            },
+            description: 'Reset password failed. Missing email',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Reset password failed. Internal server error',
+        }    
+    */
 };
 
 const resetPassword = async (req, res) => {
@@ -246,6 +421,46 @@ const resetPassword = async (req, res) => {
     res.status(StatusCodes.OK).json({
         msg: "Пароль был успешно изменен. Для входа используйте новый пароль",
     });
+
+    /*
+        #swagger.summary = 'Reset user password'
+        #swagger.description = 'User fills in the form - email, password' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The request body contains token, email, password',
+            required: true,
+            schema: {
+                type: "object",
+                $ref: '#/definitions/ResetUserPassword'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'The password was changed. Please use new password to login'
+            },
+            description: 'User has changed password',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'The field email (or password) is required'
+            },
+            description: 'Changing password failed. Missing email (or password)',
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'Link has expired'
+            },
+            description: 'Changing password failed. Link has expired',
+        }  
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Changing password failed. Internal server error',
+        }    
+    */
 };
 
 export { register, login, logout, verifyEmail, forgotPassword, resetPassword };

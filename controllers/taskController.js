@@ -19,6 +19,31 @@ const getAllTasks = async (req, res) => {
         createdBy: userId,
     });
     res.status(StatusCodes.OK).json({ count: tasks.length, tasks });
+
+    /*
+        #swagger.summary = 'Fetch all tasks'
+        #swagger.description = 'User must be authenticated' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.responses[200] = {
+            schema: {
+                count: 1, tasks: [{$ref: '#/definitions/Conversion'}]
+            },
+            description: 'Tasks successfully fetched',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+    */
 };
 
 const deleteTask = async (req, res) => {
@@ -48,7 +73,48 @@ const deleteTask = async (req, res) => {
 
     // удаляем запись в mongoDB
     await Conversion.deleteOne(taskToDelete);
-    res.status(StatusCodes.OK).send();
+    res.status(StatusCodes.OK).send({ msg: "Запись удалена" });
+
+    /*
+        #swagger.summary = 'Delete the task'
+        #swagger.description = 'User must be authenticated' 
+        #swagger.produces = ['application/json']
+        #swagger.consumes = ['application/json']
+        #swagger.parameters['id'] = {
+            in: 'path',
+            name: "id",
+            description: 'The request params contains task id',
+            required: true,
+            schema: {
+                type: "string",
+                $ref: '#/definitions/DeleteTask'
+            }
+        }
+        #swagger.responses[200] = {
+            schema: {
+                msg: 'Task deleted successfully'
+            },
+            description: 'Task deleted successfully',
+        }
+        #swagger.responses[401] = {
+            schema: {
+                msg: 'Authentication failed'
+            },
+            description: 'User must be authenticated',
+        }
+        #swagger.responses[404] = {
+            schema: {
+                msg: 'The task not found'
+            },
+            description: 'Task deletion failed. The task not found',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        }    
+    */
 };
 
 const createTask = [
@@ -59,6 +125,49 @@ const createTask = [
     sendPDFToCloudinary, // если пользователь авторизован - отправить в облако *.pdf, иначе - пропустить
     sendResultToMongoDB, // если пользователь авторизован - отправить информацию о конвертации в MongoDB, иначе - пропустить
     sendResponse, // отправить ответ
+
+    /*
+        #swagger.summary = 'Convert html to pdf'
+        #swagger.description = 'No need to user authentication' 
+        #swagger.produces = ['application/pdf']
+        #swagger.consumes = ['multipart/form-data']
+        #swagger.parameters['singleFile'] = {
+            in: 'formData',
+            type: 'file',
+            name: 'file',
+            "x-mimetype": 'application/zip',
+            description: 'The request should contain zip-arch with index.html (opt. css, pics)'
+        }
+        #swagger.responses[200] = {
+            description: 'Convertation ended successfully',
+            content: {
+                'application/pdf': {
+                    schema: {
+                        type: 'file',
+                        format: 'binary',
+                    }
+                }
+            }
+        }
+        #swagger.responses[400] = {
+            schema: {
+                msg: 'Upload a file || Upload a zip-file || Uploaded file is too big'
+            },
+            description: 'File upload failure',
+        }
+        #swagger.responses[404] = {
+            schema: {
+                msg: 'File index.html not found'
+            },
+            description: 'File index.html not found',
+        }
+        #swagger.responses[500] = {
+            schema: {
+                msg: 'Something went wrong. Please try again later'
+            },
+            description: 'Internal server error',
+        } 
+    */
 ];
 
 export { getAllTasks, deleteTask, createTask };
