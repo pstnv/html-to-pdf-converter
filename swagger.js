@@ -30,19 +30,20 @@ const doc = {
         },
         TokenUser: {
             $name: "Shura",
-            $userId: "666be590c71440513405199c",
+            $userId: "666fbbdf920afbf5214e090d",
         },
         VerifyUser: {
-            $verificationToken: "verificationToken",
+            $verificationToken:
+                "11288272cbdfa0abbee5fe7c3f9b8f4341c929b8456b37a0d192a738ade388d4a747177d360ceba2",
             $email: "shura@example.com",
         },
         ForgotUserPassword: {
             $email: "shura@example.com",
         },
         ResetUserPassword: {
-            $token: "token",
+            $token: "f8d598b8bf2e20e551ce67b01c87453da1eb8840b0953e50be3b78b1ab79eadf173b27b50f041a2c96cbeff52c1b6d281617b0be6319d7c36c1c639446489690e3bccce88800",
             $email: "shura@example.com",
-            $password: "secret",
+            $password: "newsecret",
         },
         Conversion: {
             $_id: "6669fa927fee84f72b3c2282",
@@ -56,7 +57,7 @@ const doc = {
         },
         DeleteTask: "6669fa927fee84f72b3c2282",
         UserWithId: {
-            $userId: "6666aff21c2e29132a56f32f",
+            $userId: "666fbbdf920afbf5214e090d",
         },
         CurrentUser: {
             $name: "Shura",
@@ -67,7 +68,7 @@ const doc = {
         },
         TokenUpdatedUser: {
             $name: "Shurochka",
-            $userId: "666be590c71440513405199c",
+            $userId: "666fbbdf920afbf5214e090d",
         },
         UpdateUserPassword: {
             $oldPassword: "secret",
@@ -79,7 +80,8 @@ const doc = {
             $password: "secret",
         },
         VerifyNewUserEmail: {
-            $verificationToken: "verificationToken",
+            $verificationToken:
+                "cec59c244be8b6512bd12bd04a5312c3bb9fda29f5057eee43dfbd72219e7caec038a74fe8f235858a3a6a47db9d2507eece6fd218e9d68d9a0b850cdec17c7624223b8979da",
             $email: "newshura@example.com",
         },
     },

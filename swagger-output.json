@@ -1104,7 +1104,7 @@
         },
         "userId": {
           "type": "string",
-          "example": "666be590c71440513405199c"
+          "example": "666fbbdf920afbf5214e090d"
         }
       },
       "required": [
@@ -1117,7 +1117,7 @@
       "properties": {
         "verificationToken": {
           "type": "string",
-          "example": "verificationToken"
+          "example": "11288272cbdfa0abbee5fe7c3f9b8f4341c929b8456b37a0d192a738ade388d4a747177d360ceba2"
         },
         "email": {
           "type": "string",
@@ -1146,7 +1146,7 @@
       "properties": {
         "token": {
           "type": "string",
-          "example": "token"
+          "example": "f8d598b8bf2e20e551ce67b01c87453da1eb8840b0953e50be3b78b1ab79eadf173b27b50f041a2c96cbeff52c1b6d281617b0be6319d7c36c1c639446489690e3bccce88800"
         },
         "email": {
           "type": "string",
@@ -1154,7 +1154,7 @@
         },
         "password": {
           "type": "string",
-          "example": "secret"
+          "example": "newsecret"
         }
       },
       "required": [
@@ -1219,7 +1219,7 @@
       "properties": {
         "userId": {
           "type": "string",
-          "example": "6666aff21c2e29132a56f32f"
+          "example": "666fbbdf920afbf5214e090d"
         }
       },
       "required": [
@@ -1264,7 +1264,7 @@
         },
         "userId": {
           "type": "string",
-          "example": "666be590c71440513405199c"
+          "example": "666fbbdf920afbf5214e090d"
         }
       },
       "required": [
@@ -1316,7 +1316,7 @@
       "properties": {
         "verificationToken": {
           "type": "string",
-          "example": "verificationToken"
+          "example": "cec59c244be8b6512bd12bd04a5312c3bb9fda29f5057eee43dfbd72219e7caec038a74fe8f235858a3a6a47db9d2507eece6fd218e9d68d9a0b850cdec17c7624223b8979da"
         },
         "email": {
           "type": "string",
