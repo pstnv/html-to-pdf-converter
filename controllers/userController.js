@@ -22,7 +22,7 @@ const showCurrentUser = async (req, res) => {
 
     /*
         #swagger.summary = 'Show current user'
-        #swagger.description = 'User must be authorized' 
+        #swagger.description = 'User must be authenticated' 
         #swagger.produces = ['application/json']
         #swagger.consumes = ['application/json']
         #swagger.responses[200] = {
@@ -70,7 +70,7 @@ const updateUser = async (req, res) => {
 
     /*
         #swagger.summary = 'Update user info'
-        #swagger.description = 'User must be authorized' 
+        #swagger.description = 'User must be authenticated' 
         #swagger.produces = ['application/json']
         #swagger.consumes = ['application/json']
         #swagger.parameters['body'] = {
@@ -131,7 +131,7 @@ const updateUserPassword = async (req, res) => {
 
     /*
         #swagger.summary = 'Update user password'
-        #swagger.description = 'User must be authorized' 
+        #swagger.description = 'User must be authenticated' 
         #swagger.produces = ['application/json']
         #swagger.consumes = ['application/json']
         #swagger.parameters['body'] = {
@@ -220,7 +220,7 @@ const updateUserEmail = async (req, res) => {
 
     /*
         #swagger.summary = 'Update user email'
-        #swagger.description = 'User must be authorized' 
+        #swagger.description = 'User must be authenticated' 
         #swagger.produces = ['application/json']
         #swagger.consumes = ['application/json']
         #swagger.parameters['body'] = {

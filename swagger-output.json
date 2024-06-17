@@ -463,7 +463,7 @@
           "Tasks"
         ],
         "summary": "Fetch all tasks",
-        "description": "User must be authorized",
+        "description": "User must be authenticated",
         "consumes": [
           "application/json"
         ],
@@ -530,10 +530,79 @@
         "tags": [
           "Tasks"
         ],
-        "description": "",
+        "summary": "Convert html to pdf",
+        "description": "No need to user authentication",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/pdf"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "type": "file",
+            "x-mimetype": "application/zip",
+            "description": "The request should contain zip-arch with index.html (opt. css, pics)"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Convertation ended successfully",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "file",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Upload a file || Upload a zip-file || Uploaded file is too big"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "File upload failure"
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "File index.html not found"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "File index.html not found"
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Something went wrong. Please try again later"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Internal server error"
           }
         }
       }
@@ -544,7 +613,7 @@
           "Tasks"
         ],
         "summary": "Delete the task",
-        "description": "User must be authorized",
+        "description": "User must be authenticated",
         "consumes": [
           "application/json"
         ],
@@ -644,7 +713,7 @@
           "Users"
         ],
         "summary": "Show current user",
-        "description": "User must be authorized",
+        "description": "User must be authenticated",
         "consumes": [
           "application/json"
         ],
@@ -705,7 +774,7 @@
           "Users"
         ],
         "summary": "Update user info",
-        "description": "User must be authorized",
+        "description": "User must be authenticated",
         "consumes": [
           "application/json"
         ],
@@ -793,7 +862,7 @@
           "Users"
         ],
         "summary": "Update user password",
-        "description": "User must be authorized",
+        "description": "User must be authenticated",
         "consumes": [
           "application/json"
         ],
@@ -882,7 +951,7 @@
           "Users"
         ],
         "summary": "Update user email",
-        "description": "User must be authorized",
+        "description": "User must be authenticated",
         "consumes": [
           "application/json"
         ],

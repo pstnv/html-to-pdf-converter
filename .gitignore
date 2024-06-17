@@ -1,5 +1,5 @@
 /node_modules
 /tmp
-/test
+/postman
 .env
 access.log
