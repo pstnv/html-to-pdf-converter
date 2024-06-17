@@ -90,15 +90,6 @@ const deleteTask = async (req, res) => {
                 $ref: '#/definitions/DeleteTask'
             }
         }
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'The request body contains user id',
-            required: true,
-            schema: {
-                type: "object",
-                $ref: '#/definitions/UserWithId'
-            }
-        } 
         #swagger.responses[200] = {
             schema: {
                 msg: 'Task deleted successfully'
