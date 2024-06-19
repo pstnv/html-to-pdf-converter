@@ -1,15 +1,15 @@
 import morgan from "morgan";
 import accessLogStream from "../utils/accessLogStream.js";
 
-// имя файла
+// status
 morgan.token("status", (req, res) => {
     if (Math.floor(res.statusCode / 100) !== 2) {
-        return `${res.statusCode} Конвертация прервана: ${res.errMessage}`;
+        return `${res.statusCode} Conversion aborted: ${res.errMessage}`;
     }
-    return `${res.statusCode} Конвертация завершена успешно`;
+    return `${res.statusCode} Conversion completed successfully`;
 });
 
-// имя файла
+// filename
 morgan.token("filename", (req, res) => {
     const file = req.file;
     if (file && file.pdf) {
@@ -17,21 +17,21 @@ morgan.token("filename", (req, res) => {
     }
 });
 
-// память на конвертацию (весь запрос)
+// memory on conversion (all request)
 morgan.token("memory", (req, res) => {
     return `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`;
 });
 
 /*
-- статус :status
-- имя файла :filename
-- дата выполнения операции :date[web] или [iso]
-- время, затраченное на операцию :response-time
-- память, затраченная на операцию :memory
+- status :status
+- name of file :filename
+- date of conversion :date[web] or [iso]
+- time spent on conversion :response-time
+- memory spent on conversion :memory
 */
 const settings = ":date[web] :status :filename :response-time :memory";
 
-// добавить поля settings, записать в файл
+// add prop settings, save to the file
 const logger = morgan(settings, {
     stream: {
         write: accessLogStream,

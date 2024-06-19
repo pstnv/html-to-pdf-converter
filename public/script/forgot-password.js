@@ -5,12 +5,12 @@ import setStatus from "./utils/setStatus.js";
 
 import CustomError from "./errors/custom.js";
 
-// контейнер для статусов в форме пользователя
+// container for statuses
 const btnSubmitFormDOM = getElement(".btnSubmit");
 const alertDOM = getElement(".alert-msg");
 const formDOM = getElement("form");
 formDOM.addEventListener("input", (e) => {
-    // очищаем статус, если он отображался ранее
+    // clear status if it's displayed
     setStatus({ container: alertDOM });
 });
 
@@ -18,26 +18,26 @@ formDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
-        // отображаем alert со статусом ожидания
+        // display alert with status Loading
         setStatus({
             container: alertDOM,
-            message: "Пожалуйста, ждите...",
+            message: "Loading...",
         });
-        // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
-        // блокируем кнопки (Сохранить и Отмена) на время запроса на сервер для исключения нескольких запросов одновременно
+        // prevent repeated form submission if a request is already being sent to the server
+        // we block the buttons (Save and Cancel) for the duration of the request to the server to exclude several requests at the same time
         btnSubmitFormDOM.disabled = true;
-        // имена полей формы
+        // form fields
         const formFieldsCollection = formDOM.querySelectorAll("input") || [];
         const formFields = [...formFieldsCollection].map((elem) => elem.name);
-        // данные формы
+        // form data
         const formData = new FormData(formDOM);
-        // проверяем, что все поля формы заполнены
+        // check that all form fields are filled in
         const isValid = formFields.every((field) => !!formData.get(field));
         if (!isValid) {
-            throw new CustomError("Все поля формы должны быть заполнены");
+            throw new CustomError("All fields are required");
         }
 
-        // формируем тело запроса
+        // form the request body
         const body = formFields.reduce((acc, field) => {
             acc[field] = formData.get(field);
             return acc;
@@ -57,27 +57,27 @@ formDOM.addEventListener("submit", async (e) => {
             throw new CustomError(msg);
         }
 
-        // разблокируем кнопку формы, когда работа с сервером завершена
+        // unlock the form button when work with the server is completed
         btnSubmitFormDOM.disabled = false;
-        // очищаем статус, если он отображался ранее
+        // clear the status if it was previously displayed
         setStatus({
             container: alertDOM,
             message: msg,
         });
     } catch (error) {
         console.log(error.message);
-        // если ошибка кастомная, отображаем ее сообщение
-        // если нет - "Что-то пошло не так..."
+        // if the error is custom, display its message
+        // else - "Something went wrong..."
         const customErr = {
             message:
                 error instanceof CustomError
                     ? error.message
-                    : "Что-то пошло не так. Повторите попытку позже",
+                    : "Something went wrong. Try again later",
         };
 
-        // отображаем статус с сообщением об ошибке
+        // display status with error message
         setStatus({ container: alertDOM, message: customErr.message });
-        // разблокируем кнопки (Сохранить и Отмена), когда работа с сервером завершена
+        // unlock the buttons (Save and Cancel) when work with the server is completed
         btnSubmitFormDOM.disabled = false;
     }
 });

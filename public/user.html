@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Мой аккаунт</title>
+        <title>My account</title>
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -31,7 +31,7 @@
                         href="index.html"
                     >
                         <img
-                            alt="конвертёр"
+                            alt="converter"
                             height="32"
                             src="./assets/icons/icon-main.png"
                         />
@@ -48,7 +48,7 @@
                         >
                             <img
                                 src="./assets/icons/icon-user.png"
-                                alt="профиль пользователя"
+                                alt="user profile"
                                 width="32"
                                 height="32"
                                 class="rounded-circle"
@@ -67,17 +67,17 @@
                         >
                             <li>
                                 <a class="dropdown-item" href="history.html"
-                                    >Мои задачи</a
+                                    >My tasks</a
                                 >
                             </li>
                             <li>
                                 <a class="dropdown-item" href="user.html"
-                                    >Профиль</a
+                                    >Profile</a
                                 >
                             </li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>
-                                <a class="dropdown-item logout">Выйти</a>
+                                <a class="dropdown-item logout">Log out</a>
                             </li>
                         </ul>
                     </div>
@@ -86,7 +86,7 @@
         </header>
         <div class="container">
             <div class="col-md-7 col-lg-8">
-                <h4 class="mt-5">Моя учетная запись</h4>
+                <h4 class="mt-5">My account</h4>
                 <form method="POST" class="p-4 mt-4" id="userForm">
                     <button
                         type="button"
@@ -94,10 +94,10 @@
                         aria-label="Close"
                     ></button>
                     <div class="row gx-0 gy-3 my-5">
-                        <!-- Имя -->
+                        <!-- Name -->
                         <div class="field col-12">
                             <label for="firstName" class="form-label"
-                                >Имя</label
+                                >Name</label
                             >
                             <input
                                 type="text"
@@ -125,8 +125,8 @@
                                 />
                             </div>
                             <small class="text text-end text-muted"
-                                >*Для изменения email требуется подтверить новый
-                                адрес</small
+                                >*To change your email you need to confirm your
+                                new email</small
                             >
                         </div>
                     </div>
@@ -143,7 +143,7 @@
                         class="btn btn-danger w-100 mt-4 p-2 fs-5 btnSubmit"
                         type="submit"
                     >
-                        Изменить
+                        Save
                     </button>
                 </form>
             </div>
@@ -154,7 +154,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5">Изменение почты</h1>
+                        <h1 class="modal-title fs-5">Change email</h1>
                         <button
                             type="button"
                             class="btn-close"
@@ -164,23 +164,21 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            Для подтверждения email вам будет выслано письмо на
-                            новую почту. Перейдите по ссылке, указанной в теле
-                            письма.
+                            You will receive an email with link to confirm changes. 
                         </p>
                         <p>
-                            <strong>Важно помнить</strong>, что почта является
-                            также и вашим логином, поэтому после ее смены при
-                            авторизации нужно будет вводить новую почту.
+                            <strong>Note</strong>, your email address is also
+                            your login. After you change your email use your new
+                            email to log in.
                         </p>
 
                         <form method="POST" id="changeEmailForm">
                             <div class="row gx-0 gy-3 my-5">
-                                <!-- Новый Email -->
+                                <!-- New Email -->
                                 <div class="col-12">
                                     <div class="d-flex align-items-center">
                                         <label for="newEmail" class="form-label"
-                                            >Новый Email</label
+                                            >New Email</label
                                         >
                                         <input
                                             type="email"
@@ -190,13 +188,13 @@
                                         />
                                     </div>
                                 </div>
-                                <!-- Повторить новый Email -->
+                                <!-- repeat New Email -->
                                 <div class="col-12">
                                     <div class="d-flex align-items-center">
                                         <label
                                             for="newEmailRepeat"
                                             class="form-label"
-                                            >Повторите новый email</label
+                                            >Repeat new email</label
                                         >
                                         <input
                                             type="email"
@@ -206,11 +204,11 @@
                                         />
                                     </div>
                                 </div>
-                                <!-- Пароль для подтверждения -->
+                                <!-- Password for confirmation -->
                                 <div class="col-12">
                                     <div class="d-flex align-items-center">
                                         <label for="password" class="form-label"
-                                            >Введите пароль</label
+                                            >Enter your password</label
                                         >
                                         <input
                                             type="password"
@@ -234,13 +232,13 @@
                                     class="btn btn-secondary btnChangeEmailForm"
                                     data-bs-dismiss="modal"
                                 >
-                                    Отмена
+                                    Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     class="btn btn-danger ms-3 btnChangeEmailForm"
                                 >
-                                    Сохранить новый email
+                                    Save new email
                                 </button>
                             </div>
                         </form>
@@ -252,10 +250,10 @@
                             <div class="text-center my-1">
                                 <i class="fa-solid fa-check fa-4x"></i>
                             </div>
-                            <h2 class="fs-4">Подтвердите новый email</h2>
+                            <h2 class="fs-4">Confirm new email</h2>
                             <p class="greet-msg mt-2 text-center">
-                                На указанную почту отправлено письмо со ссылкой
-                                для подтверждения. Проверьте почту
+                                An email with a confirmation link has been sent your new email. 
+                                Check your email
                             </p>
                             <button type="button" class="btn btn-danger btnOK">
                                 OK

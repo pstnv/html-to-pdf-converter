@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 import bcript from "bcryptjs";
 import validator from "validator";
 
-// схема пользователя
+// user's scheme
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "имя пользователя"],
+        required: [true, "username"],
         minlength: 3,
         maxlength: 25,
     },
@@ -15,13 +15,13 @@ const UserSchema = new mongoose.Schema({
         required: [true, "email"],
         validate: {
             validator: validator.isEmail,
-            message: "действующий email",
+            message: "valid email",
         },
         unique: true,
     },
     password: {
         type: String,
-        required: [true, "пароль"],
+        required: [true, "password"],
         minlength: 6,
     },
     verificationToken: String,
@@ -51,16 +51,16 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-// Mongoose Middleware документация https://mongoosejs.com/docs/middleware.html#pre
+// Mongoose Middleware docs https://mongoosejs.com/docs/middleware.html#pre
 UserSchema.pre("save", async function () {
-    // console.log(this.modifiedPaths()); // возвращает массив изменяемых полей
-    // console.log(this.isModified('name')); возвращает true || false
-    // при внесении изменений в пользователя (name, email, etc), если это не пароль, выходим из этого метода
-    // проверяем, если изменяемое поле не пароль, - выходим
+    // console.log(this.modifiedPaths()); // return arrays of fields that can be modified
+    // console.log(this.isModified('name')); returns true || false
+    // if change fields (name, email, etc), but not password, exit from this method
+    // check, if modified field is not password, - exit function
     if (!this.isModified("password")) {
         return;
     }
-    // хэшируем пароль перед сохранением
+    // hash password before saving
     const salt = await bcript.genSalt(10);
     this.password = await bcript.hash(this.password, salt);
 });

@@ -8,16 +8,16 @@ const convertHTMLToPDF = async (req, res, next) => {
         unzippedFolder: { htmlPage },
     } = req.file;
 
-    // процесс конвертации(по документации puppeteer) - старт
-    // запускаем браузер, открываем пустую страницу
+    // start conversion process
+    // launch browser, open new tab
     const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
 
-    // приводим адрес к виду url
+    // convert .html path to url
     const htmlURL = url.pathToFileURL(htmlPage.path).href;
     await page.goto(htmlURL, { waitUntil: "networkidle0" });
 
-    // генерирует PDF в режиме (media type) 'экран' (максимально точная цветопередача)
+    // genere]ate pdf in screen mode (the most accurate color rendition)
     await page.emulateMediaType("screen");
 
     const pageOptions = {
@@ -27,13 +27,13 @@ const convertHTMLToPDF = async (req, res, next) => {
     };
     const pdfBuffer = await page.pdf(pageOptions);
     if (!pdfBuffer) {
-        throw new CustomError("Результат не получен. Попробуйте позже");
+        throw new CustomError("No result received. Try again later");
     }
-    // закрываем браузер
+    // close browser
     await browser.close();
-    // процесс конвертации - окончание
+    // end conversion process
 
-    //  добавляем результат в поле pdf в req.file
+    //  add result as prop pdf to req.file
     req.file.pdf = {
         name: filename + ".pdf",
         status: true,

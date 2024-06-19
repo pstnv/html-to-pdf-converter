@@ -14,7 +14,7 @@ import {
 
 const getAllTasks = async (req, res) => {
     const { userId } = req.user;
-    // ищем в MongoDB все записи с id пользователя
+    // search for  all documents in MongoDB for current user
     const tasks = await Conversion.find({
         createdBy: userId,
     });
@@ -52,28 +52,27 @@ const deleteTask = async (req, res) => {
         params: { id: taskId },
     } = req;
 
-    // ищем в MongoDB запись с id пользователя и id записи
+    // search for document in MongoDB using it's id and user id
     const taskToDelete = await Conversion.findOne({
         createdBy: userId,
         _id: taskId,
     });
     if (!taskToDelete) {
         throw new NotFoundError(
-            `Данные о конвертации с id: ${taskId} не найдены`
+            `Conversion with id: ${taskId} not found`
         );
     }
 
-    // удаляем файл из хранилища cloudinary по cloudId
+    // delete .pdf file from cloudinary by it's cloudId
     const { cloudId } = taskToDelete;
     cloudinary.uploader.destroy(cloudId).catch((error) => {
-        // в случае ошибки при удалении файла из cloudinary
-        // выводим в консоль ошибку, но не выбрасываем ее пользователю
-        console.log("Не удалось удалить файл из cloudinary: ", error.message);
+        // in error case don't throw error - only console.log it
+        console.log("Couldn't delete file from cloudinary: ", error.message);
     });
 
-    // удаляем запись в mongoDB
+    // delete document Task from MongoDB
     await Conversion.deleteOne(taskToDelete);
-    res.status(StatusCodes.OK).send({ msg: "Запись удалена" });
+    res.status(StatusCodes.OK).send({ msg: "Task deleted" });
 
     /*
         #swagger.summary = 'Delete the task'
@@ -118,13 +117,13 @@ const deleteTask = async (req, res) => {
 };
 
 const createTask = [
-    uploadZip, // загрузить архив
-    unzipFolder, // распаковать архив
-    findHtmlFile, // найти index.html в папке
-    convertHTMLToPDF, // конвертировать index.html в *.pdf
-    sendPDFToCloudinary, // если пользователь авторизован - отправить в облако *.pdf, иначе - пропустить
-    sendResultToMongoDB, // если пользователь авторизован - отправить информацию о конвертации в MongoDB, иначе - пропустить
-    sendResponse, // отправить ответ
+    uploadZip, // upload zip-archive
+    unzipFolder, // unzip archive
+    findHtmlFile, // find index.html in folder with unzipped archive
+    convertHTMLToPDF, // conver index.html to *.pdf
+    sendPDFToCloudinary, // if user authenticated - send to cloudinary *.pdf, else - skip
+    sendResultToMongoDB, // if user authenticated - send information about conversion to MongoDB, else - skip
+    sendResponse, // send response to the user
 
     /*
         #swagger.summary = 'Convert html to pdf'

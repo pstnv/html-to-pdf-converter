@@ -8,18 +8,18 @@ import setStatus from "./utils/setStatus.js";
 
 import CustomError from "./errors/custom.js";
 
-// контейнер для статусов
+// container for statuses
 const alertDOM = getElement(".alert-msg");
 
-// получаем данные из url строки - token и email
+// get data from the url string - token and email
 const query = new URLSearchParams(window.location.search.slice(1));
 const token = query.get("token");
 const email = query.get("email");
-const confirmType = query.get("confirm"); // либо register, либо update
-setStatus({ container: alertDOM, message: "Пожалуйста, ждите..." });
+const confirmType = query.get("confirm"); // register or update
+setStatus({ container: alertDOM, message: "Loading..." });
 
 try {
-    // формируем тело запроса
+    // form the request body
     const body = {
         verificationToken: token,
         email,
@@ -35,9 +35,9 @@ try {
     const verifyEmailURL = url[confirmType];
     const response = await fetch(verifyEmailURL, params);
 
-    // получаем сообщение из ответа
+    // we get the message from the response
     const { msg } = await response.json();
-    // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
+    // if the server returned an error, throw an error with the received message
     if (Math.floor(response.status / 100) !== 2) {
         throw new CustomError(msg);
     }
@@ -45,20 +45,20 @@ try {
                 <h3 class="fs-4 my-4">${msg}</h3>
                 <a class="my-4" href="login.html">
                     <button class="btn btn-danger w-100 m-0">
-                        Войти
+                        Log in
                     </button>
                 </a>`;
     setStatus({ container: alertDOM, html });
 } catch (error) {
     console.log(error.message);
-    // если ошибка кастомная, отображаем ее сообщение
-    // если нет - "Что-то пошло не так..."
+    // if the error is custom, display its message
+    // else - "Something went wrong..."
     const customErr = {
         message:
             error instanceof CustomError
                 ? error.message
-                : "Что-то пошло не так. Проверьте ссылку и повторите попытку позже",
+                : "Something went wrong. Check the link and try again later",
     };
-    // отображаем alert с сообщением об ошибке
+    // display status with error message
     setStatus({ container: alertDOM, message: customErr.message });
 }

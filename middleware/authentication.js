@@ -1,39 +1,38 @@
-// import jwt from "jsonwebtoken";
 import { UnauthenticatedError } from "../errors/index.js";
 import { isTokenValid } from "../utils/index.js";
 import Token from "../models/Token.js";
 import { attachCookiesToResponse } from "../utils/index.js";
 
-// функция аутентификации используется на тех маршрутах, где авторизация обязательна
+// function of authentication is used on the routes where it is required
 const authenticateUser = async (req, res, next) => {
     const { accessToken, refreshToken } = req.signedCookies;
     try {
-        // проверяем, есть ли действующий токен доступа accessToken для коротких сессий
+        // check if accessToken for short sessions is exists
         if (accessToken) {
             const payload = isTokenValid(accessToken);
-            // если токен существует и действителен, записываем в запрос пользователя
+            // if accessToken exists and hasn't expired, add user to request as a prop
             req.user = payload.user;
             return next();
         }
 
-        // если срок действия accessToken истек, обращаемся к refreshToken
-        // проверяем, есть ли действующий токен refreshToken для длинных сессий
+        // if accessToken expires, work with refreshToken
+        // check if refreshToken for long sessions is exists
         if (!refreshToken) {
-            throw new UnauthenticatedError("Авторизация не пройдена");
+            throw new UnauthenticatedError("Authentication failed");
         }
-        // проверяем, что он есть в базе и является действующим
+        // check if refreshToken exists and hasn't expired yet
         const payload = isTokenValid(refreshToken);
         const existingToken = await Token.findOne({
             user: payload.user.userId,
             refreshToken: payload.refreshToken,
         });
-        // если токен не существует или срок действия истек , выбрасываем ошибку
+        // if refreshToken doesn't exist or refreshToken exists but it has expired throw error
         if (!existingToken || !existingToken?.isValid) {
-            throw new UnauthenticatedError("Авторизация не пройдена");
+            throw new UnauthenticatedError("Authentication failed");
         }
-        // если токен существует и действителен, записываем в запрос пользователя
+        // if refreshToken exists and hasn't expired, add user to request as a prop
         req.user = payload.user;
-        // прикрепляем куки (создадим новый accessToken, обновим срок действия refreshToken)
+        // attach cookie (create new accessToken, update expiration date for refreshToken)
         attachCookiesToResponse({
             res,
             user: payload.user,
@@ -41,42 +40,42 @@ const authenticateUser = async (req, res, next) => {
         });
         return next();
     } catch (error) {
-        throw new UnauthenticatedError("Авторизация не пройдена");
+        throw new UnauthenticatedError("Authentication failed");
     }
 };
 
-// функция проверки аутентификации используется на тех маршрутах, где авторизация не обязательна
+// function of checking authentication is used on the routes where it is not necessary (not required)
 const checkAuthentication = async (req, res, next) => {
     const { accessToken, refreshToken } = req.signedCookies;
     try {
-        // проверяем, есть ли действующий токен доступа accessToken для коротких сессий
+        // check if accessToken for short sessions is exists
         if (accessToken) {
             const payload = isTokenValid(accessToken);
-            // если токен существует и действителен, записываем в запрос пользователя
+            // if accessToken exists and hasn't expired, add user to request as a prop
             req.user = payload.user;
             return next();
         }
 
-        // если срок действия accessToken истек, обращаемся к refreshToken
-        // проверяем, есть ли действующий токен refreshToken для длинных сессий
-        // если refreshToken отсутствует, не выбрасываем ошибку - продолжаем конвертацию без авторизации
+        // if accessToken expires, work with refreshToken
+        // check if refreshToken for long sessions is exists
+        // if refreshToken doesn't exist, do not throw error - continue conversion without authentication
         if (!refreshToken) {
             return next();
         }
-        // если refreshToken существует, проверяем, что он есть в базе и является действующим
+        // check if refreshToken exists and hasn't expired yet
         const payload = isTokenValid(refreshToken);
         const existingToken = await Token.findOne({
             user: payload.user.userId,
             refreshToken: payload.refreshToken,
         });
-        // если токен не существует или не является действующим,
-        // не выбрасываем ошибку - продолжаем конвертацию без авторизации
+        // if refreshToken doesn't exist or refreshToken exists but it has expired
+        // do not throw error - continue conversion without authentication
         if (!existingToken || !existingToken?.isValid) {
             return next();
         }
-        // если токен существует и действителен, записываем в запрос пользователя
+        // if refreshToken exists and hasn't expired, add user to request as a prop
         req.user = payload.user;
-        // прикрепляем куки (создадим новый accessToken, обновим срок действия refreshToken)
+        // attach cookie (create new accessToken, update expiration date for refreshToken)
         attachCookiesToResponse({
             res,
             user: payload.user,
@@ -84,7 +83,7 @@ const checkAuthentication = async (req, res, next) => {
         });
         return next();
     } catch (error) {
-        // выводим в консоль ошибку, но не выбрасываем, т.к. авторизация не обязательна
+        // console.log error, but do not trow it (because authentication is unnecessary)
         console.log(error.message);
         next();
     }

@@ -1,6 +1,6 @@
 import { app, connectDB } from "./expressServer.js";
 
-// запустить сервер
+// start server
 const port = process.env.PORT || 8000;
 const mongoURI = process.env.MONGO_URI;
 const start = async () => {

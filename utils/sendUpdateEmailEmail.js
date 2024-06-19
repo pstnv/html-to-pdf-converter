@@ -6,21 +6,21 @@ const sendUpdateEmailEmail = async ({
     token,
     origin,
 }) => {
-    const confirmType = "update"
-    // const verifyEmailLink = `${origin}/verify-email?token=${verificationToken}&email=${email}`;
+    const confirmType = "update";
     const updateEmailLink = `${origin}/verify-email.html?token=${token}&email=${email}&confirm=${confirmType}`;
     const message = `
-    <h4>Здравствуйте, ${name}!</h4>
-    <p>Для сброса изменения email-адреса перейдите по ссылке: 
-        <a href="${updateEmailLink}">изменить email</a>
+    <h4>Hello, ${name}!</h4>
+    <p>To change your email visit the following link: 
+        <a href="${updateEmailLink}">change email</a>
     </p>
-    <p>Ссылка действительна в течение 1 часа.</p>`;
+    <p>The email change window is limited to one hour.</p>
+    <p>If you do not change your email within one hour, you will need to submit a new request.</p>`;
 
-    // вызываем функцию и передаем в нее аргументы
-    // функция sendEmail возвращает promise
+    // call function and pass to it arguments
+    // function sendEmail returns Promise
     return sendEmail({
         to: email,
-        subject: "Изменение почты",
+        subject: "Change your email",
         html: message,
     });
 };

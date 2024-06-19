@@ -2,26 +2,19 @@ import fs from "fs";
 
 const LOGFILE = "./access.log";
 
-// create a write stream (in append mode)
-// создает файл один раз
-// не создает файл зановое, если он был удален
-// const accessLogStream = fs.createWriteStream(LOGFILE, { flag: "a" });
-
 /*
-флаг  "a":
-- если файл не существует, создает его
-- открывает файл для записи
-- добавляет новую запись в конце файла
+flag  "a":
+- if file doesn't exist - creates it
+- opens file for recording
+- add new record to the end of file
 */
 
 const accessLogStream = function (message) {
     fs.writeFile(LOGFILE, message, { flag: "a" }, (error) => {
         if (error) {
-            console.log("Ошибка записи лога", error);
+            console.log("An error occurred while writing to logger", error);
         }
     });
 };
 
 export default accessLogStream;
-
-

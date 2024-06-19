@@ -1,7 +1,7 @@
-import dotenv from "dotenv"; // доступ к переменным среды
+import dotenv from "dotenv"; // access to  enviroment variables
 dotenv.config();
 
-// тестовый вариант
+// in developers mode
 export default {
     host: "smtp.ethereal.email",
     port: 587,
@@ -11,7 +11,7 @@ export default {
     },
 };
 
-/* // production вариант
+/* // in production mode
 export default {
     host: "smtp.gmail.com",
     port: 587,

@@ -1,45 +1,45 @@
 import jwt from "jsonwebtoken";
 
-// функция создает и возвращает jsonwebtoken
+// function creates andreturns jsonwebtoken
 const createJWT = ({ payload }) => {
-    // срок действия токена будет определяться куками
+    // token's expiration date will be determined by cookies
     const token = jwt.sign(payload, process.env.JWT_SECRET);
     return token;
 };
 
-// проверяем, существует ли токен
+// check if token exists
 const isTokenValid = (token) => jwt.verify(token, process.env.JWT_SECRET);
 
-// прикрепить кукис к ответу
+// attach cookies to response
 const attachCookiesToResponse = ({ res, user, refreshToken }) => {
-    // создали 2 токена
-    // accessTokenJWT создается на основе информации о пользователе,
-    // используется для короткой сессии, доступ к данным
+    // create 2 tokens
+    // accessTokenJWT contains user info,
+    // it is used for shorter sessions
     const accessTokenJWT = createJWT({ payload: { user } });
-    // refreshTokenJWT создается на основе информации о пользователе и refreshToken
-    // долгосрочный (30, 60 дней и т.д.)
+    // refreshTokenJWT contains user info and refreshToken
+    // it is used for longer sessions (30, 60 days etc.)
     const refreshTokenJWT = createJWT({ payload: { user, refreshToken } });
 
     const oneDay = 1000 * 60 * 60 * 24;
     const oneMonth = 1000 * 60 * 60 * 24 * 30;
-    // этот куки (token) хранит accessToken с информацией о пользователе
+    // this cookie (token) keeps accessToken with user info
     res.cookie("accessToken", accessTokenJWT, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // secure в режиме production (протокол https)
+        secure: process.env.NODE_ENV === "production", // secure in production mode (protocol https)
         signed: true,
         expires: new Date(Date.now() + oneDay),
     });
-    // этот куки хранит accessToken с информацией о пользователе, а также refreshToken
+    // this cookie (token) keeps accessToken with user info and also refreshToken
     res.cookie("refreshToken", refreshTokenJWT, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // secure в режиме production (протокол https)
+        secure: process.env.NODE_ENV === "production", // secure in production mode (protocol https)
         signed: true,
         expires: new Date(Date.now() + oneMonth),
     });
 };
 
 const clearCookiesFromResponse = async ({ res }) => {
-    // очищаем куки от accessToken и refreshToken
+    // clear cookies from accessToken and refreshToken
     res.cookie("accessToken", "logout", {
         httpOnly: true,
         expires: new Date(Date.now()),

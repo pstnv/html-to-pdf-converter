@@ -8,16 +8,16 @@ const sendResponse = async (req, res, next) => {
         unzippedFolder: { path: unzippedFolder },
     } = req.file;
 
-    // удаляем zip-архив
+    // delete zip-archive
     await unlink(tempFilePath);
-    // удаляем папку с распакованным архивом
+    // deletefolder with extracted zip-archive
     await rm(unzippedFolder, {
         recursive: true,
         force: true,
         maxRetries: 2,
     });
 
-    // устанавливаем заголовки ответа
+    // set response headers
     res.set({
         "Content-Type": "application/pdf",
         "Content-Length": pdfBuffer.length,

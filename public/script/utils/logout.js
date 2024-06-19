@@ -4,7 +4,7 @@ import { removeUser } from "./localStorage.js";
 import setStatus from "./setStatus.js";
 import getElement from "./getElement.js";
 
-// контейнер для статусов
+// container for statuses
 const alertDOM = getElement(".alert-msg");
 
 async function logoutUser() {
@@ -21,18 +21,18 @@ async function logoutUser() {
             const { msg } = await response.json();
             throw new Error(msg);
         }
-        // очищаем localStorage от записи, что пользователь залогинен
+        // clear localStorage from recording that the user is logged in
         removeUser();
-        // переводим на главную страницу
+        // move to main page
         window.location.assign("/");
     } catch (error) {
         console.log(error.message);
-        // очищаем localStorage от записи, что пользователь залогинен
+        // clear localStorage from recording that the user is logged in
         removeUser();
-        // отображаем статус с сообщением
+        // display status with message
         setStatus({
             container: alertDOM,
-            message: "Что-то пошло не так. Повторите попытку позже",
+            message: "Something went wrong. Try again later",
         });
     }
 }

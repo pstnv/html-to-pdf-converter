@@ -14,7 +14,7 @@ import {
 
 const showCurrentUser = async (req, res) => {
     const { userId } = req.user;
-    // найти документ пользователя в MongoDB, убрать из результатов пароль
+    // find document User in MongoDB, delete prop passsword from the result
     const user = await User.findOne({ _id: userId }).select("-password");
     res.status(StatusCodes.OK).json({
         user: { name: user.name, email: user.email },
@@ -47,24 +47,24 @@ const showCurrentUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-    // *в текущем наборе пользователь имеет поля name, email, password
-    // **email и password изменяются отдельной функцией
+    // *current user setting have fields name, email, password
+    // **email and password can be changed with other functions
     const { name } = req.body;
-    // проверяем, что передано поле name
+    // check if field name exists
     if (!name) {
-        throw new BadRequestError("Все поля обязательны для заполнения");
+        throw new BadRequestError("All fields are required");
     }
-    // ищем пользователя в MongoDB
+    // search for user in MongoDB
     const { userId } = req.user;
     const user = await User.findOne({ _id: userId });
-    // обновляем поля по отдельности
-    // не используем метод .findOneAndUpdate потому, что он не вызывает метод "pre"
+    // change every prop in user separately
+    // do not use method .findOneAndUpdate because it doesn't call method "pre"
     user.name = name;
-    // сохраняем изменения в пользователе
+    // save changes in user document
     await user.save();
-    // создаем новый токен, т.к. поля пользователя изменились
+    // create new token beacuse user properties have changed
     const tokenUser = createTokenUser(user);
-    // и прикрепляем cookie
+    // attach to the cookies
     attachCookiesToResponse({ res, user: tokenUser });
     res.status(StatusCodes.OK).json({ user: tokenUser });
 
@@ -111,23 +111,23 @@ const updateUser = async (req, res) => {
 
 const updateUserPassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
-    // проверяем, что переданы оба пароля - старый и новый
+    // check both passwords present - old and new
     if (!oldPassword || !newPassword) {
-        throw new BadRequestError("Все поля обязательны для заполнения");
+        throw new BadRequestError("All fields are required");
     }
-    // ищем пользователя в MongoDB
+    // search for user in MongoDB
     const { userId } = req.user;
     const user = await User.findOne({ _id: userId });
-    // проверяем, что старый пароль введен правильно
+    // check if old password matches
     const isPasswordCorrect = await user.comparePassword(oldPassword);
     if (!isPasswordCorrect) {
-        throw new UnauthenticatedError("Введен неверный пароль");
+        throw new UnauthenticatedError("Password incorrect");
     }
-    // меняем пароль
+    // change password
     user.password = newPassword;
-    // сохраняем изменения в пользователе
+    // save user document
     await user.save();
-    res.status(StatusCodes.OK).json({ msg: "Пароль был изменен" });
+    res.status(StatusCodes.OK).json({ msg: "Password has been changed" });
 
     /*
         #swagger.summary = 'Update user password'
@@ -173,32 +173,31 @@ const updateUserPassword = async (req, res) => {
 const updateUserEmail = async (req, res) => {
     const { newEmail, newEmailRepeat, password } = req.body;
     if (!newEmail || !newEmailRepeat || !password) {
-        throw new BadRequestError("Все поля обязательны для заполнения");
+        throw new BadRequestError("All fields are required");
     }
     if (newEmail !== newEmailRepeat) {
-        throw new BadRequestError("Введенные email адреса не совпадают");
+        throw new BadRequestError("The email addresses mismatch");
     }
-    // проверяем, если пользователь с новым newEmail уже зарегистрирован
+    // check if user is already registered
     const emailAlreadyExists = await User.findOne({ email: newEmail });
     if (emailAlreadyExists) {
         throw new BadRequestError(
-            `Пользователь с email ${newEmail} уже зарегистрирован`
+            `Account with the email ${email} already exists`
         );
     }
-    // ищем пользователя в MongoDB
+    // search for user in MongoDB
     const { userId } = req.user;
     const user = await User.findOne({ _id: userId });
 
-    // проверяем, что старый пароль введен правильно
+    // check if password correct
     const isPasswordCorrect = await user.comparePassword(password);
     if (!isPasswordCorrect) {
-        throw new UnauthenticatedError("Введен неверный пароль");
+        throw new UnauthenticatedError("Password incorrect");
     }
-    // создать токен для изменения почты
-    // встроенный модуль создает buffer, конвертируем в строку, каждый байт будет сконвертрован в hex-строку
+    // create token for changing email
     const emailToken = crypto.randomBytes(70).toString("hex");
-    // отправить письмо со ссылкой для восстановления
-    const origin = process.env.ORIGIN; // в режиме dev localhost:3000, в продакшн - ссылка на фронт
+    // send email with link to change email
+    const origin = process.env.ORIGIN; // in dev-mode localhost:5000, in prod-mode - link to the app front
     await sendUpdateEmailEmail({
         name: user.name,
         email: newEmail,
@@ -206,16 +205,16 @@ const updateUserEmail = async (req, res) => {
         origin,
     });
 
-    // срок действия ссылки
+    // link expiration date
     const oneHour = 1000 * 60 * 60;
     const emailTokenExpirationDate = new Date(Date.now() + oneHour);
-    // вносим изменения в документ пользователя
+    // add changes to user document
     user.emailToken = createHash(emailToken);
     user.emailTokenExpirationDate = emailTokenExpirationDate;
-    // сохраняем пользователя
+    // save changes to user document
     await user.save();
     res.status(StatusCodes.OK).json({
-        msg: "На указанную почту отправлено письмо со ссылкой для подтверждения. Проверьте почту",
+        msg: "Check the confirmation email in your new email inbox ",
     });
 
     /*
@@ -259,54 +258,51 @@ const updateUserEmail = async (req, res) => {
     */
 };
 
-// пользователь переходит по ссылке для подтверждения нового email и делает запрос
+// user clicks on the confirmation link to change email and sends response
 const verifyUpdatedUserEmail = async (req, res) => {
     const { verificationToken: emailToken, email: newEmail } = req.body;
     if (!emailToken || !newEmail) {
-        throw new BadRequestError("Все поля обязательны для заполнения");
+        throw new BadRequestError("All fields are required");
     }
-    // повторно проверяем, если пользователь с новым newEmail уже зарегистрирован
+    // check if user with this email is already registered
     const emailAlreadyExists = await User.findOne({ email: newEmail });
     if (emailAlreadyExists) {
         throw new BadRequestError(
-            `Пользователь с email ${newEmail} уже зарегистрирован`
+            `Account with the email ${email} already exists`
         );
     }
-    // ищем пользователя в MongoDB
+    // search for user in MongoDB
     const { userId } = req.user;
     const user = await User.findOne({ _id: userId });
-    // проверяем, что токен в запросе совпадает с токеном для сброса почты
-    // (который хранится в захешированном виде в документе пользователя user)
-    // и что срок действия токена для изменения почты не истек
+    // check emailToken from response(letter) and user.emailToken in mongoDB are equal
+    // also check if link has expired
     const currentDate = new Date();
     if (
         user.emailToken === createHash(emailToken) &&
         user.emailTokenExpirationDate > currentDate
     ) {
-        // устанавливаем новый email
+        // set new email
         user.email = newEmail;
-        // сбрасываем токен и время его действия
+        // clear emailToken and its expiration date
         user.emailToken = null;
         user.emailTokenExpirationDate = null;
-        // сохраняем документ пользователя в MongoDB
+        // save user document in MongoDB
         await user.save();
-        // пока что не просим пользователя залогиниться и не очищаем куки -
-        // открытый вопрос для использования 2FA
         res.status(StatusCodes.OK).json({
-            msg: "Почта успешно изменена. Для входа используйте новый email",
+            msg: "Your email address has been successfully changed. Use your new email to login",
         });
         return;
     } else if (
         user.emailToken === createHash(emailToken) &&
         user.emailTokenExpirationDate <= currentDate
     ) {
-        // если токен в запросе совпадает с токеном для сброса почты
-        // (который хранится в захешированном виде в документе пользователя user),
-        // но срок действия токена для изменения почты истек
-        throw new BadRequestError("Срок действия ссылки истек");
+        // if emailToken from response(letter) and user.emailToken in mongoDB  are equal
+        // but link has expired
+        throw new BadRequestError("The link you followed has expired");
     }
+    // for security purposes send success answer
     res.status(StatusCodes.OK).json({
-        msg: "Email подтвержден. Ваша была изменена. Войдите с новыми учетными данными",
+        msg: "Your email address has been successfully changed. Use your new email to login",
     });
 
     /*

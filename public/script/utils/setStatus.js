@@ -6,7 +6,7 @@ const setStatus = ({
     html: innerHTML = "",
     clear = false,
 }) => {
-    // если не передан контейнер, возвращаемся
+    // if the container is not transferred, we return
     if (!container) {
         return;
     }
@@ -15,7 +15,7 @@ const setStatus = ({
     } else {
         container.textContent = textContent;
     }
-    // очищаем контейнер от сообщения через delayMsec
+    // clear the container from the message via delayMsec
     if (clear) {
         setTimeout(() => {
             container.innerHTML = "";

@@ -1,27 +1,27 @@
-import "express-async-errors"; // перехватчик ошибок в асинхронных функциях (вместо trycatch)
-import dotenv from "dotenv"; // доступ к переменным среды
+import "express-async-errors"; // catch errors in async functions without using try-catch
+import dotenv from "dotenv"; // acces to env variables
 dotenv.config();
 
 // Express
 import express from "express";
 const app = express();
 
-// пакеты безопасности
+// security packages
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
 import xss from "express-mongo-sanitize";
-// остальные пакеты
+// other packages
 import cookieParser from "cookie-parser";
-// обработчик загрузки файлов
+// file upload package
 import fileUpload from "express-fileupload";
 import { ContentTooLargeError } from "./errors/index.js";
-// базы данных
+// DB
 import connectDB from "./db/connectDB.js";
 import { v2 as cloudinary } from "cloudinary";
 // router
 import { router } from "./routes/index.js";
-// обработчики ошибок
+// error handlers
 import notFoundMiddleware from "./middleware/not-found.js";
 import {
     errorTempFilesHandler,
@@ -33,37 +33,37 @@ app.use(express.static("./public"));
 
 // ====== MIDDLEWARE CONfIG ======
 
-// ограничение частоты запросов к API
+// limit the frequency of API requests
 const rateLimitConfig = {
-    windowMs: 15 * 60 * 1000, // временной интервал => 15 минут
-    limit: 1000, // лимит запросов => 1000 запросов в 15 минут с каждого IP
+    windowMs: 15 * 60 * 1000, // time interval =< 15 mins
+    limit: 1000, // request limit =< 1000 per 15 mins from every IP
     standardHeaders: "draft-7",
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
     // store: ... , // Redis, Memcached, etc. See below.
-    // message: "Вы превысили max количество запросов. Перерыв на 15 минут",
-    // statusCode: 429 // статус-код после того, как лимит будет достигнут
-    // handler, // коллбэк после того, как лимит будет достигнут (overrides message and statusCode settings, if set)
+    // message: "You have exceeded the maximum number of requests. Try again later",
+    // statusCode: 429 // statuc code after reaching limit
+    // handler, // cb function after reaching limit (overrides message and statusCode settings, if set)
 };
-// фильтрация загружаемых файлов (по размеру)
-// ограничение на максимальный размер загружаемого файла
+// filer uploading files (by its size)
+// limit on maximum upload file size
 const GIGABYTE = Math.pow(1024, 3);
 const maxSizeGB = process.env.MAX_SIZE;
-const maxSizeBytes = process.env.MAX_SIZE * GIGABYTE; // максимальный размер в байтах
+const maxSizeBytes = process.env.MAX_SIZE * GIGABYTE; // max file size in bytes
 const fileUploadConfig = {
     useTempFiles: true,
     limits: { fileSize: maxSizeBytes },
-    abortOnLimit: true, // при превышении размера обрывает соединение
-    // функция-обработчик при превышении размера maxSize
-    // next(uploadError) передает rangeError в errorHandlerMiddleware
-    // загруженный файл удаляется автоматически
+    abortOnLimit: true, // when reach max size breaks uploading
+    // cb function after reaching max size
+    // next(uploadError) passes rangeError to errorHandlerMiddleware
+    // the downloaded file is deleted automatically
     limitHandler: function (req, res, next) {
         const rangeError = new ContentTooLargeError(
-            `Размер файла не должен превышать ${maxSizeGB}Гб`
+            `File size should not exceed: ${maxSizeGB}GB`
         );
         next(rangeError);
     },
 };
-// конфигурация cloudinary
+// cloudinary configuration
 const cloudinaryConfig = {
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
@@ -72,13 +72,13 @@ const cloudinaryConfig = {
 
 // ====== MIDDLEWARE SETUP ======
 
-// express-rate-limit - ограничение частоты запросов к API
+// express-rate-limit
 app.set("trust proxy", 1);
 app.use(rateLimit(rateLimitConfig));
-// helmet - защита приложения путем установки http-заголовков
+// helmet - protecting the application by setting http headers
 app.use(helmet());
 app.use(cors());
-// xss - фильтрация пользовательского ввода от атак межсайтового скриптинга (req.body, req.query, req.params)
+// xss - filtering user input from cross-site scripting attacks (req.body, req.query, req.params)
 app.use(xss());
 
 // ====== EXPRESS REQUEST MIDDLEWARE SETUP ======
@@ -88,7 +88,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(express.json());
 app.use(fileUpload(fileUploadConfig));
-// базы данных
+// DB
 cloudinary.config(cloudinaryConfig);
 
 // ====== SETUP ROUTES ======
@@ -97,7 +97,7 @@ cloudinary.config(cloudinaryConfig);
 app.use(router);
 // 404 page not found
 app.use(notFoundMiddleware);
-// обработка ошибок
+// error handlers
 app.use(errorTempFilesHandler);
 app.use(errorResponder);
 

@@ -7,13 +7,13 @@ const sendEmail = async ({ to, subject, html }) => {
 
     const transporter = nodemailer.createTransport(nodemailerConfig);
 
-    // отправить сообщение
-    // метод .sendMail возвращает promise
+    // send email
+    // method .sendMail returns Promise
     return transporter.sendMail({
-        from: process.env.GMAIL_EMAIL, // адрес отправителя
-        to, // получатель
-        subject, // тема
-        html, // сообщение
+        from: process.env.GMAIL_EMAIL, // email address of sender
+        to, // recipient
+        subject, // theme
+        html, // message
     });
 };
 

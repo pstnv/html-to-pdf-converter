@@ -3,7 +3,7 @@ import swaggerAutogen from "swagger-autogen";
 const doc = {
     info: {
         title: "Convert HTML to PDF",
-        description: "Микросервис конвертирования HTML-файлов в PDF",
+        description: "HTML to PDF Conversion Microservice",
     },
     host: "localhost:5000",
     servers: [
@@ -12,7 +12,7 @@ const doc = {
             description: "local server",
         },
         {
-            url: "http://localhost:5000/", // исправить
+            url: "http://localhost:5000/", // correct after deploy
             description: "production server",
         },
     ],

@@ -7,11 +7,11 @@ import displaySuccessAnswer from "./utils/successAnswer.js";
 import CustomError from "./errors/custom.js";
 import { setUser, removeUser } from "./utils/localStorage.js";
 
-// контейнер для статусов в форме пользователя
+// container for statuses
 const alertDOM = getElement(".alert-msg");
 const formDOM = getElement("form");
 formDOM.addEventListener("input", (e) => {
-    // очищаем статус, если он отображался ранее
+    // clear the status if it was previously displayed
     setStatus({ container: alertDOM });
 });
 
@@ -19,18 +19,18 @@ formDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
-        // имена полей формы
+        // form field names
         const formFieldsCollection = formDOM.querySelectorAll("input") || [];
         const formFields = [...formFieldsCollection].map((elem) => elem.name);
-        // данные формы
+        // form data
         const formData = new FormData(formDOM);
-        // проверяем, что все поля формы заполнены
+        // check that all form fields are filled in
         const isValid = formFields.every((field) => !!formData.get(field));
         if (!isValid) {
-            throw new CustomError("Все поля формы должны быть заполнены");
+            throw new CustomError("All fields are required");
         }
 
-        // формируем тело запроса
+        // form the request body
         const body = formFields.reduce((acc, field) => {
             acc[field] = formData.get(field);
             return acc;
@@ -49,30 +49,30 @@ formDOM.addEventListener("submit", async (e) => {
             throw new CustomError(msg);
         }
         const { user } = await response.json();
-        // сохраняем в localStorage запись, что пользователь залогинился
+        // We save a record in localStorage that the user is logged in
         setUser();
 
-        // отобразить приветственное окно
+        // show welcome window
         const timeDelaySec = 3;
         formDOM.innerHTML = displaySuccessAnswer(user.name, timeDelaySec);
-        // перенаправить на главную страницу
+        // redirect to home page
         setTimeout(() => {
             window.location.assign("/");
         }, timeDelaySec * 1000);
     } catch (error) {
         console.log(error.message);
-        // если ошибка кастомная, отображаем ее сообщение
-        // если нет - "Что-то пошло не так..."
+        // if the error is custom, display its message
+        // else - "Something went wrong..."
         const customErr = {
             message:
                 error instanceof CustomError
                     ? error.message
-                    : "Что-то пошло не так. Повторите попытку позже",
+                    : "Something went wrong. Try again later",
         };
-        // очищаем localStorage от записи, что пользователь залогинен
+        // clear localStorage from recording that the user is logged in
         removeUser();
 
-        // отображаем статус с сообщением об ошибке
+        // display status with error message
         setStatus({ container: alertDOM, message: customErr.message });
     }
 });

@@ -4,19 +4,16 @@ import { StatusCodes } from "http-status-codes";
 import { CustomError } from "../errors/index.js";
 
 const errorTempFilesHandler = (err, req, res, next) => {
-    console.log("here2", err.message);
-    console.log(err);
-    console.log("Конец описания ошибки");
     const file = req.file;
-    // если файл был загружен, удаляем папку tmp
+    // if the file has been downloaded - delete folder tmp
     if (file && file.tempFilePath) {
-        // путь до папки tmp
+        // path to tmp folder
         const tmpFolder = dirname(file.tempFilePath);
-        // удаляет все файлы в папке tmp, включая папку tmp
+        // delete all files in tmp folder, including tmp folder
         fs.rmSync(tmpFolder, {
             recursive: true,
-            force: true, // принудительно
-            maxRetries: 2, // количество попыток
+            force: true, // forced deletion
+            maxRetries: 2, // count of retries, if first one is failed
         });
     }
 
@@ -24,47 +21,45 @@ const errorTempFilesHandler = (err, req, res, next) => {
 };
 
 const errorResponder = (err, req, res, next) => {
-    // если ошибка является кастомной (экземпляром класса CustomError),
-    // формируем новую ошибку, используя свойства переданной ошибки
+    // if error is instance of CustomError,
+    // create new error using props of this error
     let customError = {
         statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
         msg:
             err instanceof CustomError && err.message
                 ? err.message
-                : "Что-то пошло не так. Попробуйте позже",
+                : "Something went wrong. Try again later",
     };
 
-    // если ошибка другого происхождения, то трансформируем ее в user friendly
-    // если ошибка вернулась из Mongoose:
+    // if error is not instance of CustomError - transform it to userfriendly
+    // if error is thrown from Mongoose:
 
-    // ошибка валидации полей при регистрации
-    // пользователь не заполнил одно или несколько обязательных полей
+    // error of fields validation when register
+    // user dind't filled one or more required fields
     if (err.name === "ValidationError") {
         const errorsList = Object.values(err.errors);
         const fileds = errorsList.map((error) => error.message).join(", ");
         customError.msg =
             errorsList.length > 1
-                ? `Поля ${fileds} обязательны для заполнения`
-                : `Поле ${fileds} обязательно для заполнения`;
+                ? `Fields ${fileds} are required`
+                : `Field ${fileds} is required`;
         customError.statusCode = StatusCodes.BAD_REQUEST;
     }
 
-    // ошибка в userId (userId не соответствует требованиям по длине или содержанию)
-    // - данные по userId не найдены
+    // error in userId (userId doesn't correspond requirements of length or content)
     if (err.name === "CastError") {
-        console.log("Я здесь!");
-        customError.msg = `Данные с id: ${err.value} пользователя не найдены`;
+        customError.msg = `User with id: ${err.value} not found`;
         customError.statusCode = StatusCodes.NOT_FOUND;
     }
 
-    // код ошибки 11000 - (duplicate error) - email уже зарегистрирован
+    // error code 11000 - (duplicate error) - email already exists
     if (err && err.code === 11000) {
-        customError.msg = `Пользователь ${Object.values(
+        customError.msg = `Account ${Object.values(
             err.keyValue
-        )} уже существует`;
+        )} already exists`;
         customError.statusCode = StatusCodes.BAD_REQUEST;
     }
-    // добавить поле для morgan middleware (logger)
+    // add prop errMessage to response for morgan middleware (logger)
     res.errMessage = customError.msg;
 
     return res.status(customError.statusCode).json({ msg: customError.msg });

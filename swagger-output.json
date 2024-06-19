@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Convert HTML to PDF",
-    "description": "Микросервис конвертирования HTML-файлов в PDF",
+    "description": "HTML to PDF Conversion Microservice",
     "version": "1.0.0"
   },
   "host": "localhost:5000",

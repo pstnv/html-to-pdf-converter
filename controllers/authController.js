@@ -17,40 +17,32 @@ import {
 } from "../utils/index.js";
 
 const register = async (req, res) => {
-    // проверяем, если пользователь зарегистрирован
+    // check if user is already registered
     const { email } = req.body;
     const emailAlreadyExists = await User.findOne({ email });
     if (emailAlreadyExists) {
         throw new BadRequestError(
-            `Пользователь с email ${email} уже зарегистрирован`
+            `Account with the email ${email} already exists`
         );
     }
-    // встроенный модуль создает buffer, конвертируем в строку, каждый байт будет сконвертрован в hex-строку
-    const verificationToken = crypto.randomBytes(40).toString("hex");
-    // получили данные из post-запроса
-    // проверили на соответствие
-    // переписали пароль на хешированный
 
-    // срок действия ссылки
+    const verificationToken = crypto.randomBytes(40).toString("hex");
+    // get data frompost-request
+    // check for correspondence
+    // re-write password for hashed
+
+    // link expiration date
     const oneDay = 1000 * 60 * 60 * 24;
     const verificationTokenExpirationDate = new Date(Date.now() + oneDay);
-    // добавили verificationToken и verificationTokenExpirationDate
-    // отправили новую запись в MongoDB
+    // add verificationToken and verificationTokenExpirationDate
+    // send new record to MongoDB
     const user = await User.create({
         ...req.body,
         verificationToken,
         verificationTokenExpirationDate,
     });
-    // отправили письмо со ссылкой
-    const origin = process.env.ORIGIN; // в режиме dev localhost:3000, в продакшн - ссылка на фронт
-
-    // переменные (tempOrigin, protocol, host, forwardedHost, forwardedProtocol)
-    // не используются в проекте, показаны в учебных целях
-    // const tempOrigin = req.get("origin"); // localhost:5000 <= back-end server
-    // const protocol = req.protocol; // http
-    // const host = req.get("host"); // localhost:5000
-    // const forwardedHost = req.get("x-forwarded-host"); // localhost:3000 <= front-end (because we use proxy)
-    // const forwardedProtocol = req.get("x-forwarded-proto"); // http
+    // send letter with confirmation link
+    const origin = process.env.ORIGIN; // in dev-mode localhost:5000 (|| 3000), in prod-mode - link to the front
 
     await sendVerificationEmail({
         name: user.name,
@@ -59,7 +51,7 @@ const register = async (req, res) => {
         origin,
     });
     res.status(StatusCodes.CREATED).json({
-        msg: "Пользователь зарегистрирован. Проверьте указанную электронную почту, чтобы подтвердить аккаунт",
+        msg: "You have successfully registered. Check your email to confirm your account",
     });
 
     /*
@@ -103,35 +95,35 @@ const register = async (req, res) => {
         */
 };
 
-// пользователь переходит по ссылке для подтверждения email и делает запрос
+// user clicks on the confirmation link to verify email and sends response
 const verifyEmail = async (req, res) => {
     const { verificationToken, email } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-        throw new UnauthenticatedError("Неудачная верификация");
+        throw new UnauthenticatedError("Verification failed");
     }
     const currentDate = new Date();
-    // сверяем verificationToken из запроса (письма) в тем, что записан в поле пользователя user.verificationToken
-    // и проверяем, что срок его действия не истек
+    // check verificationToken from response(letter) and user.verificationToken in mongoDB  are equal
+    // also check if link has expired
     if (user.verificationToken !== verificationToken) {
-        throw new UnauthenticatedError("Неудачная верификация");
+        throw new UnauthenticatedError("Verification failed");
     } else if (
-        // если токен совпадает, но срок его действия истек
+        // if tokens are equal, but link has expired
         user.verificationToken === verificationToken &&
         user.verificationTokenExpirationDate <= currentDate
     ) {
-        throw new UnauthenticatedError("Срок действия ссылки истек");
+        throw new UnauthenticatedError("The link you followed has expired");
     }
-    // в случае, если токены совпали, и срок действия токена не окончен
-    // меняем поля пользователя (пользователь верифицирован, дата верификации, очищаем токен)
+    // if tokens are equal and token is still active (link hasn't expired yet)
+    // change fields (user is verified, date and clear verification token)
     user.isVerified = true;
     user.verified = Date.now();
     user.verificationToken = null;
     user.verificationTokenExpirationDate = null;
-    // сохраняем изменения в пользователе
+    // save changes in user
     await user.save();
     res.status(StatusCodes.OK).json({
-        msg: "Email подтвержден. Регистрация завершена",
+        msg: "Email is confirmed. Registration has been completed",
     });
 
     /*
@@ -172,56 +164,52 @@ const verifyEmail = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        throw new BadRequestError(
-            "Поля email и пароль обязательны для заполнения"
-        );
+        throw new BadRequestError("Fields email and password are required");
     }
-    // ищем пользователя в базе
+    // search for user in MongoDB
     const user = await User.findOne({ email });
     if (!user) {
         throw new UnauthenticatedError(
-            `Пользователь с адресом ${email} не найден`
+            `Account with email ${email} not found`
         );
     }
-    // сверяем пароль
+    // check for password
     const isPasswordCorrect = await user.comparePassword(password);
     if (!isPasswordCorrect) {
-        throw new UnauthenticatedError(`Неправильный пароль`);
+        throw new UnauthenticatedError(`Password incorrect`);
     }
     if (!user.isVerified) {
-        throw new UnauthenticatedError(`Подтвердите свой email`);
+        throw new UnauthenticatedError(`Confirm your email`);
     }
-    // создаем профиль пользователя для токена
+    // create user profile for token
     const tokenUser = createTokenUser(user);
 
-    // создаем переменную refreshToken и в качестве значения будем использовать:
-    // существующий или вновь созданный токен
+    // create refreshToken
     let refreshToken = "";
-    // проверяем, есть ли у пользователя (в документе MongoDB) существующий токен
+    // if user has existing token (in MongoDB)
     const existingToken = await Token.findOne({ user: user._id });
     if (existingToken) {
-        // если токен существует, проверяем, является ли он действующим
+        // if token exists, check if it's valid (not expired)
         const { isValid } = existingToken;
         if (!isValid) {
-            throw new UnauthenticatedError("Недействительные учетные данные");
+            throw new UnauthenticatedError("Invalid credentials");
         }
-        // если существующий токен является действительным, не перезаписываем его, а используем
+        // if token exists and valid (not expired), use it
         refreshToken = existingToken.refreshToken;
-        // добавляем токен в куки
+        // add token to the cookie
         attachCookiesToResponse({ res, user: tokenUser, refreshToken });
         res.status(StatusCodes.OK).json({ user: tokenUser });
         return;
     }
-    //если у пользователя нет документа Token, то создаем новый документ Токен для пользователя
-    // встроенный модуль создает buffer, конвертируем в строку, каждый байт будет сконвертрован в hex-строку
+    // if user has no Token document, create new Token document for the user
     refreshToken = crypto.randomBytes(40).toString("hex");
     const userAgent = req.headers["user-agent"];
     const ip = req.ip;
     const usertoken = { refreshToken, ip, userAgent, user: user._id };
-    // создаем документ токен в MongoDB
+    // create document Token in MongoDB
     await Token.create(usertoken);
 
-    // добавляем токен в куки
+    // add token to the cookie
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
     res.status(StatusCodes.OK).json({ user: tokenUser });
 
@@ -275,15 +263,15 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-    // если пользователь разлогинился
-    // удаляем документ токен из MongoDB
+    // if user logged out
+    // delete Token document from MongoDB
     const { userId } = req.user;
     await Token.findOneAndDelete({ user: userId });
 
-    // очищаем куки от accessToken и refreshToken
+    // clear cookies from accessToken and refreshToken
     clearCookiesFromResponse({ res });
     res.status(StatusCodes.OK).json({
-        msg: "Пользователь вышел из учетной записи",
+        msg: "User has logged out",
     });
 
     /*
@@ -309,20 +297,18 @@ const logout = async (req, res) => {
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
     if (!email) {
-        throw new BadRequestError("Поля email обязательно для заполнения");
+        throw new BadRequestError("Field email is required");
     }
-    // ищем пользователя в базе MongoDB по email
+    // search for user in MongoDB by this email
     const user = await User.findOne({ email });
-    // не отправляем ответ, что пользователь не существует в целях безопасности
-    // чтобы не было ответа, какой пользователь существует, а какой - нет
-    // поэтому на все запросы ответ "На почту отправлено письмо"
+    // for safety don't response that user with this email doesn't exist
+    // so all responses would be "We send you a letter"
     if (user && user.isVerified) {
-        // если пользователь найден, и его провиль подтвержден
-        // создать токен для восстановления пароля
-        // встроенный модуль создает buffer, конвертируем в строку, каждый байт будет сконвертрован в hex-строку
+        // if user was found and his account is confirmed
+        // create token to restore password
         const passwordToken = crypto.randomBytes(70).toString("hex");
-        // отправить письмо со ссылкой для восстановления
-        const origin = process.env.ORIGIN; // в режиме dev localhost:3000, в продакшн - ссылка на фронт
+        // send email with link to reset password
+        const origin = process.env.ORIGIN; // in dev-mode localhost:5000 (||3000), in prod-mode - link to the front
         sendResetPasswordEmail({
             name: user.name,
             email: user.email,
@@ -330,17 +316,17 @@ const forgotPassword = async (req, res) => {
             origin,
         });
 
-        // срок действия ссылки 10 минут
+        // link expires in 10 minutes
         const tenMinutes = 1000 * 60 * 10;
         const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
-        // вносим изменения в документ пользователя
+        // add changes to the user document
         user.passwordToken = createHash(passwordToken);
         user.passwordTokenExpirationDate = passwordTokenExpirationDate;
-        // сохраняем пользователя
+        // save user document
         await user.save();
     }
     res.status(StatusCodes.OK).json({
-        msg: "На указанную почту отправлено письмо со ссылкой для сброса пароля. Проверьте почту",
+        msg: "Check your email to reset your password",
     });
 
     /*
@@ -381,45 +367,41 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
     const { token, email, password } = req.body;
     if (!token || !email || !password) {
-        throw new BadRequestError("Все поля обязательны для заполнения");
+        throw new BadRequestError("All fields are required");
     }
-    // ищем пользователя в базе MongoDB по email
+    // secrah for user in MongoDB by email
     const user = await User.findOne({ email });
-    // не отправляем ответ, что пользователь не существует в целях безопасности
-    // чтобы не было ответа, какой пользователь существует, а какой - нет
-    // поэтому на все запросы ответ "На почту отправлено письмо"
+    // for safety don't response that user with this email doesn't exist
+    // so all responses would be "The password has been successfully updated"
     if (user) {
-        // проверяем, что токен в запросе совпадает с токеном для сброса пароля
-        // (который хранится в захешированном виде в документе пользователя user)
-        // и что срок действия токена для сброса пароля не истек
+        // check if token in request and token in user document (which hashed in MongodB) are equal
+        // and also token hasn't expired yet
         const currentDate = new Date();
         if (
             user.passwordToken === createHash(token) &&
             user.passwordTokenExpirationDate > currentDate
         ) {
-            // устанавливаем новый пароль
+            // set new password
             user.password = password;
-            // сбрасываем токен и время его действия
+            // reset token and it's expiration time
             user.passwordToken = null;
             user.passwordTokenExpirationDate = null;
-            // сохраняем документ пользователя в MongoDB
+            // save user document in MongoDB
             await user.save();
             res.status(StatusCodes.OK).json({
-                msg: "Пароль был успешно изменен. Для входа используйте новый пароль",
+                msg: "The password has been successfully updated. Use your new password to log in",
             });
             return;
         } else if (
             user.passwordToken === createHash(token) &&
             user.passwordTokenExpirationDate <= currentDate
         ) {
-            // если токен в запросе совпадает с токеном для сброса пароля
-            // (который хранится в захешированном виде в документе пользователя user),
-            // но срок действия токена для сброса пароля истек
-            throw new BadRequestError("Срок действия ссылки истек");
+            // if token has expired
+            throw new BadRequestError("The Link You Followed Has Expired");
         }
     }
     res.status(StatusCodes.OK).json({
-        msg: "Пароль был успешно изменен. Для входа используйте новый пароль",
+        msg: "The password has been successfully updated. Use your new password to log in",
     });
 
     /*

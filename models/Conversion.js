@@ -3,32 +3,32 @@ import mongoose from "mongoose";
 const ConversionSchema = new mongoose.Schema(
     {
         name: {
-            // имя архива
+            // archive name
             type: String,
-            required: [true, "имя архива"],
+            required: [true, "archive name"],
             // maxlength: 70,
         },
         status: {
-            // статус
+            // status
             type: Boolean,
-            required: [true, "статус"],
+            required: [true, "status"],
         },
         createdBy: {
-            // пользователь
+            // user
             type: mongoose.Types.ObjectId,
             ref: "User",
-            required: [true, "пользователь"],
+            required: [true, "user"],
         },
         file: {
             type: String,
-            required: [true, "ссылка на .pdf файл"],
+            required: [true, "link to .pdf file"],
         },
         cloudId: {
             type: String,
             required: [true, "cloudId"],
         },
     },
-    { timestamps: true } // добавить время createdAt и updatedAt
+    { timestamps: true } // add time createdAt and updatedAt
 );
 
 export default mongoose.model("Conversion", ConversionSchema);

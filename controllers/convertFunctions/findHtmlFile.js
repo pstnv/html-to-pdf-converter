@@ -5,19 +5,19 @@ import { NotFoundError } from "../../errors/index.js";
 const findHtmlFile = async (req, res, next) => {
     const { unzippedFolder } = req.file;
 
-    // поиск index.html в папке
+    // find index.html in the folder
     const indexPage = "index.html";
     let [indexPageRelPath] = await glob(
         `${unzippedFolder.path}/**/${indexPage}`
     );
     if (!indexPageRelPath) {
-        throw new NotFoundError(`Файл ${indexPage} не найден`);
+        throw new NotFoundError(`File ${indexPage} not found`);
     }
 
-    // абсолютный путь к index.html, используется puppeteer в convertController
+    // bsolute path to index.html (it's used by puppeteer in convertController)
     const indexPageAbsPath = path.resolve(indexPageRelPath);
 
-    // добавляем в req.file.unzippedFolder новые свойства - данные о найденной странице index.html(имя, путь)
+    // add to req.file.unzippedFolder new props - info about the found page index.html(name, path)
     unzippedFolder.htmlPage = {
         name: indexPage,
         path: indexPageAbsPath,

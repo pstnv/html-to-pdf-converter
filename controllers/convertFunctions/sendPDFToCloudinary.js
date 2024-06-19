@@ -1,19 +1,19 @@
 import { v2 as cloudinary } from "cloudinary";
-// streamifier используется для отправки buffer в cloudinary
+// streamifier is used to send buffer to cloudinary
 import streamifier from "streamifier";
 
 const sendPDFToCloudinary = async (req, res, next) => {
-    // проверяем, если пользователь авторизован
+    // check if user is authenticated
     const user = req.user;
-    // если пользователь не авторизован, переходим к контроллеру ответа
+    // if user is not authenticated move to next controller - response
     if (!user) {
         return next();
     }
-    // если пользователь авторизован, отправляем файл в cloudinary
+    // if user is authenticated send file to cloudinary
     const {
         pdf: { buffer: pdfBuffer },
     } = req.file;
-    //  отправляем потоком pdfBuffer на cloudinary
+    //  send as a buffer pdfBuffer to cloudinary
     let cld_upload_stream = cloudinary.uploader.upload_stream(
         {
             folder: "converter-upload",
@@ -21,20 +21,20 @@ const sendPDFToCloudinary = async (req, res, next) => {
         },
         function (error, result) {
             if (error) {
-                // если в процессе отправки pdfBuffer в cloudinary вернулась ошибка,
-                // выводим в консоль сообщение об ошибке
-                // но не выбрасываем ее,
-                // а исполняем следующий контроллер - responseController
-                // чтобы вернуть результат пользователю
+                // in case if we received error in process of sending pdfBuffer to cloudinary,
+                // console.log this error
+                // do not throw it,
+                // but call next controller function - responseController
+                // to send the result to user
                 console.log(error);
             }
-            // если результат успешный,
-            // добавляем путь к файлу на cloudinary (для скачивания)
-            // и его id (для удаления)
+            // if success,
+            // add path to the fileon cloudinary (for downloading by user)
+            // and it's id (for deleting request by user)
             if (result) {
-                // путь к файлу pdf на cloudinary
+                // pathto the .pdf file on cloudinary
                 req.file.pdf.file = result.secure_url;
-                // public_id используется для доступа к файлу при его удалении с cloudinary
+                // public_id is usedfor access to the file on cloudinary when delete it from cloudinary
                 req.file.pdf.cloudId = result.public_id;
             }
 

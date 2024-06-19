@@ -7,20 +7,19 @@ const sendVerificationEmail = async ({
     origin,
 }) => {
     const confirmType = "register";
-    // const verifyEmailLink = `${origin}/verify-email?token=${verificationToken}&email=${email}`;
     const verifyEmailLink = `${origin}/verify-email.html?token=${verificationToken}&email=${email}&confirm=${confirmType}`;
     const message = `
-    <h4>Здравствуйте, ${name}!</h4>
-    <p>Для завершения регистрации перейдите по ссылке: 
-        <a href="${verifyEmailLink}">подтвердить email</a>
+    <h4>Hello, ${name}!</h4>
+    <p>To complete the registration process, visit the following link: 
+        <a href="${verifyEmailLink}">confirm email</a>
     </p>
-    <p>Ссылка действительна в течение 24 часов.</p>`;
+    <p>The password reset window is limited to 24 hours.</p>`;
 
-    // вызываем функцию и передаем в нее аргументы
-    // функция sendEmail возвращает promise
+    // call function and pass to it arguments
+    // function sendEmail returns Promise
     return sendEmail({
         to: email,
-        subject: "Подтверждение регистрации",
+        subject: "Confirm your email",
         html: message,
     });
 };

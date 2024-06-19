@@ -1,23 +1,23 @@
 import Conversion from "../../models/Conversion.js";
 
 const sendResultToMongoDB = async (req, res, next) => {
-    // проверяем авторизацию
+    // check authentication
     const user = req.user;
-    // если пользователь не авторизован, пропускаем и переходим в responseController
+    // if user is not authenticated, skip and go to the next controller function - responseController
     if (!user) {
         return next();
     }
-    // если пользователь авторизован, создаем запись о конвертации в mongoDB
+    // if user is authenticated, create record about conversion in mongoDB
     const { userId } = user;
     const { pdf } = req.file;
 
-    // добавляем к pdf свойство - id пользователя,
-    // чтобы создать в MongoDB запись, привязанную к id пользователя
+    // add property id (userid) to pdf,
+    // to create record in MongoDB, associated with this user
     pdf.createdBy = userId;
-    // создаем документ conversion
-    // поля name, status записаны в convertController
-    // поле file записано в cloudController
-    // поле createdBy добавлено в этом контроллере
+    // create Conversion document
+    // fileds - name, status - added in convertController
+    // filed - file - added in cloudController
+    // field - createdBy - added in this controller
 
     await Conversion.create(pdf);
     next();

@@ -10,30 +10,30 @@ import CustomError from "./errors/custom.js";
 
 const formDOM = getElement(".form");
 const fileInputDOM = getElement("#formFile");
-// контейнер для статусов в форме пользователя
+// container for statuses
 const alertDOM = getElement(".alert-msg");
-// контейнер для статусов в форме пользователя
+// link to login
 const logLinkDOM = getElement(".logLink");
 
-// при загрузке страницы отобразить header корректно
+// display the header correctly when the page loads
 document.addEventListener("DOMContentLoaded", displayPageHeader);
-// если пользователь выбирает файл, очищаем статус (на слуйчай, если отображался ранее)
+// if the user selects a file, we clear the status (in case it was displayed earlier)
 fileInputDOM.addEventListener("change", clearStatus);
 
-// если пользователь залогинен, в header отобразить "Выйти",если нет - "Войти"
+// if the user is logged in, display "Logout" in the header, if not - "Login"
 function displayPageHeader() {
     const user = getUser();
     if (user) {
-        logLinkDOM.textContent = "Выйти";
+        logLinkDOM.textContent = "Logout";
         logLinkDOM.href = "";
         logLinkDOM.addEventListener("click", logoutUser);
     } else {
-        logLinkDOM.textContent = "Вход/регистрация";
+        logLinkDOM.textContent = "Login/Sign up";
         logLinkDOM.href = "login.html";
         logLinkDOM.removeEventListener("click", logoutUser);
     }
 }
-// очистить статус
+// clear status function
 function clearStatus() {
     setStatus({ container: alertDOM });
 }
@@ -43,14 +43,14 @@ formDOM.addEventListener("submit", async (e) => {
     const startConversionTime = Date.now();
 
     try {
-        // блокируем форму и отображаем спиннер
+        // lock the form and display the spinner
         toggleSpinner();
 
         const file = fileInputDOM.files[0];
         if (!file) {
-            throw new CustomError("Загрузите архив");
+            throw new CustomError("Upload zip-archive");
         }
-        // прикрепляем файл
+        // attach the file
         const formData = new FormData();
         formData.append("file", file);
 
@@ -65,14 +65,14 @@ formDOM.addEventListener("submit", async (e) => {
         }
         const blob = await response.blob();
 
-        // получаем имя файла из заголовка ответа
+        // get the file name from the response header
         const contentDisposition = response.headers.get("content-disposition");
         const filenameResponse = contentDisposition.split("filename=").pop();
-        // если предыдущий способ не дал результат - получаем имя из отправленного пользователем файла
+        // if the previous method did not produce results, we get the name from the file sent by the user
         const filenameRequest = file.name.split(".zip").shift() + ".pdf";
-        // присваиваемое файлу имя
+        // file name
         const filename = filenameRequest || filenameResponse;
-        // принудительный запуск скачивания резульата под файлом filename
+        // forced start of downloading the result under the file filename
         let dataURL = URL.createObjectURL(blob);
         let anchor = document.createElement("a");
         anchor.href = dataURL;
@@ -83,19 +83,19 @@ formDOM.addEventListener("submit", async (e) => {
         anchor.remove();
         setStatus({
             container: alertDOM,
-            message: "Конвертация выполнена успешно. Файл скачан",
+            message: "Conversion completed successfully. File downloaded",
             clear: true,
         });
     } catch (error) {
         console.log(error.message);
 
-        // отображаем alert с сообщением
+        // display an alert with a message
         setStatus({
             container: alertDOM,
             message: error.message,
         });
     } finally {
-        // разблокируем форму и скрываем спиннер
+        // unlock the form and hide the spinner
         toggleSpinner(startConversionTime);
     }
 });

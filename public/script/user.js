@@ -9,45 +9,44 @@ import { getUser } from "./utils/localStorage.js";
 
 import CustomError from "./errors/custom.js";
 
-// форма данных пользователя
+// user data form
 const userFormDOM = getElement("#userForm");
-// делаем выборку всех input в форме userFormDOM
+// select all inputs in the userFormDOM form
 const userFormFieldsCollection = userFormDOM.querySelectorAll("input");
 const btnSubmitUserFormDOM = getElement(".btnSubmit");
 const btnCloseUserFormDOM = getElement(".btn-close");
 const emailInputUserFormDOM = getElement("#email");
-// контейнер для статусов в форме пользователя
+// container for statuses
 const alertUserFormDOM = getElement("#userForm .alert-msg");
 
-// форма для изменения email
+// form for changing email
 const changeEmailFormDOM = getElement("#changeEmailForm");
-// делаем выборку всех input в форме userFormDOM
+// select all inputs in the userFormDOM form
 const changeEmailFormFieldsCollection =
     changeEmailFormDOM.querySelectorAll("input");
 const btnsChangeEmailFormDOM = changeEmailFormDOM.querySelectorAll(
     ".btnChangeEmailForm"
 );
-// контейнер для статусов в форме обновления email
+// container for statuses in the email update form
 const alertChangeEmailFormDOM = getElement("#changeEmailForm .alert-msg");
-// модальное окно
+// modal window
 const modalDOMBS = new bootstrap.Modal(getElement("#modal"));
-// контейнер для сообщения об успешном изменении почты
+// container for message about successful mail change
 const alertConfirmEmail = getElement("#emailToConfirm");
 const btnOkConfirmEmail = getElement(".btnOK");
-// ссылка Выйти
+// link Logout
 const logoutDOM = getElement(".logout");
 
-// переменная с информацией о пользователе
+// variable with user information
 const userInfo = {};
 
-
-// при загрузке страницы загрузить профиль пользователя
+// load user profile when page loads
 document.addEventListener("DOMContentLoaded", displayContent);
 logoutDOM.addEventListener("click", logoutUser);
 
-// при загрузке страницы проверить, существует ли запись в localStorage о пользователе
-// если не существует - редирект на страницу авторизации
-// если существует - запросить профиль пользователя
+// When loading the page, check if there is an entry in localStorage about the user
+// if does not exist - redirect to the authorization page
+// if exists - request user profile
 function displayContent() {
     const user = getUser();
     if (!user) {
@@ -55,46 +54,47 @@ function displayContent() {
     }
     loadUserInfo();
 }
-// загрузить страницу с профилем пользователя
+// load user profile page
 async function loadUserInfo() {
     try {
-        // получаем данные о пользователе, get-запрос, авторизация через куки
+        // get user data, get request, authorization via cookies
         const response = await fetch(userInfoURL);
 
-        // если пользователь не авторизован, перебросить его на страницу авторизации
+        // if the user is not authorized, redirect him to the authorization page
         if (response.status === 401) {
             window.location.assign("login.html");
         }
 
-        // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
+        // if the server returned an error, throw an error with the received message
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
             throw new CustomError(msg);
         }
 
-        // получаем данные о пользователе из ответа
+        // get user data from the response
         const { user } = await response.json();
-        // проходимся циклом inputFieldsDOM по коллекции - по каждому input
+        // go through the inputFieldsDOM loop through the collection - for each input
         userFormFieldsCollection.forEach((input) => {
             const field = input.name;
-            // если пользователь имеет свойство, совпадающее с полем input.name,
-            // заполняем поле input
-            // или оставляем пустым
+            // if the user has a property matching the input.name field,
+            // fill in the input field
+            // or leave it blank
             input.value = user[field] || "";
-            // записываем в userInfo свойство из input
+            // write the property from input to userInfo
             userInfo[field] = input.value;
         });
     } catch (error) {
         console.log(error.message);
-        // если ошибка кастомная, отображаем ее сообщение
-        // если нет - "Что-то пошло не так..."
+        // if the error is custom, display its message
+        // else - "Something went wrong..."
         const customErr = {
             message:
                 error instanceof CustomError
                     ? error.message
-                    : "Что-то пошло не так. Повторите попытку позже",
+                    : "Something went wrong. Try again later",
         };
-        // отображаем alert с сообщением об ошибке
+
+        // display status with error message
         setStatus({
             container: alertUserFormDOM,
             message: customErr.message,
@@ -104,55 +104,55 @@ async function loadUserInfo() {
 
 userFormDOM.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // очищаем статус, если он отображался ранее
+    // claer status
     setStatus({
         container: alertUserFormDOM,
     });
     if (!userFormDOM.classList.contains("active")) {
-        // нажата кнопка "Изменить"
-        // активируется форма - все поля становятся доступными для редактирования
-        // текст на кнопке "Сохранить"
+        // "Change" button is pressed
+        // the form is activated - all fields become available for editing
+        // text on the "Save" button
         userFormFieldsCollection.forEach((input) => {
             input.disabled = false;
         });
         userFormDOM.classList.add("active");
-        btnSubmitUserFormDOM.textContent = "Сохранить";
+        btnSubmitUserFormDOM.textContent = "Save";
         return false;
     }
-    // нажата кнопка "Сохранить"
+    // "Save" button is pressed
     try {
-        // отображаем alert со статусом ожидания
+        // display an alert with a waiting status
         setStatus({
             container: alertUserFormDOM,
-            message: "Пожалуйста, ждите...",
+            message: "Loading...",
         });
-        // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
-        // блокируем кнопку на время запроса на сервер для исключения нескольких запросов одновременно
+        // prevent repeated form submission if a request is already being sent to the server
+        // block the button for the duration of the request to the server to exclude several requests at the same time
         btnSubmitUserFormDOM.disabled = true;
-        // имена полей формы
+        // form field names
         const formFields = [...userFormFieldsCollection].map(
             (elem) => elem.name
         );
-        // данные формы
+        // form data
         const formData = new FormData(userFormDOM);
-        // проверяем, что все поля формы заполнены
+        // check that all form fields are filled in
         const isValid = formFields.every(
             (field) => !!formData.get(field).trim()
         );
         if (!isValid) {
-            throw new CustomError("Все поля формы должны быть заполнены");
+            throw new CustomError("All fields are required");
         }
-        // формируем тело запроса
+        // form the request body
         const newUserInfo = formFields.reduce((acc, field) => {
             acc[field] = formData.get(field).trim();
             return acc;
         }, {});
-        // проверяем, что новые данные пользователя отличаются от исходных (есть хотя бы одно изменение)
+        // check that the new user data differs from the original (there is at least one change)
         const isUpdated =
             JSON.stringify(userInfo) !== JSON.stringify(newUserInfo);
-        // если изменений нет, выходим из функции без сохранения
+        // if there are no changes, exit the function without saving
         if (!isUpdated) {
-            throw new CustomError("Карточка обновлена с учетом изменений");
+            throw new CustomError("The card has been updated");
         }
 
         const params = {
@@ -164,117 +164,118 @@ userFormDOM.addEventListener("submit", async (e) => {
         };
         const response = await fetch(updateUserInfoURL, params);
 
-        // если пользователь не авторизован, перебросить его на страницу авторизации
+        // if the user is not authorized, redirect him to the authorization page
         if (response.status === 401) {
             window.location.assign("login.html");
         }
 
-        // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
+        // if the server returned an error, throw an error with the received message
         if (Math.floor(response.status / 100) !== 2) {
             const { msg } = await response.json();
             throw new CustomError(msg);
         }
-        //обновляем данные о пользователе в карточке
+        // updating user data in the card
         await loadUserInfo();
-        // отобразить сообщение об успехе
+        // display success message
         setStatus({
             container: alertUserFormDOM,
-            message: "Данные пользователя обновлены",
+            message: "User info updated",
             clear: true,
         });
-        // разблокируем кнопку отправки формы, когда работа с сервером завершена
+        // unlock the form submit button when work with the server is completed
         btnSubmitUserFormDOM.disabled = false;
     } catch (error) {
         console.log(error);
-        // сбрасываем изменения в форме
+        // reset changes to the form
         userFormFieldsCollection.forEach((input) => {
             const field = input.name;
-            // если пользователь имеет свойство, совпадающее с полем input.name,
-            // заполняем поле input
-            // или оставляем пустым
+            // if the user has a property matching the input.name field,
+            // fill in the input field
+            // or leave it blank
             input.value = userInfo[field] || "";
         });
-        // если ошибка кастомная, отображаем ее сообщение
-        // если нет - "Что-то пошло не так..."
+        // if the error is custom, display its message
+        // else - "Something went wrong..."
         const customErr = {
             message:
                 error.message && error instanceof CustomError
                     ? error.message
-                    : "Что-то пошло не так. Повторите попытку позже",
+                    : "Something went wrong. Try again later",
         };
-        // отображаем alert с сообщением об ошибке
+
+        // display status with error message
         setStatus({
             container: alertUserFormDOM,
             message: customErr.message,
         });
-        // разблокируем кнопку отправки формы в случае ошибки
+        // unlock the form submit button in case of an error
         btnSubmitUserFormDOM.disabled = false;
     } finally {
-        // дезактивируется форма - все поля становятся недоступными для редактировани
-        // текст на кнопке "Изменить"
+        // the form is deactivated - all fields become unavailable for editing
+        // text on the "Edit" button
         userFormFieldsCollection.forEach((input) => {
             input.disabled = true;
         });
         userFormDOM.classList.remove("active");
-        btnSubmitUserFormDOM.textContent = "Изменить";
+        btnSubmitUserFormDOM.textContent = "Change";
         return false;
     }
 });
 
-// закрыть форму (кнопка крестик) без сохранения изменений
-// сбрасываем изменения
-// дезактивируем форму
+// close the form (cross button) without saving changes
+// reset changes
+// deactivate the form
 btnCloseUserFormDOM.addEventListener("click", () => {
     userFormFieldsCollection.forEach((input) => {
         const field = input.name;
-        // если пользователь имеет свойство, совпадающее с полем input.name,
-        // заполняем поле input
-        // или оставляем пустым
+        // if the user has a property matching the input.name field,
+        // fill in the input field
+        // or leave it blank
         input.value = userInfo[field] || "";
         input.disabled = true;
     });
     userFormDOM.classList.remove("active");
-    btnSubmitUserFormDOM.textContent = "Изменить";
+    btnSubmitUserFormDOM.textContent = "Change";
 });
 
 changeEmailFormDOM.addEventListener("submit", async function (e) {
     e.preventDefault();
     try {
-        // отображаем alert со статусом ожидания
+        // display an alert with a waiting status
         setStatus({
             container: alertChangeEmailFormDOM,
-            message: "Пожалуйста, ждите...",
+            message: "Loading...",
         });
-        // предотвратить повторный сабмит формы, если уж идет отправка запроса на сервер
-        // блокируем кнопки (Сохранить и Отмена) на время запроса на сервер для исключения нескольких запросов одновременно
+        // prevent repeated form submission if a request is already being sent to the server
+        // we block the buttons (Save and Cancel) for the duration of the request to the server to exclude several requests at the same time
         btnsChangeEmailFormDOM.forEach((btn) => (btn.disabled = true));
 
-        // имена полей формы
+        // form fields
         const formFields = [...changeEmailFormFieldsCollection].map(
             (elem) => elem.name
         );
-        // данные формы
+        // form data
         const formData = new FormData(changeEmailFormDOM);
-        // проверяем, что все поля формы заполнены
+        // check that all form fields are filled in
         const isValid = formFields.every(
             (field) => !!formData.get(field).trim()
         );
         if (!isValid) {
-            throw new CustomError("Все поля формы должны быть заполнены");
+            throw new CustomError("All fields are required");
         }
-        // проверяем, что оба поля почта совпадают
+        // check that both mail fields match
         const newEmail = formData.get("newEmail").trim();
         const newEmailRepeat = formData.get("newEmailRepeat").trim();
         if (newEmail !== newEmailRepeat) {
-            throw new CustomError("Введенные email адреса не совпадают");
+            throw new CustomError("The email addresses do not match");
         }
-        // проверяем, что почта изменилась
+        // check that the email has changed
         const oldEmail = userInfo.email;
         if (newEmail === oldEmail) {
-            throw new CustomError("Нет данных для изменения");
+            throw new CustomError("No data to change");
         }
 
-        // формируем тело запроса
+        // form the request body
         const body = formFields.reduce((acc, field) => {
             acc[field] = formData.get(field).trim();
             return acc;
@@ -289,66 +290,67 @@ changeEmailFormDOM.addEventListener("submit", async function (e) {
         };
         const response = await fetch(updateUserEmailURL, params);
 
-        // если пользователь не авторизован, перебросить его на страницу авторизации
+        // if the user is not authorized, redirect him to the authorization page
         if (response.status === 401) {
             window.location.assign("login.html");
         }
 
-        // получаем сообщение из ответа
+        // we get the message from the response
         const { msg } = await response.json();
-        // если сервер вернул ошибку, выбрасываем ошибку с полученным сообщением
+        // if the server returned an error, throw an error with the received message
         if (Math.floor(response.status / 100) !== 2) {
             throw new CustomError(msg);
         }
-        // разблокируем кнопки (Сохранить и Отмена), когда работа с сервером завершена
+        // unlock the buttons (Save and Cancel) when work with the server is completed
         btnsChangeEmailFormDOM.forEach((btn) => (btn.disabled = false));
-        // показываем сообщение об успешном запросе на изменение email
-        // и необходимости его подтверждения
+        // display a message about a successful request to change email
+        // and the need to confirm it
         alertConfirmEmail.classList.remove("hide");
     } catch (error) {
         console.log(error.message);
-        // если ошибка кастомная, отображаем ее сообщение
-        // если нет - "Что-то пошло не так..."
+        // if the error is custom, display its message
+        // else - "Something went wrong..."
         const customErr = {
             message:
                 error instanceof CustomError
                     ? error.message
-                    : "Что-то пошло не так. Повторите попытку позже",
+                    : "Something went wrong. Try again later",
         };
-        // отображаем alert с сообщением об ошибке
+
+        // display status with error message
         setStatus({
             container: alertChangeEmailFormDOM,
             message: customErr.message,
         });
-        // разблокируем кнопки (Сохранить и Отмена) в случае ошибки
+        // unlock the buttons (Save and Cancel) when work with the server is completed
         btnsChangeEmailFormDOM.forEach((btn) => (btn.disabled = false));
     }
 });
 
 emailInputUserFormDOM.addEventListener("click", () => {
-    // скрываем контейнер с сообщением
+    // hide the container with the message
     alertConfirmEmail.classList.add("hide");
-    // очищаем форму
+    // clear the form
     changeEmailFormDOM.reset();
-    // скрываем модальное окно
+    // hide the modal window
     modalDOMBS.hide();
-    // очищаем статус, если он отображался ранее
+    // clear the status if it was previously displayed
     setStatus({
         container: alertChangeEmailFormDOM,
     });
 });
 
 btnOkConfirmEmail.addEventListener("click", () => {
-    // скрываем контейнер с сообщением
+    // hide the container with the message
     alertConfirmEmail.classList.add("hide");
-    // очищаем форму
+    // clear the form
     changeEmailFormDOM.reset();
-    // скрываем модальное окно
+    // hide the modal window
     modalDOMBS.hide();
-    // очищаем статус, если он отображался ранее
+    // hide the modal window
     setStatus({
         container: alertUserFormDOM,
     });
-    // обновляем профиль пользователя
+    // updating the user profile
     loadUserInfo();
 });

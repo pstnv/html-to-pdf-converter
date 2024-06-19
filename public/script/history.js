@@ -5,20 +5,20 @@ import getElement from "./utils/getElement.js";
 import logoutUser from "./utils/logout.js";
 import { getUser } from "./utils/localStorage.js";
 
-// таблица для записей
+// record table
 const tableBody = getElement("tbody");
-// контейнер для статусов
+// container for statuses
 const alertDOM = getElement(".alert-msg");
-// ссылка Выйти
+// link Logout
 const logoutDOM = getElement(".logout");
 
 document.addEventListener("DOMContentLoaded", displayContent);
 tableBody.addEventListener("click", deleteBtnHandler);
 logoutDOM.addEventListener("click", logoutUser);
 
-// при загрузке страницы проверить, существует ли запись в localStorage о пользователе
-// если не существует - редирект на страницу авторизации
-// если существует - запросить все записи задач
+// When loading the page, check if there is an entry in localStorage about the user
+// if does not exist - redirect to the authorization page
+// if exists - request all task records
 function displayContent() {
     const user = getUser();
     if (!user) {
@@ -27,7 +27,7 @@ function displayContent() {
     getAllTasks();
 }
 
-// получить все задачи
+// get all tasks
 async function getAllTasks() {
     try {
         const params = {
@@ -38,7 +38,7 @@ async function getAllTasks() {
         };
         const response = await fetch(tasksURL, params);
 
-        // если пользователь не авторизован, перебросить его на страницу авторизации
+        // if the user is not authenticated, redirect user to the authorization page
         if (response.status === 401) {
             window.location.assign("login.html");
         }
@@ -48,26 +48,26 @@ async function getAllTasks() {
             throw new Error(msg);
         }
         const { tasks, count } = await response.json();
-        // если массив пуст, отображаем статус Записей нет
+        // If the array is empty, display the status No entries
         if (!count) {
             tableBody.innerHTML = "";
-            setStatus({ container: alertDOM, message: "Записей нет" });
+            setStatus({ container: alertDOM, message: "No tasks" });
             return;
         }
         const tableContent = displayTasks(tasks);
         tableBody.innerHTML = tableContent;
-        // очищаем статус
+        // clear the status
         setStatus({ container: alertDOM });
     } catch (error) {
         console.log(error.message);
-        // отображаем статус с сообщением
+        // display status with message
         setStatus({
             container: alertDOM,
-            message: "Не удается загрузить записи. Повторите попытку позже",
+            message: "Cannot load tasks. Please try again later",
         });
     }
 }
-// отрисовать таблицу с задачами
+// display a table with tasks
 function displayTasks(tasks) {
     const tableContent = tasks
         .map((task) => {
@@ -121,7 +121,7 @@ function displayTasks(tasks) {
     return tableContent;
 }
 
-// обработчик удаления задачи
+// task deletion handler
 async function deleteBtnHandler(e) {
     const isDeleteButton =
         e.target.parentElement.classList.contains("deleteButton");
@@ -131,18 +131,18 @@ async function deleteBtnHandler(e) {
         await deleteTask(taskId);
         const isEmpty = tableBody.innerHTML === "";
         if (isEmpty) {
-            setStatus({ container: alertDOM, message: "Записей нет" });
+            setStatus({ container: alertDOM, message: "No tasks" });
         }
     }
 }
-// удалить задачу
+// delete a task
 async function deleteTask(id) {
-    // очищаем статус
+    // clear status
     setStatus({
         container: alertDOM,
     });
     if (!id) {
-        throw new Error("id задачи не найден");
+        throw new Error("task id not found");
     }
     try {
         const params = {
@@ -153,7 +153,7 @@ async function deleteTask(id) {
         };
         const response = await fetch(`${tasksURL}/${id}`, params);
 
-        // если пользователь не авторизован, перебросить его на страницу авторизации
+        // if the user is not authenticated, redirect him to the authorization page
         if (response.status === 401) {
             window.location.assign("login.html");
         }
@@ -170,12 +170,10 @@ async function deleteTask(id) {
         });
     } catch (error) {
         console.log(error.message);
-        // отображаем статус с сообщением
+        // display status with message
         setStatus({
             container: alertDOM,
-            message: "Не удается удалить запись. Повторите попытку позже",
+            message: "Cannot delete the task. Please try again later",
         });
     }
 }
-
-// блокировать таблицу на время удаления задачи
