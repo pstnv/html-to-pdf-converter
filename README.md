@@ -14,9 +14,9 @@ To install the application, follow these steps:
 
 1. Clone the repository to your local machine:
 
-   ```bash
-   git clone https://github.com/pstnv/html-to-pdf-converter
-   ```
+```bash
+git clone https://github.com/pstnv/html-to-pdf-converter
+```
 
 2. Navigate to the project directory:
 
