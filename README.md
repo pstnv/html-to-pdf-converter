@@ -1,85 +1,63 @@
-добавить
+# HTML to PDF Conversion Microservice
 
-БЭК:
+This microservice provides the capability to convert HTML files to PDF format. It is developed using Node.js and Express.js, along with other libraries for file processing, working with archives, and HTML to PDF conversion.
 
-1. добавить пакеты безопасности. В частности, host-csrf? урок Using EJS In A Database Application, week15
-2. passport
-3. переписать почту с тестовой на желаемую GMAIL
-4. добавить тесты puppeteer
-5. В конце исправить лимит запросов, дописать функцию ответа при превышении
-6. обработка, если слишком долгий запрос, лимит
-7. выходить из учетки при изменении пароля или при изменениия email
-8. настроить часовые пояса на tasks.js и accessLog.js
-9.  добавить эндпойнт для проверки Render.com, запущен ли сервер (перезапуск)
-10. докер
-11. очистить cloudinary каждые 2 часа
-12. удалить пользователя
-13. двухфакторная аутентификация
-14. создать запись админа, чтобы чистить базу данных (неподтвержденные профили, конвертации старше 2 часов)?
+## Prerequisites
 
-    ФРОНТ:
-15. переписать на английский
-16. валидация пароля и email? Пароль должен удовлетворять требованиям (минимум 6 символов, заглавные и прописные, символы, без пробелов)
-17. вынести в отдельную функцию fetchData
-18. одна функция запроса на бэк getData
-19. переписать register.js и login.js в одну функцию?
-20. рефактор на одну функцию user.js и register.js
-21. рефактор user.js и history.js - повторяются операции (в том числе window.assign)
-22. если на любой странице html ошибка, выдать окно или блок с сообщением
-23. блокировать таблицу history.js на время загрузки задач и на время удаления задачи
-24. доработать ссылку для подтверждения email ${origin}/user/verify-email (origin и эндпойнт)
-25. добавить в регистрацию "повторите пароль"
-26. сохранять файл под собственным именем
-27. удалить customError в связи с неиспользованием?
-28. при изменении пароля или почты отправить на старую почту письмо "Сделан запрос на изменения почты/пароля. Если это были не Вы, измените пароль"
-29. добавить для пользователя Изменить пароль в ЛК
-30. убрать пустой треугольник в alert-msg на странице login.html (регистрация тоже?)
-31. добавить обработку ссылок с истекшим сроком (verify-email, update-pasword, register)
-32. добавить аватарку - первая буква имени
-33. перетащить архив в input
-34. добавить функцию выбрать язык?
-35. убрать высоту лого в header
-36. Галочка Запомнить меня при авторизации
-37. На странице регистрации и авторизации поднять повыше форму (на уровень глаз)
-38. Переписать на React
-39. выровнять строки в таблице задач
+Before running code, ensure you have the following prerequisites installed:
 
-Использую
+- **Node.js**: You can download and install Node.js from the official website: [Node.js Downloads](https://nodejs.org/en/download/).
 
-1. бутстрап
-2. html
-3. express
-4. puppeteer
-5. adm-zip
-6. https-status-codes
-7. globe
-8. blob
-9. dotenv
-10. express-fileupload
-11. mongoDB
-12. mongoose
-13. helmet
-14. cors
-15. express-mongo-sanitize
-16. express-rate-limit
-17. express-async-errors
-18. bcryptjs
-19. jsonwebtoken
-20. streamifier
-21. cloudinary
-22. cookie-parser
-23. crypto
-24. nodemailer
-25. morgan
+## Installation
 
-    Добавила:
+To install the application, follow these steps:
 
-26. Фронт
-27. Регистрация/ авторизация / профиль пользователя
-28. Обработка запросов (количество)
-29. База данных - хранение истории в MongoDB, пользователей, токенов
-30. Хранение самих файлов после конвертации в облаке
-31. Изменить/ восстановить пароль, используя подтверждение почтой
-32. Изменить почту, используя подтверждение почтой
-33. Логгер операций конвертирования, использовала morgan
-34. Сваггер
+1. Clone the repository to your local machine:
+
+   ```bash
+   git clone https://github.com/pstnv/html-to-pdf-converter
+   ```
+
+2. Navigate to the project directory:
+
+```bash
+cd html-to-pdf-converter
+```
+
+3. Install the project dependencies:
+
+```bash
+npm install
+```
+
+4. Generate the API documentation using the provided script:
+
+```bash
+npm run swagger
+```
+
+5. Start the API server:
+
+```bash
+npm run dev
+```
+or 
+```bash
+npm start
+```
+
+6. The API documentation should now be running locally at http://localhost:5000/api/v1/docs
+
+### Dependencies
+- **Express.js**:  a web application framework for Node.js.
+- **Multer**: middleware for handling multipart forms in Node.js.
+- **Puppeteer**: Library for controlling headless browsers programmatically.
+- **Adm-Zip**: a module for working with ZIP archives.
+- **swagger-autogen**: Library for auto-generating Swagger documentation based on JSDoc comments.
+
+## Live Demo
+
+You can explore a live demo of the HTML to PDF Conversion Microservice hosted on Render.com:
+
+- **App:** [HTML to PDF Conversion Microservice](http://localhost:5000/)
+- **Swagger-documentation:** [Swagger-docs](http://localhost:5000/)
