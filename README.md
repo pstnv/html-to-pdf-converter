@@ -72,7 +72,13 @@ npm start
 - **swagger-autogen**: performs automatic construction of Swagger documentation
 - **swagger-jsdoc**: this library reads your JSDoc-annotated source code and generates an OpenAPI (Swagger) specification
 - **swagger-ui-express**: allows you to serve auto-generated swagger-ui generated API docs from express, based on a swagger. json fil
-- **validator**: a popular library for string validation and sanitization
+- **validator**: a library for string validation and sanitization
+### Dev-Dependencies
+- **@faker-js/faker**: a library that generates fake (but reasonable) data that can be used for testing
+- **chai**: a library for node and the browser that can be delightfully paired with any javascript testing framework
+- **factory-bot**: is a factory library for Node. js. It works asynchronously and supports associations and the use of functions for generating attributes
+- **mocha**: a testing library for Node. js, created to be a simple, extensible, and fast (for unit and integration testing)
+- **nodemon**: is a tool that helps develop Node.js based applications by automatically restarting the node application when file changes in the directory are detected.
 
 ## Live Demo
 
