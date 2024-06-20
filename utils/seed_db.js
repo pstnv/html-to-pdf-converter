@@ -2,10 +2,13 @@ import Conversion from "../models/Conversion.js";
 import Token from "../models/Token.js";
 import User from "../models/User.js";
 import { fakerEN_US as faker } from "@faker-js/faker";
-// solution
+
+// solution for factory using CommonJS(ES 6 doesn't work in factory)
 import { createRequire } from "module"; // Bring in the ability to create the 'require' method
 const require = createRequire(import.meta.url); // construct the require method
 const factoryBot = require("factory-bot"); // use the require method
+
+const tasksCount = 10;
 
 const factory = factoryBot.factory;
 
@@ -17,9 +20,19 @@ factory.define("user", User, {
     email: () => faker.internet.email(),
     password: () => faker.internet.password({ length: 6 }),
 });
+factory.define("conversion", Conversion, {
+    name: () => faker.commerce.productName(),
+    status: true,
+    file: "https://res.cloudinary.com/dx1bfr5u6/image/upload/v1718873498/testConverion_ifrepz.pdf",
+    cloudId: () =>
+        faker.internet.password({
+            length: 20,
+            pattern: /[a-z]/,
+            prefix: "converter-upload/",
+        }),
+});
 
 const testUserPassword = faker.internet.password({ length: 6 });
-const mongoURL = process.env.MONGO_URI_TEST;
 const seed_db = async () => {
     let testUser = null;
     try {
@@ -37,6 +50,10 @@ const seed_db = async () => {
             verificationToken: null,
             verificationTokenExpirationDate: null,
         });
+        // put tasksCount=10 conversion entries in MongoDB
+        await factory.createMany("conversion", tasksCount, {
+            createdBy: testUser._id,
+        });
     } catch (error) {
         console.log("Database error");
         console.log(error.message);
@@ -45,4 +62,4 @@ const seed_db = async () => {
     return testUser;
 };
 
-export { testUserPassword, factory, seed_db };
+export { testUserPassword, factory, tasksCount, seed_db };

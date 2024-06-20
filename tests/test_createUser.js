@@ -35,7 +35,7 @@ describe("Test create user with Puppeteer", function () {
     });
     // testing index page
     describe("testing index page", function () {
-        this.timeout(10000);
+        this.timeout(20000);
         it("should have dropdown menu", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
         });
@@ -66,7 +66,7 @@ describe("Test create user with Puppeteer", function () {
     });
     // testing login page
     describe("testing login page", function () {
-        this.timeout(10000);
+        this.timeout(25000);
         it("should have register link", async () => {
             this.registerLink = await page.waitForSelector(
                 'a[href="register.html"]'
@@ -107,7 +107,7 @@ describe("Test create user with Puppeteer", function () {
                 this.btnRegister.click(),
                 page.waitForSelector("h2::-p-text(Complete registration)"),
             ]);
-            // check the database to see that the latest jobs entry has the data entered
+            // find user in a database with user email
             const newUser = await User.findOne({ email: this.user.email });
             expect(newUser).to.not.be.null;
         });

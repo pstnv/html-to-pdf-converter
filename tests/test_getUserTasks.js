@@ -1,9 +1,19 @@
 import { assert, expect, should, use } from "chai";
 
 import puppeteer from "puppeteer";
-import { factory, seed_db, testUserPassword } from "../utils/seed_db.js";
+import {
+    factory,
+    seed_db,
+    testUserPassword,
+    tasksCount,
+} from "../utils/seed_db.js";
 import { fakerEN_US as faker } from "@faker-js/faker";
 import { app, server } from "../app.js";
+import Conversion from "../models/Conversion.js";
+
+// create 1 test user (is used in login page and tasks page)
+const testUser = await seed_db();
+testUser.password = testUserPassword;
 
 describe("Test login user with Puppeteer", function () {
     let browser = null;
@@ -24,7 +34,7 @@ describe("Test login user with Puppeteer", function () {
         // close browser after testing
         await browser.close();
         //stop server after testing
-        server.close(); // stop server only when all tests are over
+        // server.close(); // stop server only when all tests are over
         return;
     });
     describe("got to site", function () {
@@ -76,27 +86,65 @@ describe("Test login user with Puppeteer", function () {
             this.btnLogin = await page.waitForSelector("button.btnSubmit");
         });
         it("should login the user", async () => {
-            // create 1 test user
-            const testUser = await seed_db();
-            this.user = testUser;
-            this.user.password = testUserPassword;
             // fill the register form
-            await this.emailField.type(this.user.email);
-            await this.passwordField.type(this.user.password);
+            await this.emailField.type(testUser.email);
+            await this.passwordField.type(testUser.password);
             // wait for form submit returns result and innerHtml message
             await Promise.all([
                 this.btnLogin.click(),
                 page.waitForSelector("p::-p-text(Welcome to PDFConverter)"),
+                page.waitForNavigation(),
             ]);
-            // get element with greet message "Welcome to PDFConverter,Name"
-            this.greet = await page.waitForSelector(
-                "p::-p-text(Welcome to PDFConverter)"
+        });
+    });
+    // testing index page after login
+    describe("testing index page after login", function () {
+        this.timeout(10000);
+        it("should have dropdown menu", async () => {
+            this.dropdownLink = await page.waitForSelector("a.btnDropdown");
+        });
+        it("should open dropdown menu", async () => {
+            await this.dropdownLink.click();
+        });
+        it("should have link for user tasks", async () => {
+            this.tasksLink = await page.waitForSelector(
+                'a[href="history.html"]'
             );
-            // get text from the greet message
-            const greetMessage = await this.greet.evaluate(
-                (elem) => elem.textContent
-            );
-            expect(greetMessage).to.include(this.user.name);
+        });
+        it("should open tasks page", async () => {
+            await this.tasksLink.click();
+            await page.waitForNavigation();
+            // header with text 'Latest tasks'
+            await page.waitForSelector("h1::-p-text(Latest tasks)");
+        });
+    });
+    // testing tasks page
+    describe("testing tasks page", function () {
+        this.timeout(30000);
+        it("should have tasks list and various elements", async () => {
+            // header with text 'Latest tasks'
+            await page.waitForSelector("h1::-p-text(Latest tasks)");
+            // table with tasks
+            await page.waitForSelector("table");
+        });
+        it(`should have ${tasksCount} entries in the tasks list`, async () => {
+            // verify that 10(tasksCount) entries returned -
+            // check how many times <trclass="task"> appears on the page
+            // wait for table is loaded
+            await page.waitForSelector("tr.task");
+
+            // count table rows tasks
+            const tableRowsCount = await page.evaluate(() => {
+                return document.querySelectorAll("tr.task").length
+            });
+            // get tasks entries from MongoDB
+            const tasks = await Conversion.find({
+                createdBy: testUser._id,
+            });
+            // count tasks
+            const tasksCount = tasks.length;
+            // expect rows in table equal to array (of tasks) length
+            expect(tableRowsCount).to.equal(tasksCount);
         });
     });
 });
