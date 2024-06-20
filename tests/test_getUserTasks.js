@@ -1,14 +1,8 @@
-import { assert, expect, should, use } from "chai";
+import { expect } from "chai";
 
 import puppeteer from "puppeteer";
-import {
-    factory,
-    seed_db,
-    testUserPassword,
-    tasksCount,
-} from "../utils/seed_db.js";
-import { fakerEN_US as faker } from "@faker-js/faker";
-import { app, server } from "../app.js";
+import { seed_db, testUserPassword, tasksCount } from "../utils/seed_db.js";
+import { server } from "../app.js";
 import Conversion from "../models/Conversion.js";
 
 // create 1 test user (is used in login page and tasks page)
@@ -135,7 +129,7 @@ describe("Test login user with Puppeteer", function () {
 
             // count table rows tasks
             const tableRowsCount = await page.evaluate(() => {
-                return document.querySelectorAll("tr.task").length
+                return document.querySelectorAll("tr.task").length;
             });
             // get tasks entries from MongoDB
             const tasks = await Conversion.find({

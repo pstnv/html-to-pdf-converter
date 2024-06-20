@@ -1,9 +1,8 @@
-import { assert, expect, should, use } from "chai";
+import { expect} from "chai";
 
 import puppeteer from "puppeteer";
-import { factory, seed_db, testUserPassword } from "../utils/seed_db.js";
-import { fakerEN_US as faker } from "@faker-js/faker";
-import { app, server } from "../app.js";
+import {  seed_db, testUserPassword } from "../utils/seed_db.js";
+import { server } from "../app.js";
 
 describe("Test login user with Puppeteer", function () {
     let browser = null;
