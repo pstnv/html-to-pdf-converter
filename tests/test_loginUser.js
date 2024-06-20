@@ -1,11 +1,11 @@
-import { expect } from "chai";
-import puppeteer from "puppeteer";
-import { factory } from "../utils/seed_db.js";
-import { fakerEN_US as faker } from "@faker-js/faker";
-import { server } from "../app.js";
-import User from "../models/User.js";
+import { assert, expect, should, use } from "chai";
 
-describe("Test create user with Puppeteer", function () {
+import puppeteer from "puppeteer";
+import { factory, seed_db, testUserPassword } from "../utils/seed_db.js";
+import { fakerEN_US as faker } from "@faker-js/faker";
+import { app, server } from "../app.js";
+
+describe("Test login user with Puppeteer", function () {
     let browser = null;
     let page = null;
 
@@ -24,7 +24,7 @@ describe("Test create user with Puppeteer", function () {
         // close browser after testing
         await browser.close();
         //stop server after testing
-        // server.close(); // stop server only when all tests in a folder are over
+        server.close(); // stop server only when all tests are over
         return;
     });
     describe("got to site", function () {
@@ -50,6 +50,7 @@ describe("Test create user with Puppeteer", function () {
             const logLinkText = await this.logLink.evaluate(
                 (elem) => elem.textContent
             );
+            // console.log(logLinkText);
             // if text is "Logout", logout user and continue registration
             if (logLinkText === "Logout") {
                 await this.logLink.click(); // logout user
@@ -67,49 +68,35 @@ describe("Test create user with Puppeteer", function () {
     // testing login page
     describe("testing login page", function () {
         this.timeout(10000);
-        it("should have register link", async () => {
-            this.registerLink = await page.waitForSelector(
-                'a[href="register.html"]'
-            );
-        });
-        it("should open register page", async () => {
-            await this.registerLink.click();
-            await page.waitForNavigation();
-            // a header with text 'Create an account'
-            await page.waitForSelector("h2::-p-text(Create an account)");
-        });
-    });
-    // testing register page
-    describe("testing register page", function () {
-        this.timeout(30000);
-        it("should have register form with various elements", async () => {
-            this.nameField = await page.waitForSelector('input[name="name"]');
+        it("should have login form with various elements", async () => {
             this.emailField = await page.waitForSelector('input[name="email"]');
             this.passwordField = await page.waitForSelector(
                 'input[name="password"]'
             );
-            this.btnRegister = await page.waitForSelector(
-                "button::-p-text(Sign up)"
-            );
+            this.btnLogin = await page.waitForSelector("button.btnSubmit");
         });
-        it("should register the user", async () => {
-            // create user
-            this.password = faker.internet.password({ length: 6 });
-            this.user = await factory.build("user", {
-                password: this.password,
-            });
+        it("should login the user", async () => {
+            // create 1 test user
+            const testUser = await seed_db();
+            this.user = testUser;
+            this.user.password = testUserPassword;
             // fill the register form
-            await this.nameField.type(this.user.name);
             await this.emailField.type(this.user.email);
-            await this.passwordField.type(this.password);
+            await this.passwordField.type(this.user.password);
             // wait for form submit returns result and innerHtml message
             await Promise.all([
-                this.btnRegister.click(),
-                page.waitForSelector("h2::-p-text(Complete registration)"),
+                this.btnLogin.click(),
+                page.waitForSelector("p::-p-text(Welcome to PDFConverter)"),
             ]);
-            // check the database to see that the latest jobs entry has the data entered
-            const newUser = await User.findOne({ email: this.user.email });
-            expect(newUser).to.not.be.null;
+            // get element with greet message "Welcome to PDFConverter,Name"
+            this.greet = await page.waitForSelector(
+                "p::-p-text(Welcome to PDFConverter)"
+            );
+            // get text from the greet message
+            const greetMessage = await this.greet.evaluate(
+                (elem) => elem.textContent
+            );
+            expect(greetMessage).to.include(this.user.name);
         });
     });
 });
