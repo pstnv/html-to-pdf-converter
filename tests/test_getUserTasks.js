@@ -54,7 +54,6 @@ describe("Test: login user", function () {
             const logLinkText = await this.logLink.evaluate(
                 (elem) => elem.textContent
             );
-            // console.log(logLinkText);
             // if text is "Logout", logout user and continue registration
             if (logLinkText === "Logout") {
                 await this.logLink.click(); // logout user

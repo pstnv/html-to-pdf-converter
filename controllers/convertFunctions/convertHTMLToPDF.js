@@ -10,14 +10,18 @@ const convertHTMLToPDF = async (req, res, next) => {
 
     // start conversion process
     // launch browser, open new tab
-    const browser = await puppeteer.launch({ headless: "new" });
+    // const browser = await puppeteer.launch({ headless: "new" });
+    // add {headless: false, slowMo: 30} to brackets .launch() to watch how puppeteer works
+    const browser = await puppeteer.launch({
+        headless: "new",
+    });
     const page = await browser.newPage();
 
     // convert .html path to url
     const htmlURL = url.pathToFileURL(htmlPage.path).href;
     await page.goto(htmlURL, { waitUntil: "networkidle0" });
 
-    // genere]ate pdf in screen mode (the most accurate color rendition)
+    // generate pdf in screen mode (the most accurate color rendition)
     await page.emulateMediaType("screen");
 
     const pageOptions = {
