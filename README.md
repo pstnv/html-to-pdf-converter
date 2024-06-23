@@ -76,6 +76,7 @@ npm start
 ### Dev-Dependencies
 - **@faker-js/faker**: a library that generates fake (but reasonable) data that can be used for testing
 - **chai**: a library for node and the browser that can be delightfully paired with any javascript testing framework
+- **cross-env**: run scripts that set and use environment variables across platforms
 - **factory-bot**: is a factory library for Node. js. It works asynchronously and supports associations and the use of functions for generating attributes
 - **mocha**: a testing library for Node. js, created to be a simple, extensible, and fast (for unit and integration testing)
 - **nodemon**: is a tool that helps develop Node.js based applications by automatically restarting the node application when file changes in the directory are detected.
