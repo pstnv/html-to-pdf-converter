@@ -1,85 +1,89 @@
-добавить
+# HTML to PDF микросервис
 
-БЭК:
+Микросервис используется для конвертации HTML файлов в PDF формат. Разработан с использованием Node.js и Express.js наряду с другими библиотеками для загрузки и работы с архивами, а также конвертации HTML в PDF.
 
-1. добавить пакеты безопасности. В частности, host-csrf? урок Using EJS In A Database Application, week15
-2. passport
-3. переписать почту с тестовой на желаемую GMAIL
-4. добавить тесты puppeteer
-5. В конце исправить лимит запросов, дописать функцию ответа при превышении
-6. обработка, если слишком долгий запрос, лимит
-7. выходить из учетки при изменении пароля или при изменениия email
-8. настроить часовые пояса на tasks.js и accessLog.js
-9.  добавить эндпойнт для проверки Render.com, запущен ли сервер (перезапуск)
-10. докер
-11. очистить cloudinary каждые 2 часа
-12. удалить пользователя
-13. двухфакторная аутентификация
-14. создать запись админа, чтобы чистить базу данных (неподтвержденные профили, конвертации старше 2 часов)?
+## Требования
 
-    ФРОНТ:
-15. переписать на английский
-16. валидация пароля и email? Пароль должен удовлетворять требованиям (минимум 6 символов, заглавные и прописные, символы, без пробелов)
-17. вынести в отдельную функцию fetchData
-18. одна функция запроса на бэк getData
-19. переписать register.js и login.js в одну функцию?
-20. рефактор на одну функцию user.js и register.js
-21. рефактор user.js и history.js - повторяются операции (в том числе window.assign)
-22. если на любой странице html ошибка, выдать окно или блок с сообщением
-23. блокировать таблицу history.js на время загрузки задач и на время удаления задачи
-24. доработать ссылку для подтверждения email ${origin}/user/verify-email (origin и эндпойнт)
-25. добавить в регистрацию "повторите пароль"
-26. сохранять файл под собственным именем
-27. удалить customError в связи с неиспользованием?
-28. при изменении пароля или почты отправить на старую почту письмо "Сделан запрос на изменения почты/пароля. Если это были не Вы, измените пароль"
-29. добавить для пользователя Изменить пароль в ЛК
-30. убрать пустой треугольник в alert-msg на странице login.html (регистрация тоже?)
-31. добавить обработку ссылок с истекшим сроком (verify-email, update-pasword, register)
-32. добавить аватарку - первая буква имени
-33. перетащить архив в input
-34. добавить функцию выбрать язык?
-35. убрать высоту лого в header
-36. Галочка Запомнить меня при авторизации
-37. На странице регистрации и авторизации поднять повыше форму (на уровень глаз)
-38. Переписать на React
-39. выровнять строки в таблице задач
+Прежде чем запустить приложение, убедитесь, что у вас установлены следующие пакеты:
 
-Использую
+- **Node.js**: вы можете скачать и установить Node.js с официального сайта: [Node.js Downloads](https://nodejs.org/en/download/).
 
-1. бутстрап
-2. html
-3. express
-4. puppeteer
-5. adm-zip
-6. https-status-codes
-7. globe
-8. blob
-9. dotenv
-10. express-fileupload
-11. mongoDB
-12. mongoose
-13. helmet
-14. cors
-15. express-mongo-sanitize
-16. express-rate-limit
-17. express-async-errors
-18. bcryptjs
-19. jsonwebtoken
-20. streamifier
-21. cloudinary
-22. cookie-parser
-23. crypto
-24. nodemailer
-25. morgan
+## Установка
 
-    Добавила:
+Чтобы установить приложение, проделайте следующие шаги:
 
-26. Фронт
-27. Регистрация/ авторизация / профиль пользователя
-28. Обработка запросов (количество)
-29. База данных - хранение истории в MongoDB, пользователей, токенов
-30. Хранение самих файлов после конвертации в облаке
-31. Изменить/ восстановить пароль, используя подтверждение почтой
-32. Изменить почту, используя подтверждение почтой
-33. Логгер операций конвертирования, использовала morgan
-34. Сваггер
+1. Клонируйте репозиторий на ваш компьютер:
+
+```bash
+git clone https://github.com/pstnv/html-to-pdf-converter
+```
+
+2. Перейдите в папку проекта:
+
+```bash
+cd html-to-pdf-converter
+```
+
+3. Установите все зависимости:
+
+```bash
+npm install
+```
+
+4. Сгенерируйте API-документация, используя следующий скрипт:
+
+```bash
+npm run swagger
+```
+
+5. Запустите сервер:
+
+```bash
+npm run dev
+```
+or 
+```bash
+npm start
+```
+
+6. API-документация расположена по адресу http://localhost:5000/api/v1/docs
+
+### Dependencies
+- **adm-zip**: a module for working with ZIP archives
+- **bcryptjs**: is a password-hashing function (optimized) with zero dependencies
+- **cloudinary**: allows you to quickly and easily integrate your application with Cloudinary
+- **cookie-parser**: parse Cookie header and populate req.cookies with an object keyed by the cookie names
+- **cors**: package for providing a Connect/Express middleware that can be used to enable CORS with various options
+- **dotenv**:  module that loads environment variables from a .env file into process.env
+- **express**:  a web application framework for Node.js
+- **express-async-errors**:  a dead simple ES6 async/await support hack for ExpressJS
+- **express-fileupload**:  simple express file upload middleware that wraps around Busboy
+- **express-mongo-sanitize**: a package that provides middleware to sanitize user input before it is used in a database query
+- **express-rate-limit**: an npm library that provides a rate limiting middleware for Express
+- **glob**: is used to return all file paths that match a specific pattern
+- **helmet**: package that offers middleware capabilities to secure HTTP headers in HTTP responses
+- **http-status-codes**: access the status codes you need, with the protocol being used
+- **jsonwebtoken**: is a standard for creating access tokens that are used to authenticate users and secure information
+- **mongoose**: a Object Data Modeling (ODM) library for MongoDB distributed as an npm package
+- **morgan**: simplifies the process of logging requests to your application
+- **nodemailer**:  provides a high-level API for sending emails in JavaScript, built on top of the SMTP protoco
+- **puppeteer**: offers a robust high-level API for controlling Chrome/Chromium browsers through the DevTools Protocol
+- **streamifier**: converts a Buffer/String into a readable stream
+- **swagger-autogen**: performs automatic construction of Swagger documentation
+- **swagger-jsdoc**: this library reads your JSDoc-annotated source code and generates an OpenAPI (Swagger) specification
+- **swagger-ui-express**: allows you to serve auto-generated swagger-ui generated API docs from express, based on a swagger. json fil
+- **validator**: a library for string validation and sanitization
+### Dev-Dependencies
+- **@faker-js/faker**: a library that generates fake (but reasonable) data that can be used for testing
+- **chai**: a library for node and the browser that can be delightfully paired with any javascript testing framework
+- **cross-env**: run scripts that set and use environment variables across platforms
+- **factory-bot**: is a factory library for Node. js. It works asynchronously and supports associations and the use of functions for generating attributes
+- **mocha**: a testing library for Node. js, created to be a simple, extensible, and fast (for unit and integration testing)
+- **nodemon**: is a tool that helps develop Node.js based applications by automatically restarting the node application when file changes in the directory are detected.
+
+## Live Demo
+
+Выможете ознакомиться с проектом по ссылке, расположенном на Render.com:
+
+- **App:** [HTML to PDF Conversion Microservice](http://localhost:5000/)
+- **Swagger-documentation:** [Swagger-docs](http://localhost:5000/)
