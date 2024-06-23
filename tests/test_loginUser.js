@@ -1,10 +1,10 @@
 import { expect} from "chai";
 
 import puppeteer from "puppeteer";
-import {  seed_db, testUserPassword } from "../utils/seed_db.js";
+import {  seed_db, testUserPassword } from "../utils/index.js";
 import { server } from "../app.js";
 
-describe("Test login user with Puppeteer", function () {
+describe("Test: get user tasks", function () {
     let browser = null;
     let page = null;
 
@@ -33,7 +33,7 @@ describe("Test login user with Puppeteer", function () {
         });
     });
     // testing index page
-    describe("testing index page", function () {
+    describe("Test: index page", function () {
         this.timeout(15000);
         it("should have dropdown menu", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
@@ -65,7 +65,7 @@ describe("Test login user with Puppeteer", function () {
         });
     });
     // testing login page
-    describe("testing login page", function () {
+    describe("Test: login page", function () {
         this.timeout(25000);
         it("should have login form with various elements", async () => {
             this.emailField = await page.waitForSelector('input[name="email"]');

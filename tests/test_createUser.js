@@ -1,11 +1,11 @@
 import { expect } from "chai";
 import puppeteer from "puppeteer";
-import { factory } from "../utils/seed_db.js";
+import { factory } from "../utils/index.js";
 import { fakerEN_US as faker } from "@faker-js/faker";
 import { server } from "../app.js";
 import User from "../models/User.js";
 
-describe("Test create user with Puppeteer", function () {
+describe("Test: register user", function () {
     let browser = null;
     let page = null;
 
@@ -34,7 +34,7 @@ describe("Test create user with Puppeteer", function () {
         });
     });
     // testing index page
-    describe("testing index page", function () {
+    describe("Test: index page", function () {
         this.timeout(20000);
         it("should have dropdown menu", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
@@ -65,7 +65,7 @@ describe("Test create user with Puppeteer", function () {
         });
     });
     // testing login page
-    describe("testing login page", function () {
+    describe("Test: login page", function () {
         this.timeout(25000);
         it("should have register link", async () => {
             this.registerLink = await page.waitForSelector(
@@ -80,7 +80,7 @@ describe("Test create user with Puppeteer", function () {
         });
     });
     // testing register page
-    describe("testing register page", function () {
+    describe("Test: register page", function () {
         this.timeout(30000);
         it("should have register form with various elements", async () => {
             this.nameField = await page.waitForSelector('input[name="name"]');

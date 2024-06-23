@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import puppeteer from "puppeteer";
-import { seed_db, testUserPassword, tasksCount } from "../utils/seed_db.js";
+import { seed_db, testUserPassword, tasksCount } from "../utils/index.js";
 import { server } from "../app.js";
 import Conversion from "../models/Conversion.js";
 
@@ -9,7 +9,7 @@ import Conversion from "../models/Conversion.js";
 const testUser = await seed_db();
 testUser.password = testUserPassword;
 
-describe("Test login user with Puppeteer", function () {
+describe("Test: login user", function () {
     let browser = null;
     let page = null;
 
@@ -38,7 +38,7 @@ describe("Test login user with Puppeteer", function () {
         });
     });
     // testing index page
-    describe("testing index page", function () {
+    describe("Test: index page", function () {
         this.timeout(15000);
         it("should have dropdown menu", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
@@ -70,7 +70,7 @@ describe("Test login user with Puppeteer", function () {
         });
     });
     // testing login page
-    describe("testing login page", function () {
+    describe("Test: login page", function () {
         this.timeout(25000);
         it("should have login form with various elements", async () => {
             this.emailField = await page.waitForSelector('input[name="email"]');
@@ -92,7 +92,7 @@ describe("Test login user with Puppeteer", function () {
         });
     });
     // testing index page after login
-    describe("testing index page after login", function () {
+    describe("Test: index page after login", function () {
         this.timeout(10000);
         it("should have dropdown menu", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
@@ -108,12 +108,12 @@ describe("Test login user with Puppeteer", function () {
         it("should open tasks page", async () => {
             await this.tasksLink.click();
             await page.waitForNavigation();
-            // header with text 'Latest tasks'
-            await page.waitForSelector("h1::-p-text(Latest tasks)");
+            // wait until table with user tasks is loaded
+            await page.waitForSelector("tr.task");
         });
     });
     // testing tasks page
-    describe("testing tasks page", function () {
+    describe("Test: tasks page", function () {
         this.timeout(30000);
         it("should have tasks list and various elements", async () => {
             // header with text 'Latest tasks'
@@ -124,10 +124,6 @@ describe("Test login user with Puppeteer", function () {
         it(`should have ${tasksCount} entries in the tasks list`, async () => {
             // verify that 10(tasksCount) entries returned -
             // check how many times <trclass="task"> appears on the page
-            // wait for table is loaded
-            await page.waitForSelector("tr.task");
-
-            // count table rows tasks
             const tableRowsCount = await page.evaluate(() => {
                 return document.querySelectorAll("tr.task").length;
             });
