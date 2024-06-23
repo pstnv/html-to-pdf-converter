@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import puppeteer from "puppeteer";
-import { seed_db, testUserPassword, tasksCount } from "../utils/seed_db.js";
+import { testUserPassword, tasksCount, seed_db } from "../utils/index.js";
 import { server } from "../app.js";
 import Conversion from "../models/Conversion.js";
 

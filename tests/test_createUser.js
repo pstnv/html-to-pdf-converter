@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import puppeteer from "puppeteer";
-import { factory } from "../utils/seed_db.js";
+import { factory } from "../utils/index.js";
 import { fakerEN_US as faker } from "@faker-js/faker";
 import { server } from "../app.js";
 import User from "../models/User.js";

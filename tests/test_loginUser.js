@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import puppeteer from "puppeteer";
-import { seed_db, testUserPassword } from "../utils/seed_db.js";
+import { testUserPassword, seed_db } from "../utils/index.js";
 import { server } from "../app.js";
 
 describe("Тест: залогинить пользователя", function () {
