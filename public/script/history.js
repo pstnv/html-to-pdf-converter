@@ -90,7 +90,7 @@ function displayTasks(tasks) {
             };
             const date = new Date(createdAt).toLocaleString("ru", options);
             return `
-                <tr>
+                <tr class="task">
                     <td>${date}</td>
                     <td class="break-word">
                         ${filename}
