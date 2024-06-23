@@ -1,5 +1,4 @@
 import { app, connectDB } from "./expressServer.js";
-console.log("режим",process.env.NODE_ENV);
 
 // start server
 const port = process.env.PORT || 8000;
