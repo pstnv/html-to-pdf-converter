@@ -197,7 +197,12 @@ const updateUserEmail = async (req, res) => {
     // create token for changing email
     const emailToken = crypto.randomBytes(70).toString("hex");
     // send email with link to change email
-    const origin = process.env.ORIGIN; // in dev-mode localhost:5000, in prod-mode - link to the app front
+    // dev && prod
+    let origin = process.env.ORIGIN_DEV; // in dev-mode localhost:5000 (|| 3000), in prod-mode - link to the front
+    if (process.env.NODE_ENV?.trim() === "production") {
+        // prod
+        origin = process.env.ORIGIN_PROD;
+    }
     await sendUpdateEmailEmail({
         name: user.name,
         email: newEmail,

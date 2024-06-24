@@ -42,8 +42,12 @@ const register = async (req, res) => {
         verificationTokenExpirationDate,
     });
     // send letter with confirmation link
-    const origin = process.env.ORIGIN; // in dev-mode localhost:5000 (|| 3000), in prod-mode - link to the front
-
+    // dev && prod
+    let origin = process.env.ORIGIN_DEV; // in dev-mode localhost:5000 (|| 3000), in prod-mode - link to the front
+    if (process.env.NODE_ENV?.trim() === "production") {
+        // prod
+        origin = process.env.ORIGIN_PROD;
+    }
     await sendVerificationEmail({
         name: user.name,
         email: user.email,
@@ -308,7 +312,12 @@ const forgotPassword = async (req, res) => {
         // create token to restore password
         const passwordToken = crypto.randomBytes(70).toString("hex");
         // send email with link to reset password
-        const origin = process.env.ORIGIN; // in dev-mode localhost:5000 (||3000), in prod-mode - link to the front
+        // dev && prod
+        let origin = process.env.ORIGIN_DEV; // in dev-mode localhost:5000 (|| 3000), in prod-mode - link to the front
+        if (process.env.NODE_ENV?.trim() === "production") {
+            // prod
+            origin = process.env.ORIGIN_PROD;
+        }
         sendResetPasswordEmail({
             name: user.name,
             email: user.email,
