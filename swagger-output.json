@@ -1163,7 +1163,7 @@
         },
         "userId": {
           "type": "string",
-          "example": "666fbbdf920afbf5214e090d"
+          "example": "667b0a719e769a42b5b65aa5"
         }
       },
       "required": [
@@ -1176,7 +1176,7 @@
       "properties": {
         "verificationToken": {
           "type": "string",
-          "example": "11288272cbdfa0abbee5fe7c3f9b8f4341c929b8456b37a0d192a738ade388d4a747177d360ceba2"
+          "example": "4c9e56062a68de7f08b07b73f150cacfddd9f8a2ff43561e9974e06dfee2d0416dc2b1e4bd28829f"
         },
         "email": {
           "type": "string",
@@ -1227,7 +1227,7 @@
       "properties": {
         "_id": {
           "type": "string",
-          "example": "666fce256418f7901f1e2d56"
+          "example": "667b0b45d08fb7df2d511d3c"
         },
         "name": {
           "type": "string",
@@ -1239,23 +1239,23 @@
         },
         "createdBy": {
           "type": "string",
-          "example": "666fbbdf920afbf5214e090d"
+          "example": "667b0a719e769a42b5b65aa5"
         },
         "file": {
           "type": "string",
-          "example": "https://res.cloudinary.com/dx1bfr5u6/image/upload/v1718603301/converter-upload/ufaufilqlpmb3ct0bsbx.pdf"
+          "example": "https://res.cloudinary.com/dx1bfr5u6/image/upload/v1719339843/converter-upload/czynm1fe0wy0nzlwis5n.pdf"
         },
         "cloudId": {
           "type": "string",
-          "example": "converter-upload/ufaufilqlpmb3ct0bsbx"
+          "example": "converter-upload/czynm1fe0wy0nzlwis5n"
         },
         "createdAt": {
           "type": "string",
-          "example": "2024-06-17T05:48:21.086Z"
+          "example": "2024-06-25T18:24:05.700Z"
         },
         "updatedAt": {
           "type": "string",
-          "example": "2024-06-17T05:48:21.086Z"
+          "example": "2024-06-25T18:24:05.700Z"
         }
       },
       "required": [
@@ -1271,7 +1271,7 @@
     },
     "DeleteTask": {
       "type": "string",
-      "example": "666fcfb52f9a835cf4740880"
+      "example": "667b0b7cd08fb7df2d511d3e"
     },
     "CurrentUser": {
       "type": "object",
@@ -1311,7 +1311,7 @@
         },
         "userId": {
           "type": "string",
-          "example": "666fbbdf920afbf5214e090d"
+          "example": "667b0a719e769a42b5b65aa5"
         }
       },
       "required": [
