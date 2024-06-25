@@ -23,5 +23,4 @@ if (mode === "production") {
     };
 }
 
-// console.log("nodemailerConfirg", nodemailerConfirg);
 export default nodemailerConfirg;

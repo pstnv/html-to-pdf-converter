@@ -60,8 +60,7 @@ formDOM.addEventListener("submit", async (e) => {
         };
         const response = await fetch(url, params);
         if (Math.floor(response.status / 100) !== 2) {
-            const { msg, err } = await response.json();
-            console.log(msg)
+            const { msg } = await response.json();
             throw new CustomError(msg);
         }
         const blob = await response.blob();
