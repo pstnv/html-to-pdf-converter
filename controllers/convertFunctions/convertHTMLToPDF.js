@@ -12,9 +12,7 @@ const convertHTMLToPDF = async (req, res, next) => {
     // launch browser, open new tab
     // const browser = await puppeteer.launch({ headless: "new" });
     // add {headless: false, slowMo: 30} to brackets .launch() to watch how puppeteer works
-    const browser = await puppeteer.launch({
-        headless: "new",
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     // convert .html path to url
