@@ -92,3 +92,7 @@ You can explore a live demo of the HTML to PDF Conversion Microservice hosted on
 
 -   **App:** [HTML to PDF Conversion Microservice](https://html-to-pdf-converter-eng.onrender.com/)
 -   **Swagger-documentation:** [Swagger-docs](http://localhost:5000/api/v1/docs)
+
+#### Testing
+
+<img src="public/assets/tests/tests log_eng.png" alt="Test Documentation" valign="middle" />
