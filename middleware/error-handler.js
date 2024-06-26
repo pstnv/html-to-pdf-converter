@@ -65,7 +65,7 @@ const errorResponder = (err, req, res, next) => {
     // добавить поле для morgan middleware (logger)
     res.errMessage = customError.msg;
 
-    return res.status(customError.statusCode).json({ msg: customError.msg });
+    return res.status(customError.statusCode).json({ msg: err.message });
 };
 
 export { errorTempFilesHandler, errorResponder };
