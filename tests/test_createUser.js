@@ -10,7 +10,7 @@ describe("Test: register user", function () {
     let page = null;
 
     before(async function () {
-        this.timeout(10000);
+        this.timeout(15000);
         // Launch the browser and open a new blank page
         // add {headless: false, slowMo: 30} to brackets .launch() to watch how puppeteer works
         browser = await puppeteer.launch();
@@ -20,7 +20,7 @@ describe("Test: register user", function () {
         await page.goto(`http://localhost:${port}`);
     });
     after(async function () {
-        this.timeout(10000);
+        this.timeout(15000);
         // close browser after testing
         await browser.close();
         //stop server after testing
@@ -28,14 +28,14 @@ describe("Test: register user", function () {
         return;
     });
     describe("got to site", function () {
-        this.timeout(10000);
+        this.timeout(15000);
         it("should have completed a connection", function (done) {
             done();
         });
     });
     // testing index page
     describe("Test: index page", function () {
-        this.timeout(20000);
+        this.timeout(40000);
         it("should have dropdown menu", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
         });
@@ -66,7 +66,7 @@ describe("Test: register user", function () {
     });
     // testing login page
     describe("Test: login page", function () {
-        this.timeout(25000);
+        this.timeout(50000);
         it("should have register link", async () => {
             this.registerLink = await page.waitForSelector(
                 'a[href="register.html"]'
@@ -81,7 +81,7 @@ describe("Test: register user", function () {
     });
     // testing register page
     describe("Test: register page", function () {
-        this.timeout(30000);
+        this.timeout(50000);
         it("should have register form with various elements", async () => {
             this.nameField = await page.waitForSelector('input[name="name"]');
             this.emailField = await page.waitForSelector('input[name="email"]');

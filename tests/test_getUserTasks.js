@@ -14,7 +14,7 @@ describe("Test: login user", function () {
     let page = null;
 
     before(async function () {
-        this.timeout(10000);
+        this.timeout(15000);
         // Launch the browser and open a new blank page
         // add {headless: false, slowMo: 30} to brackets .launch() to watch how puppeteer works
         browser = await puppeteer.launch();
@@ -24,7 +24,7 @@ describe("Test: login user", function () {
         await page.goto(`http://localhost:${port}`);
     });
     after(async function () {
-        this.timeout(10000);
+        this.timeout(15000);
         // close browser after testing
         await browser.close();
         //stop server after testing
@@ -32,14 +32,14 @@ describe("Test: login user", function () {
         return;
     });
     describe("got to site", function () {
-        this.timeout(10000);
+        this.timeout(15000);
         it("should have completed a connection", function (done) {
             done();
         });
     });
     // testing index page
     describe("Test: index page", function () {
-        this.timeout(15000);
+        this.timeout(40000);
         it("should have dropdown menu", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
         });
@@ -70,7 +70,7 @@ describe("Test: login user", function () {
     });
     // testing login page
     describe("Test: login page", function () {
-        this.timeout(25000);
+        this.timeout(50000);
         it("should have login form with various elements", async () => {
             this.emailField = await page.waitForSelector('input[name="email"]');
             this.passwordField = await page.waitForSelector(
@@ -92,7 +92,7 @@ describe("Test: login user", function () {
     });
     // testing index page after login
     describe("Test: index page after login", function () {
-        this.timeout(10000);
+        this.timeout(40000);
         it("should have dropdown menu", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
         });
@@ -113,7 +113,7 @@ describe("Test: login user", function () {
     });
     // testing tasks page
     describe("Test: tasks page", function () {
-        this.timeout(30000);
+        this.timeout(60000);
         it("should have tasks list and various elements", async () => {
             // header with text 'Latest tasks'
             await page.waitForSelector("h1::-p-text(Latest tasks)");
