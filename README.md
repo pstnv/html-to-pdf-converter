@@ -85,5 +85,5 @@ npm start
 
 Выможете ознакомиться с проектом по ссылке, расположенном на Render.com:
 
-- **App:** [HTML to PDF Микросервис](https://html-to-pdf-converter-eng.onrender.com)
+- **App:** [HTML to PDF Микросервис](https://html-to-pdf-converter-rus.onrender.com)
 - **Swagger-documentation:** [Swagger-docs](http://localhost:5000/api/v1/docs/)

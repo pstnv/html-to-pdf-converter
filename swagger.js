@@ -12,7 +12,7 @@ const doc = {
             description: "local server",
         },
         {
-            url: "http://localhost:5000/", // исправить
+            url: "https://html-to-pdf-converter-rus.onrender.com/",
             description: "production server",
         },
     ],
