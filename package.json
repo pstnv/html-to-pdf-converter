@@ -43,7 +43,8 @@
         "cross-env": "^7.0.3",
         "factory-bot": "^6.3.1",
         "mocha": "^10.4.0",
-        "nodemon": "^3.1.0"
+        "nodemon": "^3.1.0",
+        "puppeteer-chromium-resolver": "^22.0.0"
     },
     "engines": {
         "node": "20.x"
