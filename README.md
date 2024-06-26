@@ -87,3 +87,7 @@ npm start
 
 - **App:** [HTML to PDF Микросервис](https://html-to-pdf-converter-rus.onrender.com)
 - **Swagger-documentation:** [Swagger-docs](http://localhost:5000/api/v1/docs/)
+
+#### Тесты
+
+<img src="public/assets/tests/tests log_rus.png" alt="Test Documentation" />
