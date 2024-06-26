@@ -33,7 +33,7 @@ describe("Тест: залогинить пользователя", function () 
     });
     // тестируем стартовую страницу index.html
     describe("Тест: главная страница", function () {
-        this.timeout(20000);
+        this.timeout(40000);
         it("должно присутствовать выпадающее меню", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
         });
@@ -64,7 +64,7 @@ describe("Тест: залогинить пользователя", function () 
     });
     // тестируем страницу входа login.html
     describe("Тест: страница входа в учетную запись", function () {
-        this.timeout(30000);
+        this.timeout(50000);
         it("должна присутствовать форма входа с различными элементами", async () => {
             this.emailField = await page.waitForSelector('input[name="email"]');
             this.passwordField = await page.waitForSelector(

@@ -4,9 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { CustomError } from "../errors/index.js";
 
 const errorTempFilesHandler = (err, req, res, next) => {
-    console.log("here2", err.message);
     console.log(err);
-    console.log("Конец описания ошибки");
     const file = req.file;
     // если файл был загружен, удаляем папку tmp
     if (file && file.tempFilePath) {
@@ -67,7 +65,7 @@ const errorResponder = (err, req, res, next) => {
     // добавить поле для morgan middleware (logger)
     res.errMessage = customError.msg;
 
-    return res.status(customError.statusCode).json({ msg: customError.msg });
+    return res.status(customError.statusCode).json({ msg: err.message });
 };
 
 export { errorTempFilesHandler, errorResponder };

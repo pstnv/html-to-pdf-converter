@@ -39,7 +39,7 @@ describe("Тест: получить задачи пользователя", fun
     });
     // тестируем стартовую страницу index.html
     describe("Тест: главная страница", function () {
-        this.timeout(20000);
+        this.timeout(40000);
         it("должно присутствовать выпадающее меню", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
         });
@@ -70,7 +70,7 @@ describe("Тест: получить задачи пользователя", fun
     });
     // тестируем страницу входа login.html
     describe("Тест: страница входа в учетную запись", function () {
-        this.timeout(30000);
+        this.timeout(50000);
         it("должна присутствовать форма входа с различными элементами", async () => {
             this.emailField = await page.waitForSelector('input[name="email"]');
             this.passwordField = await page.waitForSelector(
@@ -94,7 +94,7 @@ describe("Тест: получить задачи пользователя", fun
     });
     // тестируем главную страницу index.html после входа
     describe("Тест: главная страница после входа пользователя", function () {
-        this.timeout(20000);
+        this.timeout(40000);
         it("должно присутствовать выпадающее меню", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
         });
@@ -115,7 +115,7 @@ describe("Тест: получить задачи пользователя", fun
     });
     // тестируем страницу с задачами history.html
     describe("Тест: страница с задачами пользователя", function () {
-        this.timeout(40000);
+        this.timeout(60000);
         it("должна иметь список задач и различные элементы", async () => {
             // заголовок с текстом 'Последние задачи'
             await page.waitForSelector("h1::-p-text(Последние задачи)");

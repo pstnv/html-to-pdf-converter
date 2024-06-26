@@ -1,12 +1,6 @@
 import puppeteer from "puppeteer";
-import { executablePath } from "puppeteer";
 import url from "url";
 import { CustomError } from "../../errors/index.js";
-
-// solution
-import { createRequire } from "module"; // Bring in the ability to create the 'require' method
-const require = createRequire(import.meta.url); // construct the require method
-const PCR = require("puppeteer-chromium-resolver"); // use the require method
 
 const convertHTMLToPDF = async (req, res, next) => {
     const {
@@ -16,16 +10,11 @@ const convertHTMLToPDF = async (req, res, next) => {
 
     // процесс конвертации(по документации puppeteer) - старт
     // запускаем браузер, открываем пустую страницу
-    const stats = await PCR({});
-    const browser = await stats.puppeteer
-        .launch({
-            headless: "new",
-            args: ["--no-sandbox"],
-            executablePath: stats.executablePath,
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    const browser = await puppeteer.launch({
+        headless: "new",
+        // executablePath:
+        //     "./node_modules/puppeteer-core/.local-chromium/win64-1045629/chrome-win/chrome.exe",
+    });
     const page = await browser.newPage();
 
     // приводим адрес к виду url

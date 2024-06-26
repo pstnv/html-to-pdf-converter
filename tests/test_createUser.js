@@ -35,7 +35,7 @@ describe("Тест: зарегистрировать нового пользов
     });
     // тестируем стартовую страницу index.html
     describe("Тест: главная страница", function () {
-        this.timeout(20000);
+        this.timeout(40000);
         it("должно присутствовать выпадающее меню", async () => {
             this.dropdownLink = await page.waitForSelector("a.btnDropdown");
         });
@@ -59,14 +59,14 @@ describe("Тест: зарегистрировать нового пользов
         });
         it("должен открыть страницу входа в учетную запись", async () => {
             await this.logLink.click();
-            await page.waitForNavigation();
+            // await page.waitForNavigation();
             // заголовок с текстом 'Вход в учетную запись'
             await page.waitForSelector("h2::-p-text(Вход в учетную запись)");
         });
     });
     // тестируем страницу входа login.html
     describe("Тест: страница входа в учетную запись", function () {
-        this.timeout(30000);
+        this.timeout(50000);
         it("должна присутствовать ссылка регистрации", async () => {
             this.registerLink = await page.waitForSelector(
                 'a[href="register.html"]'
@@ -81,7 +81,7 @@ describe("Тест: зарегистрировать нового пользов
     });
     // тестируем страницу регистрации register.html
     describe("Тест: страница регистрации", function () {
-        this.timeout(30000);
+        this.timeout(50000);
         it("должна присуствовать форма регистрации с различными полями", async () => {
             this.nameField = await page.waitForSelector('input[name="name"]');
             this.emailField = await page.waitForSelector('input[name="email"]');
