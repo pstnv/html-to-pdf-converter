@@ -22,14 +22,20 @@ morgan.token("memory", (req, res) => {
     return `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`;
 });
 
+// время на конвертацию в секундах
+morgan.token("response-time-seconds", function (req, res) {
+    return Math.ceil(this["response-time"](req, res) / 1000) + "sec";
+});
+
+
 /*
 - статус :status
 - имя файла :filename
 - дата выполнения операции :date[web] или [iso]
-- время, затраченное на операцию :response-time
+- время, затраченное на операцию по умолчанию в мс :response-time, custom - в секундах :response-time-seconds
 - память, затраченная на операцию :memory
 */
-const settings = ":date[web] :status :filename :response-time :memory";
+const settings = ":date[web] :status :filename :response-time-seconds :memory";
 
 // добавить поля settings, записать в файл
 const logger = morgan(settings, {
