@@ -22,14 +22,21 @@ morgan.token("memory", (req, res) => {
     return `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`;
 });
 
+morgan.token(
+    "response-time-seconds",
+    function (req, res) {
+        return Math.ceil(this["response-time"](req, res) / 1000) + "sec";
+    }
+);
+
 /*
 - status :status
 - name of file :filename
 - date of conversion :date[web] or [iso]
-- time spent on conversion :response-time
+- time spent on conversion in seconds :response-time-seconds or simpy in ms :response-time
 - memory spent on conversion :memory
 */
-const settings = ":date[web] :status :filename :response-time :memory";
+const settings = ":date[web] :status :filename :response-time-seconds :memory";
 
 // add prop settings, save to the file
 const logger = morgan(settings, {
