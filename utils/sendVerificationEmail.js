@@ -13,7 +13,7 @@ const sendVerificationEmail = async ({
     <p>To complete the registration process, visit the following link: 
         <a href="${verifyEmailLink}">confirm email</a>
     </p>
-    <p>The password reset window is limited to 24 hours.</p>`;
+    <p>The verification user account window is limited to 24 hours.</p>`;
 
     // call function and pass to it arguments
     // function sendEmail returns Promise
