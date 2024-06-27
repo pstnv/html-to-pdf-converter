@@ -81,13 +81,13 @@ npm start
 - **mocha**: a testing library for Node. js, created to be a simple, extensible, and fast (for unit and integration testing)
 - **nodemon**: is a tool that helps develop Node.js based applications by automatically restarting the node application when file changes in the directory are detected.
 
-## Live Demo
+## Демонстрация
 
-Выможете ознакомиться с проектом по ссылке, расположенном на Render.com:
+Вы можете ознакомиться с проектом по ссылке, расположенном на Render.com:
 
 - **App:** [HTML to PDF Микросервис](https://html-to-pdf-converter-rus.onrender.com)
 - **Swagger-documentation:** [Swagger-docs](http://localhost:5000/api/v1/docs/)
 
-#### Тесты
+## Тесты
 
 <img src="public/assets/tests/tests log_rus.png" alt="Test Documentation" />
